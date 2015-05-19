@@ -32,6 +32,11 @@
 
     },
     "elijah":{
+        "mysql":{
+            "host":"localhost",
+            "user":"Elijah",
+            "password":"fartingSparkles"
+        }
 
     },
     "john":{
