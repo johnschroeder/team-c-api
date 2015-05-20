@@ -34,8 +34,8 @@
     "elijah":{
         "mysql":{
             "host":"localhost",
-            "user":"Elijah",
-            "password":"fartingSparkles"
+            "user":"elijahvarga",
+            "password":"dev.db124"
         }
 
     },
