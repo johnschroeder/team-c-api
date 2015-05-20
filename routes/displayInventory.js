@@ -1,5 +1,5 @@
 var mysql = require("mysql");
-var config = require("konfig");
+var config = require("konfig")();
 var express = require("express");
 var router = express.Router();
 
@@ -21,9 +21,9 @@ router.route("/").get(function(req,res){
 
     /* Connects to mySQL server */
     var connection = mysql.createConnection({
-        host: "localhost",
-        user: "elijahvarga",
-        password: "dev.db124"
+        host: config.app.mysql.host,
+        user: config.app.mysql.user,
+        password: config.app.mysql.password
 
     });
 
