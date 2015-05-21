@@ -38,6 +38,11 @@
 
     },
     "elijah":{
+        "mysql":{
+            "host":"localhost",
+            "user":"elijahvarga",
+            "password":"dev.db124"
+        }
 
     },
     "john":{
