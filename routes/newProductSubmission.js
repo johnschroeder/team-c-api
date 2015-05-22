@@ -2,25 +2,25 @@
  var config = require("konfig")();
  var express = require("express");
  var router = express.Router();
- /* Is there a way to do this without the relative path? */
- var db = require("../imp_modules/impdb.js");
+ //TODO: Reconfigure so it doesn't require relative path
+ var db = require("../imp_services/impdb.js");
 
  /*
  Usage:
- localhost:50001/ProductID/Name/Customer/Description/DateCreated
+ localhost:50001/newProductSubmission/{Name}/{Customer}/{Description}/{DateCreated}
+ {DateCreated}: YYYY-MM-DD
  */
-router.route("/:productID/:productName/:customer/:description/:date").get(function(req, res) {
+router.route("/:productName/:customer/:description/:date").get(function(req, res) {
     var databaseName = db.databaseName;
 
     var tableName = db.productTable;
     var tableFields = db.prodFields;
 
-    var id = req.params.productID;
     var productName = req.params.productName;
     var customer = req.params.customer;
     var description = req.params.description;
     var date = req.params.date;
-    var values = "(" + parseInt(id) + ", "
+    var values = "(NULL, "
         + mysql.escape(productName) + ", "
         + mysql.escape(customer) + ", "
         + mysql.escape(description) + ", "
@@ -33,7 +33,7 @@ router.route("/:productID/:productName/:customer/:description/:date").get(functi
 
     var queryFunction = function(queryInput, nextQueryFunction) {
         return function() {
-            connection.query(queryInput, function(err, result) {
+            connection.query(queryInput, function(err) {
                 if (err) {
                     connection.rollback(function() {
                         console.error(err.stack);
