@@ -46,7 +46,11 @@
 
     },
     "john":{
-
+      "mysql": {
+        "host": "localhost",
+        "user": "js22",
+        "password": "capstone"
+      }
     },
     "mike":{
         "port":50002,
