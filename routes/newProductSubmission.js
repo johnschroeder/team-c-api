@@ -1,17 +1,24 @@
  var mysql = require("mysql");
  var config = require("konfig")();
  var express = require("express");
+ var Q = require("q");
  var router = express.Router();
  //TODO: Reconfigure so it doesn't require relative path
- var db = require("../imp_services/impdb.js");
+ var db = require("../imp_services/impdb.js").connect();
 
  /*
  Usage:
  localhost:50001/newProductSubmission/{Name}/{Customer}/{Description}/{DateCreated}
+ {Name}: The name of the product being created
+ {Customer}: The company the product is being produced for
+ {Description}: High-level description of the product
  {DateCreated}: YYYY-MM-DD
+ NOTE: The MM field of {DateCreated} allows values from 0-12, which is a total of 13 months
  */
 router.route("/:productName/:customer/:description/:date").get(function(req, res) {
+    Q.longStackSupport = true;
     var databaseName = db.databaseName;
+    var connection = db.connection;
 
     var tableName = db.productTable;
     var tableFields = db.prodFields;
@@ -25,61 +32,25 @@ router.route("/:productName/:customer/:description/:date").get(function(req, res
         + mysql.escape(customer) + ", "
         + mysql.escape(description) + ", "
         + mysql.escape(date.toString()) + ")";
-    var connection = mysql.createConnection({
-        host: config.app.mysql.host,
-        user: config.app.mysql.user,
-        password: config.app.mysql.password
-    });
 
-    var queryFunction = function(queryInput, nextQueryFunction) {
-        return function() {
-            connection.query(queryInput, function(err) {
-                if (err) {
-                    connection.rollback(function() {
-                        console.error(err.stack);
-                        res.status(503).send("Query Error: " + err.code);
-                    });
-                } else {
-                    if (nextQueryFunction)
-                        nextQueryFunction();
-                    else {
-                        connection.commit(function(err) {
-                            if (err) {
-                                console.error(err.stack);
-                                res.status(503).send("Commit Error: " + err.code);
-                            } else {
-                                res.send("Success!");
-                                connection.end();
-                            }
-                        });
-                    }
-                }
-            });
-        };
-    };
-
-    var queryToExecute = queryFunction("USE " + databaseName,
-        queryFunction("CREATE TABLE IF NOT EXISTS " + tableName + " " + tableFields,
-            queryFunction("INSERT INTO " + tableName + " VALUES " + values)
-        )
-    );
-
-
-    connection.connect(function(err) {
-        if (err) {
+    var debug = db.beginTransaction();
+    console.log(debug);
+    debug
+        .then(db.query("USE " + databaseName))
+        .then(db.query("CREATE TABLE IF NOT EXISTS " + tableName + " " + tableFields))
+        .then(db.query("INSERT INTO " + tableName + " VALUES " + values))
+        .then(db.commit())
+        .then(function() {
+            res.send("Success");
+        })
+        //.then(db.endTransaction())
+        .catch(function(err){
+            //db.rollback();
             console.error(err.stack);
-            res.status(503).send("Connection Error: " + err.code);
-        } else {
-            connection.beginTransaction(function(err) {
-                if (err) {
-                    console.error(err.stack);
-                    res.status(503).send("Begin Transaction Error: " + err.code);
-                } else {
-                    queryToExecute();
-                }
-            });
-        }
-    });
+            res.status(503).send("ERROR: " + err.code);
+        })
+        .done();
+
 });
 
 module.exports = router;

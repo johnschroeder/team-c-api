@@ -1,27 +1,58 @@
 /**
  * Created by requi_000 on 5/21/2015.
  */
-var mysql = require("mysql");
+var mySQL = require("mysql");
 var config = require("konfig")();
+var Q = require("q");
 
-    exports.databaseName = "imp_db";
+/* Connects to mySQL server */
+var connection = mySQL.createConnection({
+    host: config.app.mysql.host,
+    user: config.app.mysql.user,
+    password: config.app.mysql.password
+});
 
-    /* To substitute into the query, if you want to add more tables, add them here and then insert them into query */
-    exports.productTable = "Products";
-    exports.runTable = "Runs";
-    exports.batchTable = "Batches";
+    exports.connect = function() {
 
-    /* If you edit any tabels, add the fields here and it will change it in the query */
-    exports.prodFields = "(ProductID int AUTO_INCREMENT, Name varchar(255), Customer varchar(255), Description varchar(255), DateCreated date, PRIMARY KEY (ProductID))";
-    exports.runFields = "(RunID int AUTO_INCREMENT, ProductID int, Date date, PRIMARY KEY (RunID), FOREIGN KEY (ProductID) REFERENCES Products(ProductID))";
-    exports.batchFields ="(RunID int, Amount float, Location VARCHAR(100), Foreign Key (RunID) References Runs(RunID))";
+        var toReturn = {}
+        toReturn.connection = connection;
+        toReturn.databaseName = "imp_db";
 
-    /* Connects to mySQL server */
-    exports.connection = mysql.createConnection({
-            host: config.app.mysql.host,
-            user: config.app.mysql.user,
-            password: config.app.mysql.password
+        /* To substitute into the query, if you want to add more tables, add them here and then insert them into query */
+        toReturn.productTable = "Products";
+        toReturn.runTable = "Runs";
+        toReturn.batchTable = "Batches";
 
-    });
+        /* If you edit any tables, add the fields here and it will change it in the query */
+        toReturn.prodFields = "(ProductID int AUTO_INCREMENT, Name varchar(255), Customer varchar(255), Description varchar(255), DateCreated date, PRIMARY KEY (ProductID))";
+        toReturn.runFields = "(RunID int AUTO_INCREMENT, ProductID int, Date date, PRIMARY KEY (RunID), FOREIGN KEY (ProductID) REFERENCES Products(ProductID))";
+        toReturn.batchFields = "(RunID int, Amount float, Location VARCHAR(100), Foreign Key (RunID) References Runs(RunID))";
+
+        toReturn.beginTransaction = function() {
+            var deferred = Q.defer();
+            deferred.resolve(Q.nfncall(connection.beginTransaction()));
+            return deferred;
+        }
+
+        toReturn.query = function(queryInput) {
+            return Q.nfcall(connection.query(queryInput))
+        }
+
+        toReturn.commit = function() {
+            return Q.nfcall(connection.commit());
+        }
+
+        toReturn.endTransaction = function() {
+            return Q.nfcall(connection.end());
+        }
+
+        toReturn.rollback = function() {
+            return Q.nfcall(connection.rollback());
+        }
+
+        return toReturn;
+    }
+
+
 
 
