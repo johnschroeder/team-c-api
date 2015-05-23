@@ -5,17 +5,11 @@ var mySQL = require("mysql");
 var config = require("konfig")();
 var Q = require("q");
 
-/* Connects to mySQL server */
-var connection = mySQL.createConnection({
-    host: config.app.mysql.host,
-    user: config.app.mysql.user,
-    password: config.app.mysql.password
-});
-
     exports.connect = function() {
+        /* Connects to mySQL server */
+        var connection;
 
-        var toReturn = {}
-        toReturn.connection = connection;
+        var toReturn = {};
         toReturn.databaseName = "imp_db";
 
         /* To substitute into the query, if you want to add more tables, add them here and then insert them into query */
@@ -29,29 +23,33 @@ var connection = mySQL.createConnection({
         toReturn.batchFields = "(RunID int, Amount float, Location VARCHAR(100), Foreign Key (RunID) References Runs(RunID))";
 
         toReturn.beginTransaction = function() {
-            var deferred = Q.defer();
-            deferred.resolve(Q.nfncall(connection.beginTransaction()));
-            return deferred;
-        }
+            connection = mySQL.createConnection({
+                host: config.app.mysql.host,
+                user: config.app.mysql.user,
+                password: config.app.mysql.password
+            });
+            toReturn.connection = connection;
+            return Q.nfbind(connection.beginTransaction.bind(connection));
+        };
 
         toReturn.query = function(queryInput) {
-            return Q.nfcall(connection.query(queryInput))
-        }
+            return Q.nfbind(connection.query.bind(connection, queryInput));
+        };
 
         toReturn.commit = function() {
-            return Q.nfcall(connection.commit());
-        }
+            return Q.nfbind(connection.commit.bind(connection));
+        };
 
         toReturn.endTransaction = function() {
-            return Q.nfcall(connection.end());
-        }
+            return Q.nfbind(connection.end.bind(connection));
+        };
 
         toReturn.rollback = function() {
-            return Q.nfcall(connection.rollback());
-        }
+            return Q.nfbind(connection.rollback.bind(connection));
+        };
 
         return toReturn;
-    }
+    };
 
 
 
