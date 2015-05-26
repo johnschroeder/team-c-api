@@ -36,7 +36,7 @@ router.route("/mode/runId/batchAmount/batchLocation").get(function(req, res) {
 });
 
 function changeInventory(req, res) {
-    var host = "http://localhost:50001/changeInventory/";
+    //var host = "http://localhost:50001/changeInventory/";
     var mode = req.params.mode;
     var databaseName = "impDB";
 

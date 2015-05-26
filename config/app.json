@@ -57,6 +57,13 @@
         }
     },
     "tim":{
+        "port":50001,
+        "frontend": "http://localhost:50000",
+        "mysql":{
+            "host":"localhost",
+            "user":"tswart",
+            "password":"password"
+        }
 
     },
     "trevor":{
