@@ -22,6 +22,8 @@ var Q = require("q");
         toReturn.runFields = "(RunID int AUTO_INCREMENT, ProductID int, Date date, PRIMARY KEY (RunID), FOREIGN KEY (ProductID) REFERENCES Products(ProductID))";
         toReturn.batchFields = "(RunID int, Amount float, Location VARCHAR(100), Foreign Key (RunID) References Runs(RunID))";
 
+        toReturn.DispInventory = "DispInventory";
+
         toReturn.beginTransaction = function() {
             connection = mySQL.createConnection({
                 host: config.app.mysql.host,
