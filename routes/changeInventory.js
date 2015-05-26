@@ -19,26 +19,26 @@ router.route("/").get(function(req, res) {
     //changeInventory(req, res);
 });
 
-router.route("/mode/inventoryId/runDate").get(function(req, res) {
+router.route("/:mode/:inventoryId/:runDate").get(function(req, res) {
     changeInventory(req, res);
 });
 
-router.route("/mode/inventoryId/runId").get(function(req, res) {
+router.route("/:mode/:inventoryId/:runId").get(function(req, res) {
     changeInventory(req, res);
 });
 
-router.route("/mode/runId/batchAmount/batchLocation").get(function(req, res) {
+router.route("/:mode/:runId/:batchAmount/:batchLocation").get(function(req, res) {
     changeInventory(req, res);
 });
 
-router.route("/mode/runId/batchAmount/batchLocation").get(function(req, res) {
+router.route("/:mode/:runId/:batchAmount/:batchLocation").get(function(req, res) {
     changeInventory(req, res);
 });
 
 function changeInventory(req, res) {
     //var host = "http://localhost:50001/changeInventory/";
     var mode = req.params.mode;
-    var databaseName = "impDB";
+    var databaseName = "imp_db";
 
     var productTable = "Products";
     var productFields = "(ProductID, Name, Customer, Description, DateCreated)";
