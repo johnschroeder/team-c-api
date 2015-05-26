@@ -13,32 +13,33 @@ var router = express.Router();
  removeBatch - localhost:50001/removeBatch/runId/batchAmount/batchLocation
  Fields:
  inventoryId, runId, runDate, batchAmount, batchLocation
+ mode: ("insert" | "create_and_insert")
  */
 
 router.route("/").get(function(req, res) {
     //changeInventory(req, res);
 });
 
-router.route("/:mode/:inventoryId/:runDate").get(function(req, res) {
+router.route("/mode/inventoryId/runDate").get(function(req, res) {
     changeInventory(req, res);
 });
 
-router.route("/:mode/:inventoryId/:runId").get(function(req, res) {
+router.route("/mode/inventoryId/runId").get(function(req, res) {
     changeInventory(req, res);
 });
 
-router.route("/:mode/:runId/:batchAmount/:batchLocation").get(function(req, res) {
+router.route("/mode/runId/batchAmount/batchLocation").get(function(req, res) {
     changeInventory(req, res);
 });
 
-router.route("/:mode/:runId/:batchAmount/:batchLocation").get(function(req, res) {
+router.route("/mode/runId/batchAmount/batchLocation").get(function(req, res) {
     changeInventory(req, res);
 });
 
 function changeInventory(req, res) {
-    //var host = "http://localhost:50001/changeInventory/";
+    var host = "http://localhost:50001/changeInventory/";
     var mode = req.params.mode;
-    var databaseName = "imp_db";
+    var databaseName = "impDB";
 
     var productTable = "Products";
     var productFields = "(ProductID, Name, Customer, Description, DateCreated)";
@@ -48,6 +49,11 @@ function changeInventory(req, res) {
 
     var batchTable = "Batches";
     var batchFields = "(RunID, Amount, Location)";
+
+    var id = req.params.jobID || "2112";
+    var desc = req.params.Description || "A modern day warrior";
+    var name = req.params.employeeName || "Tom Sawyer";
+    var values = req.params.values || "(" + id + ", '" + desc + "', '" + name + "')";
 
     var connection = mysql.createConnection({
         host: config.app.mysql.host,
