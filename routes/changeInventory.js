@@ -13,7 +13,6 @@ var router = express.Router();
  removeBatch - localhost:50001/removeBatch/runId/batchAmount/batchLocation
  Fields:
  inventoryId, runId, runDate, batchAmount, batchLocation
- mode: ("insert" | "create_and_insert")
  */
 
 router.route("/").get(function(req, res) {
