@@ -49,11 +49,6 @@ function changeInventory(req, res) {
     var batchTable = "Batches";
     var batchFields = "(RunID, Amount, Location)";
 
-    var id = req.params.jobID || "2112";
-    var desc = req.params.Description || "A modern day warrior";
-    var name = req.params.employeeName || "Tom Sawyer";
-    var values = req.params.values || "(" + id + ", '" + desc + "', '" + name + "')";
-
     var connection = mysql.createConnection({
         host: config.app.mysql.host,
         user: config.app.mysql.user,
