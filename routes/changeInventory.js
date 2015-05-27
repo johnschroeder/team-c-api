@@ -1,7 +1,5 @@
-var mysql = require("mysql");
-var config = require("konfig")();
-
 var express = require("express");
+var Q = require('q');
 
 var router = express.Router();
 
@@ -33,106 +31,76 @@ router.route("/:mode/:runId/:batchAmount/:batchLocation").get(function(req, res)
 
 
 function changeInventory(req, res) {
+    var db = require("../imp_services/impdb.js").connect();
     var mode = req.params.mode;
-    var databaseName = "imp_db";
+    var promise;
 
-    var productTable = "Products";
-    var productFields = "(ProductID, Name, Customer, Description, DateCreated)";
-
-    var runTable = "Runs";
-    var runFields = "(RunID, ProductID, Date)";
-
-    var batchTable = "Batches";
-    var batchFields = "(RunID, Amount, Location)";
-
-    var connection = mysql.createConnection({
-        host: config.app.mysql.host,
-        user: config.app.mysql.user,
-        password: config.app.mysql.password
-    });
-
-    var queryFunction = function(queryInput, nextQueryFunction) {
-        return function() {
-            connection.query(queryInput, function(err, result) {
-                if (err) {
-                    connection.rollback(function() {
-                        console.error(err.stack);
-                        res.status(503).send("Query Error: " + err.code);
-                    });
-                } else {
-                    if (nextQueryFunction)
-                        nextQueryFunction();
-                    else {
-                        connection.commit(function(err) {
-                            if (err) {
-                                console.error(err.stack);
-                                res.status(503).send("Commit Error: " + err.code);
-                            } else {
-                                res.send("Success!");
-                                connection.end();
-                            }
-                        });
-                    }
-                }
-            });
-        };
-    };
-
-    var queryToExecute = function() {
-        connection.commit(function(err) {
-            if (err) {
-                console.error(err.stack);
-                res.status(503).send("Commit Error: " + err.code);
-            } else {
-                res.status(503).send("Error: Mode not recognized");
-                connection.end();
-            }
-        });
-    };
+    //Q.longStackSupport = true;   // for error checking
 
     switch (mode) {
         case "addRun":
-            queryToExecute = queryFunction("USE " + databaseName,
-                queryFunction("INSERT INTO " + runTable + " Values " + "(NULL, " + req.params.inventoryId + ", " + req.params.runDate + ") ")
-            );
+            promise = Q.fcall(db.beginTransaction())
+                .then(db.query("USE " + db.databaseName))
+                .then(db.query("INSERT INTO " + db.runTable + " Values " + "(NULL, " + req.params.inventoryId + ", " + req.params.runDate + ") "));
+
             break;
         case "removeRun":
-            console.error("runID: " + req.params.runId);
-            queryToExecute = queryFunction("USE " + databaseName,
-                queryFunction("DELETE from " + runTable  + " WHERE RunId = " + req.params.runId)
-            );
+            promise = Q.fcall(db.beginTransaction())
+                .then(db.query("USE " + db.databaseName))
+                .then(db.query("DELETE from " + db.runTable  + " WHERE RunId = " + req.params.runId))
+
+            .then(function(rows) {
+                    // check if database changed
+                    var deferred = Q.defer();
+                    if (rows[0].affectedRows == 0) {
+                        deferred.reject("Trying to remove run that doesn't exist");
+                    } else {
+                        deferred.resolve();
+                    }
+                    return deferred.promise;
+                //console.log(columns);
+                //var invUnit = JSON.stringify(rows[0]);
+                //res.send(invUnit);
+                //db.endTransaction();
+            });
+
             break;
         case "addBatch":
-            queryToExecute = queryFunction("USE " + databaseName,
-                queryFunction("INSERT INTO " + batchTable + " Values " + "(" + req.params.runId + ", " + req.params.batchAmount + ", " + req.params.batchLocation + ")")
-            );
+            promise = Q.fcall(db.beginTransaction())
+                .then(db.query("USE " + db.databaseName))
+                .then(db.query("INSERT INTO " + db.batchTable + " Values " + "(" + req.params.runId + ", " + req.params.batchAmount + ", " + req.params.batchLocation + ")"));
+
             break;
         case "removeBatch":
-            queryToExecute = queryFunction("USE " + databaseName,
-                queryFunction("DELETE from " + batchTable +
+            promise = Q.fcall(db.beginTransaction())
+                .then(db.query("USE " + db.databaseName))
+                .then(db.query("DELETE from " + db.batchTable +
                     " WHERE RunID = " + req.params.runId + " AND Amount = " + req.params.batchAmount + " AND Location = " + req.params.batchLocation +
                         " Order BY Amount ASC" +
                             " limit 1"));
+
             break;
         default:
             break;
     }
 
-    connection.connect(function(err) {
-        if (err) {
-            console.error(err.stack);
-            res.status(503).send("Connection Error: " + err.code);
-        } else {
-            connection.beginTransaction(function(err) {
-                if (err) {
-                    console.error(err.stack);
-                    res.status(503).send("Begin Transaction Error: " + err.code);
-                } else {
-                    queryToExecute();
-                }
-            });
-        }
-    });
+    promise
+        .then(db.commit())
+        .then(db.endTransaction())
+        .then(function(){
+            console.log("Success");
+            res.send("Success");
+        })
+
+        .catch(function(err){
+            Q.fcall(db.rollback())
+                .then(db.endTransaction())
+                .done();
+            console.log("Error: " + err);
+            //console.error(err.stack);
+            res.status(503).send("ERROR: " + err);
+        })
+        .done();
 }
 
 module.exports = router;
