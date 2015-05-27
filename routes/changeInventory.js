@@ -5,6 +5,7 @@ var express = require("express");
 
 var router = express.Router();
 
+
 /*
  Usage:
  addRun - localhost:50001/addRun/inventoryId/runDate
@@ -15,30 +16,25 @@ var router = express.Router();
  inventoryId, runId, runDate, batchAmount, batchLocation
  */
 
-router.route("/").get(function(req, res) {
-    //changeInventory(req, res);
-});
-
-router.route("/mode/inventoryId/runDate").get(function(req, res) {
+// add run
+router.route("/:mode/:inventoryId/:runDate").get(function(req, res) {
     changeInventory(req, res);
 });
 
-router.route("/mode/inventoryId/runId").get(function(req, res) {
+// remove run
+router.route("/:mode/:runId").get(function(req, res) {
     changeInventory(req, res);
 });
 
-router.route("/mode/runId/batchAmount/batchLocation").get(function(req, res) {
+// add and remove batch
+router.route("/:mode/:runId/:batchAmount/:batchLocation").get(function(req, res) {
     changeInventory(req, res);
 });
 
-router.route("/mode/runId/batchAmount/batchLocation").get(function(req, res) {
-    changeInventory(req, res);
-});
 
 function changeInventory(req, res) {
-    //var host = "http://localhost:50001/changeInventory/";
     var mode = req.params.mode;
-    var databaseName = "impDB";
+    var databaseName = "imp_db";
 
     var productTable = "Products";
     var productFields = "(ProductID, Name, Customer, Description, DateCreated)";
@@ -101,27 +97,22 @@ function changeInventory(req, res) {
             );
             break;
         case "removeRun":
+            console.error("runID: " + req.params.runId);
             queryToExecute = queryFunction("USE " + databaseName,
-                queryFunction("DELETE from " + runTable,
-                    queryFunction("WHERE RunID = " + req.params.runId)
-                )
+                queryFunction("DELETE from " + runTable  + " WHERE RunId = " + req.params.runId)
             );
             break;
         case "addBatch":
             queryToExecute = queryFunction("USE " + databaseName,
-                queryFunction("INSERT INTO " + batchTable + " VALUES " + "(" + req.params.batchAmount + ", " + req.params.batchLocation,
-                    queryFunction("WHERE RunId = " + req.params.runId)
-                )
+                queryFunction("INSERT INTO " + batchTable + " Values " + "(" + req.params.runId + ", " + req.params.batchAmount + ", " + req.params.batchLocation + ")")
             );
             break;
         case "removeBatch":
             queryToExecute = queryFunction("USE " + databaseName,
-                queryFunction("DELETE * from (",
-                    queryFunction("SELECT DISTINCT * from " + batchTable,
-                        queryFunction("WHERE RunID = " + req.params.runId + " & Amount = " + req.params.batchAmount + " & Location = " + req.params.batchLocation + ") AS tmp")
-                    )
-                )
-            );
+                queryFunction("DELETE from " + batchTable +
+                    " WHERE RunID = " + req.params.runId + " AND Amount = " + req.params.batchAmount + " AND Location = " + req.params.batchLocation +
+                        " Order BY Amount ASC" +
+                            " limit 1"));
             break;
         default:
             break;
