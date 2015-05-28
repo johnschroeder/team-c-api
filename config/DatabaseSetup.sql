@@ -30,7 +30,7 @@ ALTER TABLE Runs AUTO_INCREMENT=501;
 
 CREATE TABLE Batches (
 RunID int,
-Amount float(10, 2),
+Amount float(10),
 Location varchar(100),
 FOREIGN KEY (RunID) REFERENCES Runs(RunID)
 ON DELETE CASCADE
