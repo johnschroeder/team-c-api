@@ -49,7 +49,7 @@ function changeInventory(req, res) {
                 .then(db.query("USE " + db.databaseName))
                 .then(db.query("DELETE from " + db.runTable  + " WHERE RunId = " + req.params.runId))
 
-            .then(function(rows) {
+                .then(function(rows) {
                     // check if database changed
                     var deferred = Q.defer();
                     if (rows[0].affectedRows == 0) {
@@ -58,11 +58,7 @@ function changeInventory(req, res) {
                         deferred.resolve();
                     }
                     return deferred.promise;
-                //console.log(columns);
-                //var invUnit = JSON.stringify(rows[0]);
-                //res.send(invUnit);
-                //db.endTransaction();
-            });
+                });
 
             break;
         case "addBatch":
@@ -77,7 +73,17 @@ function changeInventory(req, res) {
                 .then(db.query("DELETE from " + db.batchTable +
                     " WHERE RunID = " + req.params.runId + " AND Amount = " + req.params.batchAmount + " AND Location = " + req.params.batchLocation +
                         " Order BY Amount ASC" +
-                            " limit 1"));
+                            " limit 1"))
+            .then(function(rows) {
+                // check if database changed
+                var deferred = Q.defer();
+                if (rows[0].affectedRows == 0) {
+                    deferred.reject("Trying to remove batch that doesn't exist");
+                } else {
+                    deferred.resolve();
+                }
+                return deferred.promise;
+            });
 
             break;
         default:
