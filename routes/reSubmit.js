@@ -15,10 +15,7 @@ router.route("/:ProductID/:customer/:productName/:description").get(function(req
         .then(db.query("USE " + db.databaseName))
         .then(db.query("UPDATE " + db.productTable + " SET Customer='" + customer +"', Description='" + description + "', Name='" + productName + "' WHERE ProductID=" + prodID +";"))
         .then(function(rows, columns){
-            console.log("Success");
-            var invUnit = JSON.stringify(rows[0]);
             res.send(invUnit);
-            console.log(invUnit);
             db.endTransaction();
         })
         .then(db.commit())
