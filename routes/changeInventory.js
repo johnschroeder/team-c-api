@@ -6,10 +6,10 @@ var router = express.Router();
 
 /*
  Usage:
- addRun - localhost:50001/addRun/inventoryId/runDate
- removeRun - localhost:50001/removeRun/inventoryId/runId
- addBatch - localhost:50001/addBatch/runId/batchAmount/batchLocation
- removeBatch - localhost:50001/removeBatch/runId/batchAmount/batchLocation
+ addRun - localhost:50001/changeinventory/addRun/inventoryId/runDate
+ removeRun - localhost:50001/changeinventory/removeRun/inventoryId/runId
+ addBatch - localhost:50001/changeinventory/addBatch/runId/batchAmount/batchLocation
+ removeBatch - localhost:50001/changeinventory/removeBatch/runId/batchAmount/batchLocation
  Fields:
  inventoryId, runId, runDate, batchAmount, batchLocation
  */
