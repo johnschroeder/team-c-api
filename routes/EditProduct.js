@@ -19,6 +19,7 @@ router.route("/:selectedID").get(function(req,res){
             res.send(invUnit);
             db.endTransaction();
         })
+
         .catch(function(err){
             Q.fcall(db.rollback())
                 .then(db.endTransaction());
