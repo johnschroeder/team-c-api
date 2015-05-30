@@ -9,11 +9,6 @@ var router = express.Router();
  */
 
 router.route("/:runId/:batchAmount/:batchLocation").get(function(req, res) {
-    changeInventory(req, res);
-});
-
-
-function changeInventory(req, res) {
     var db = require("../../imp_services/impdb.js").connect();
 
     //Q.longStackSupport = true;   // for error checking
@@ -37,6 +32,6 @@ function changeInventory(req, res) {
             res.status(503).send("ERROR: " + err);
         })
         .done();
-}
+});
 
 module.exports = router;
