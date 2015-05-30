@@ -48,7 +48,7 @@ VALUES (NULL, "Business Cards", "Mercy Corps", "Super slick business cards", "20
 
 INSERT INTO Runs
 VALUES (NULL, 101, "2015-05-03"),
-	   (NULL, 101, "2015-05-09"),
+       (NULL, 101, "2015-05-09"),
        (NULL, 102, "2015-05-08"),
        (NULL, 102, "2015-05-15"),
        (NULL, 103, "2015-05-18"),
