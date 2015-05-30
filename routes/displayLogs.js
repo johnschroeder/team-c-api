@@ -11,9 +11,9 @@ router.route("/").get(function(req,res){
         .then(db.query("USE " + db.databaseName))
         .then(db.query("CREATE TABLE IF NOT EXISTS " + db.logsTable + " " + db.logFields + ";"))
 
-        .then(db.query("SELECT l.LogType, l.date, b.amount, p.name, l.customerID, u.name AS UserName" +
+        .then(db.query("SELECT l.LogType, l.date, b.amount, p.name, l.customerID, u.name AS UserName, l.logID" +
         " FROM logs l JOIN Products p ON p.productID = l.productID JOIN customers c ON c.CustomerID = l.CustomerID" +
-    " JOIN batches b ON runID JOIN Users u on u.UserID = l.UserID" +
+    " JOIN batches b JOIN Users u on u.UserID = l.UserID" +
     " JOIN userLogMap on l.logID = userLogMap.LogID AND userLogMap.UserID = 201"))
         .then(function(rows, columns){
             console.log("Log Select Success");

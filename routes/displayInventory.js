@@ -8,9 +8,9 @@ router.route("/").get(function(req,res){
     var db = require("../imp_services/impdb.js").connect();
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CREATE TABLE IF NOT EXISTS " + db.batchTable + " " + db.batchFields + ";"))
         .then(db.query("CREATE TABLE IF NOT EXISTS " + db.productTable + " " + db.productFields + ";"))
         .then(db.query("CREATE TABLE IF NOT EXISTS " + db.runTable + " " + db.runFields + ";"))
+        .then(db.query("CREATE TABLE IF NOT EXISTS " + db.batchTable + " " + db.batchFields + ";"))
         .then(db.query("SELECT * FROM "
             + db.batchTable + " NATURAL JOIN "
             + db.runTable   + " NATURAL JOIN "
