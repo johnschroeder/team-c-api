@@ -5,7 +5,6 @@ var Q = require('q');
 
 router.route("/:ProductID/:customer/:productName/:description").get(function(req, res) {
     //Q.longStackSupport = true;
-    //TODO escape the fieldthings so possible sql injection is avoided
     var db = require("../imp_services/impdb.js").connect();
     var prodID= req.params.ProductID;
     var productName = req.params.productName;
