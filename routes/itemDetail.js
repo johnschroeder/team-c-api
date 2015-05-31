@@ -9,11 +9,11 @@ router.route("/:productID").get(function(req,res){
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
         .then(db.query(
-            "SELECT runs.ProductID, products.Name, SUM(batches.amount) AS total, MAX(runs.date) AS mostRecent "
-            + "FROM runs "
-            + "JOIN products on runs.ProductID = products.ProductID "
-            + "JOIN batches on batches.RunID = runs.RunID "
-            + "WHERE runs.ProductID = " + req.params.productID))
+            "SELECT " + db.runTable +".ProductID, " + db.productTable + ".Name, SUM(" + db.batchTable + ".amount) AS total, MAX(" + db.runTable + ".date) AS mostRecent "
+            + "FROM " + db.runTable + " "
+            + "JOIN " + db.productTable + " on " + db.runTable + ".ProductID = " + db.productTable + ".ProductID "
+            + "JOIN " + db.batchTable + " on " + db.batchTable + ".RunID = " + db.runTable + ".RunID "
+            + "WHERE " + db.runTable + ".ProductID = " + req.params.productID))
         .then(function(rows){
             console.log("Success");
             var invUnit = JSON.stringify(rows[0]);
