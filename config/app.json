@@ -4,8 +4,8 @@
         "frontend": "http://localhost:50000",
         "mysql":{
             "host":"localhost",
-            "user":"foo",
-            "password":"bar"
+            "user":"rtrevor",
+            "password":"P@$$w0rd"
         }
     },
     "dev":{

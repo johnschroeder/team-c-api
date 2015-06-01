@@ -74,6 +74,7 @@ router.route("/:productName/:customer/:description/:date").get(function(req, res
         .then(db.endTransaction())
         .then(function(){
             console.log("Success");
+            res.status(200).send();
             res.send("Success");
         })
         .catch(function(err){
