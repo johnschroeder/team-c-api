@@ -10,7 +10,7 @@ var Q = require("q");
         var connection;
 
         var toReturn = {};
-        toReturn.databaseName = "imp_db";
+        toReturn.databaseName = config.app.mysql.schema;
 
         /* To substitute into the query, if you want to add more tables, add them here and then insert them into query */
         toReturn.productTable = "Products";

@@ -3,9 +3,10 @@
         "port":50001,
         "frontend": "http://localhost:50000",
         "mysql":{
-            "host":"localhost",
-            "user":"foo",
-            "password":"bar"
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "schema":"dev_impDB"
         }
     },
     "dev":{
@@ -13,7 +14,8 @@
         "mysql":{
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
-            "password":"IMPdev321"
+            "password":"IMPdev321",
+            "schema":"dev_impDB"
         }
     },
     "prod":{
@@ -25,51 +27,73 @@
         }
     },
     "kun":{
+        "mysql":{
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "schema":"dev_impDB"
+        }
 
     },
     "hinyun":{
         "mysql":{
-            "host":"localhost",
-            "user":"username",
-            "password":"password"
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "schema":"dev_impDB"
         }
     },
     "claudiu":{
+        "mysql":{
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "schema":"dev_impDB"
+        }
 
     },
     "elijah":{
         "mysql":{
-            "host":"localhost",
-            "user":"elijahvarga",
-            "password":"dev.db124"
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "schema":"dev_impDB"
         }
-
     },
     "john":{
         "mysql":{
-            "host":"localhost",
-            "user":"js22",
-            "password":"capstone"
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "schema":"dev_impDB"
         }
     },
     "mike":{
         "port":50002,
         "mysql":{
-            "host":"localhost",
-            "user":"mvalenti",
-            "password":"TyrionLannister"
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "schema":"dev_impDB"
         }
     },
     "tim":{
         "port":50001,
         "mysql":{
-            "host":"localhost",
-            "user":"tswart",
-            "password":"password"
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "schema":"dev_impDB"
         }
 
     },
     "trevor":{
+        "mysql":{
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "schema":"dev_impDB"
+        }
 
     }
 }
