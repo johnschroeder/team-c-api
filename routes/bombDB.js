@@ -2,9 +2,12 @@ var express = require("express");
 var router = express.Router();
 var Q = require('q');
 
-
+  /** BEFORE CHANGING ANYTHING HERE, MAKE SURE YOU UNDERSTAND THE RAMIFICATIONS!
+ * THIS ROUTE DROPS THE SHARED DATABASE AND REPLACES IT WITH WHATEVER THE
+ * SQL SCRIPT TELLS IT TO
+  */
 router.route("/:selectedID").get(function(req,res){
-    Q.longStackSupport = true;
+//    Q.longStackSupport = true;
     var db = require("../imp_services/impdb.js").connect();
     var selectedID  = req.params.selectedID;
     Q.fcall(db.beginTransaction())
@@ -31,6 +34,3 @@ router.route("/:selectedID").get(function(req,res){
 });
 
 module.exports = router;
-/**
- * Created by elijah on 6/2/15.
- */
