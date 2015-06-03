@@ -25,10 +25,10 @@ var Q = require('q');
       "INSERT INTO  SizeMap VALUES (NULL, 500,  Batch ,500), (NULL, 500,  Subbatch ,100), (NULL, 501,  Batch ,300), (NULL, 501,  Subbatch ,50), (NULL, 502,  Batch , 100), (NULL, 502,  Subbatch ,10), (NULL, 503,  Batch , 1000);",
       "INSERT INTO  Runs VALUES (NULL, 500, 4000,  LocationA ,  2015-03-15  ), (NULL, 500, 4000,  LocationB ,  2015-02-02  ), (NULL, 502, 4000,  LocationD ,  2015-01-11  );"
   ]
+
 router.route("/").get(function(req,res){
 //    Q.longStackSupport = true;
     var db = require("../imp_services/impdb.js").connect();
-    var selectedID  = req.params.selectedID;
     Q.fcall(db.beginTransaction())
         .then(db.query(dbChanger))
         .then(function(rows, columns){
