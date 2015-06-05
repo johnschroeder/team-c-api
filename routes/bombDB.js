@@ -9,26 +9,29 @@ var Q = require('q');
   */
   var dbChanger;
   //Enter query into this array:
-  fs.readFile("../config/resetDb.txt", function(err, data) {
+  fs.readFile("config/resetDb.txt", function(err, data) {
       if(err) throw err;
-      var array = data.toString().split(";\n");
+      var array = data.toString().split(";");
+      var queryArray = [];
+      var j = 0;
+
       for(var i in array) {
-          console.log(array[i]);
+          if(i < array.length - 1)
+          queryArray[j++] = array[i];
       }
   });
-    dbChanger = data;
-    console.log(dbChanger);
 router.route("/").get(function(req,res){
 //    Q.longStackSupport = true;
     var db = require("../imp_services/impdb.js").connect();
-    Q.fcall(db.beginTransaction())
-        .then(db.query(dbChanger))
+/*    Q.fcall(db.beginTransaction())
+        .then(db.query(queryArray))
         .then(function(rows, columns){
             console.log("Success");
             var invUnit = JSON.stringify(rows[0]);
             res.send(invUnit);
             db.endTransaction();
-        })
+        })*/
+    db.query(queryArray)
         .then(db.commit())
         .then(db.endTransaction())
         .catch(function(err){

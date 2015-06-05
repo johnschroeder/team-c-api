@@ -6,7 +6,7 @@ var Q = require('q');
 router.route("/:productID").get(function(req,res){
     Q.longStackSupport = true;
     var db = require("../imp_services/impdb.js").connect();
-    Q.fcall(db.beginTransaction())
+    /*Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
         .then(db.query(
             "SELECT " + db.runTable +".ProductID, " + db.productTable + ".Name, SUM(" + db.batchTable + ".amount) AS total, MAX(" + db.runTable + ".date) AS mostRecent "
@@ -14,9 +14,18 @@ router.route("/:productID").get(function(req,res){
             + "JOIN " + db.productTable + " on " + db.runTable + ".ProductID = " + db.productTable + ".ProductID "
             + "JOIN " + db.batchTable + " on " + db.batchTable + ".RunID = " + db.runTable + ".RunID "
             + "WHERE " + db.runTable + ".ProductID = " + req.params.productID))
-        .then(function(rows){
+*/
+
+    var queryArray = ["USE " + db.databaseName,
+        "SELECT " + db.runTable +".ProductID, " + db.productTable + ".Name, SUM(" + db.batchTable + ".amount) AS total, MAX(" + db.runTable + ".date) AS mostRecent "
+    + "FROM " + db.runTable + " "
+    + "JOIN " + db.productTable + " on " + db.runTable + ".ProductID = " + db.productTable + ".ProductID "
+    + "JOIN " + db.batchTable + " on " + db.batchTable + ".RunID = " + db.runTable + ".RunID "
+    + "WHERE " + db.runTable + ".ProductID = " + req.params.productID];
+    db.query(queryArray)
+        .then(function(result){
             console.log("Success");
-            var invUnit = JSON.stringify(rows[0]);
+            var invUnit = JSON.stringify(result.rows[0]);
             res.send(invUnit);
             db.endTransaction();
         })

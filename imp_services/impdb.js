@@ -32,9 +32,28 @@ var Q = require("q");
             return Q.nfbind(connection.beginTransaction.bind(connection));
         };
 
-        toReturn.query = function(queryInput) {
-            return Q.nfbind(connection.query.bind(connection, queryInput));
-        };
+        toReturn.query = function(queryArray) {
+            if(queryArray.constructor === Array) {
+                var deferred = Q.defer();
+                var promise = Q.fcall(toReturn.beginTransaction());
+                for(var i = 0; i < queryArray.length; ++i) {
+                    promise = promise.then(Q.nfbind(connection.query.bind(connection, queryArray[i])));
+                }
+                promise.then(function(rows, columns) {
+                    var results = {
+                        rows: rows,
+                        columns: columns
+                    };
+                    deferred.resolve(results);
+                })
+                .catch(function(err){
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            } else {
+                return Q.nfbind(connection.query.bind(connection, queryArray));
+            }
+        }
 
         toReturn.commit = function() {
             return Q.nfbind(connection.commit.bind(connection));
