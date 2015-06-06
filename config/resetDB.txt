@@ -1,9 +1,140 @@
-This is line 1;
+CREATE DATABASE imp_db;
 
-This is line 2; This is line 2.5;
+USE imp_db;
 
-This is line 3;
+CREATE TABLE Products (
+ProductID int AUTO_INCREMENT,
+Name varchar(255),
+Customer varchar(255),
+Description varchar(255),
+DateCreated date,
+PRIMARY KEY (ProductID)
+);
+
+ALTER TABLE Products AUTO_INCREMENT=100;
+
+CREATE TABLE Runs (
+RunID int AUTO_INCREMENT,
+ProductID int,
+Date date,
+PRIMARY KEY (RunID),
+FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
+
+ALTER TABLE Runs AUTO_INCREMENT=500;
+
+
+CREATE TABLE Batches (
+RunID int,
+Amount float(10, 2),
+Location varchar(100),
+FOREIGN KEY (RunID) REFERENCES Runs(RunID)
+);
+
+INSERT INTO Products
+VALUES (NULL, "XXXXXXXXXXXX Cards", "Mercy Corps", "Super slick business cards", "2015-05-03"),
+	   (NULL, "PSU Stationary", "Portland State", "Letterhead and stationary for PSU", "2015-05-07"),
+       (NULL, "Envelopes", "Warren", "Warren's customized capstone envelopes, 5 x 8", "2015-05-18"),
+       (NULL, "IMP Display Board", "TeamC", "Project display board, 6 x 10", "2015-05-18");
+
+INSERT INTO Runs
+VALUES (NULL, 100, "2015-05-03"),
+	   (NULL, 100, "2015-05-09"),
+       (NULL, 101, "2015-05-08"),
+       (NULL, 101, "2015-05-15"),
+       (NULL, 102, "2015-05-18"),
+       (NULL, 101, "2015-05-18");
+
+INSERT INTO Batches
+VALUES (500, 500, "A"),
+	   (500, 500, "A"),
+       (501, 1000, "B"),
+       (502, 1500, "C"),
+       (502, 1500, "C"),
+       (502, 1500, "C"),
+       (503, 1500, "C"),
+       (503, 1500, "D"),
+       (504, 55, "Z"),
+       (505, 1500, "D");
+
+################################### Begining of 5/26/2015 #########################################################
+CREATE TABLE SubBatches (
+RunID int,
+Amount float(10, 2),
+Location varchar(100),
+FOREIGN KEY (RunID) REFERENCES Runs(RunID)
+);
+
+
+INSERT INTO SubBatches
+VALUES (500, 50, "A"),
+       (501, 100, "B"),
+       (502, 150, "C"),
+       (503, 150, "D"),
+       (504, 55, "Z"),
+       (505, 150, "D");
 
 
 
+##This stored procedure gives all inventory on all products.
+use imp_db;
+DROP PROCEDURE IF EXISTS AllInventory;
 
+DELIMITER $$
+CREATE PROCEDURE AllInventory()
+BEGIN
+
+drop table if exists tempt;
+create TABLE tempt(ProductID int,Name varchar(255), Amount int, LastRunDate Date);
+
+insert into tempt
+select runs.ProductID, products.Name, sum(batches.Amount), MAX(runs.Date)
+from runs
+join products on runs.ProductID = products.ProductID
+join batches on batches.RunID = runs.RunID
+group by runs.ProductID;
+
+insert into tempt
+select runs.ProductID, products.Name, sum(subbatches.Amount), MAX(runs.Date)
+from runs
+join products on runs.ProductID = products.ProductID
+join subbatches on subbatches.RunID = runs.RunID
+group by runs.ProductID;
+
+select ProductID,Name, sum(Amount) as Amount, Max(LastRunDate) as LastRunDate
+from tempt
+group by ProductID;
+
+Drop table tempt;
+END $$
+AllInventory
+DELIMITER ;
+
+### This sp returns all raw batches/subbatches/run data
+use imp_db;
+DROP PROCEDURE IF EXISTS DispInventory;
+
+DELIMITER $$
+CREATE PROCEDURE DispInventory()
+BEGIN
+SELECT
+runs.ProductID, runs.RunID, batches.Amount, runs.Date, products.Name, products.Customer, products.Description,products.DateCreated
+FROM
+batches NATURAL JOIN
+runs NATURAL JOIN
+products
+GROUP BY ProductID, RunID
+
+union
+SELECT
+runs.ProductID, runs.RunID, subbatches.Amount, runs.Date, products.Name, products.Customer, products.Description,products.DateCreated
+FROM
+subbatches NATURAL JOIN
+runs NATURAL JOIN
+products
+GROUP BY ProductID, RunID;
+
+END $$
+
+DELIMITER ;
+##################################################### End of 5/26/2015########################################

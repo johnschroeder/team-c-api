@@ -65,7 +65,7 @@
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
             "password":"IMPdev321",
-            "schema":"dev_impDB"
+            "schema":"imp_db"
         }
     },
     "mike":{

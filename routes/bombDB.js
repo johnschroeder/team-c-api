@@ -9,17 +9,6 @@ var Q = require('q');
   */
   var dbChanger;
   //Enter query into this array:
-  fs.readFile("config/resetDb.txt", function(err, data) {
-      if(err) throw err;
-      var array = data.toString().split(";");
-      var queryArray = [];
-      var j = 0;
-
-      for(var i in array) {
-          if(i < array.length - 1)
-          queryArray[j++] = array[i];
-      }
-  });
 router.route("/").get(function(req,res){
 //    Q.longStackSupport = true;
     var db = require("../imp_services/impdb.js").connect();
@@ -31,17 +20,28 @@ router.route("/").get(function(req,res){
             res.send(invUnit);
             db.endTransaction();
         })*/
-    db.query(queryArray)
-        .then(db.commit())
-        .then(db.endTransaction())
-        .catch(function(err){
-            Q.fcall(db.rollback())
-                .then(db.endTransaction());
-            console.log("Error:");
-            console.error(err.stack);
-            res.status(503).send("ERROR: " + err.code);
-        })
-        .done();
+    fs.readFile("config/resetDB.txt", function(err, data) {
+        if(err) throw err;
+        var array = data.toString().split(";");
+        var queryArray = [];
+        var j = 0;
+
+        for(var i in array) {
+            if(i < array.length - 1)
+                queryArray[j++] = array[i];
+        }
+        db.query(queryArray)
+            .then(db.commit())
+            .then(db.endTransaction())
+            .catch(function(err){
+                Q.fcall(db.rollback())
+                    .then(db.endTransaction());
+                console.log("Error:");
+                console.error(err.stack);
+                res.status(503).send("ERROR: " + err.code);
+            })
+            .done();
+    });
 });
 
 module.exports = router;
