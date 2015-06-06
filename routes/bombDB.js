@@ -12,14 +12,6 @@ var Q = require('q');
 router.route("/").get(function(req,res){
 //    Q.longStackSupport = true;
     var db = require("../imp_services/impdb.js").connect();
-/*    Q.fcall(db.beginTransaction())
-        .then(db.query(queryArray))
-        .then(function(rows, columns){
-            console.log("Success");
-            var invUnit = JSON.stringify(rows[0]);
-            res.send(invUnit);
-            db.endTransaction();
-        })*/
     fs.readFile("config/resetDB.txt", function(err, data) {
         if(err) throw err;
         var array = data.toString().split(";");
