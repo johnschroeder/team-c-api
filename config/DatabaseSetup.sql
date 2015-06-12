@@ -1,3 +1,8 @@
+#### This DB script doesn't include everything we need going forward, including
+#### user password salts, and the pre-fill test data should be removed.
+#### An updated script is being worked on for later with enough changes that it
+#### doesn't make sense to try and add to this one.
+
 ##### Create database and tables #####
 DROP DATABASE IF EXISTS imp_db;
 

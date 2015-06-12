@@ -24,22 +24,25 @@ exports.LOGTYPES = {
  general - extra variable depending on transaction type (see use of Logs.GenericVar above)
  */
 exports.updateLog = function(database, logType, productId, userId, customerId, general) {
+    // TODO: Look into using Q.defer() here
     if (database == null) {
-        // error
+        console.log("database arg in updateLog() is null");
+        // TODO: handle this error
     }
     if (logType == null) {
-        // error
+        console.log("logType arg in updateLog() is null");
+        // TODO: handle this error
     }
     if (productId == null) {
-        // should be passed in as valid, but for now...
+        // TODO: go retrieve from DB, remove line below
         productId = 101;
     }
     if (userId == null) {
-        // should be passed in as valid
+        // TODO: handle this error, remove line below
         userId = 204;
     }
     if (customerId == null) {
-        // need to retrieve
+        // TODO: go retrieve from DB, remove line below
         customerId = 402;
     }
     if (general == null) {
@@ -62,6 +65,7 @@ function formattedTime() {
 
 
 /* ******************************************************************
+TODO:
  Need to finish this code still:
  - Retrieve data needed for logging from DB if not provided.
  - Add appropriate errors for missing info that can't be retrieved.
