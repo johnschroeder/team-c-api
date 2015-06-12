@@ -1,6 +1,7 @@
 var express = require("express");
 var Q = require('q');
 var router = express.Router();
+var L = require('../../imp_services/logging.js');
 
 
 /*
@@ -16,6 +17,7 @@ router.route("/:runId/:batchAmount/:batchLocation").get(function(req, res) {
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
         .then(db.query("INSERT INTO " + db.batchTable + " Values " + "(" + req.params.runId + ", " + req.params.batchAmount + ", " + req.params.batchLocation + ")"))
+        .then(L.updateLog(db, L.LOGTYPES.ADD.value, null, null, null, req.params.batchAmount))
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(){

@@ -1,6 +1,7 @@
 var express = require("express");
 var Q = require('q');
 var router = express.Router();
+var L = require('../../imp_services/logging.js');
 
 
 /*
@@ -29,6 +30,7 @@ router.route("/:runId/:batchAmount/:batchLocation").get(function(req, res) {
             }
             return deferred.promise;
         })
+        .then(L.updateLog(db, L.LOGTYPES.REMOVE.value, null, null, null, req.params.batchAmount))
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(){

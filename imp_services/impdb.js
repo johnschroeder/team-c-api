@@ -1,6 +1,3 @@
-/**
- * Created by requi_000 on 5/21/2015.
- */
 var mySQL = require("mysql");
 var config = require("konfig")();
 var Q = require("q");
@@ -16,11 +13,14 @@ var Q = require("q");
         toReturn.productTable = "Products";
         toReturn.runTable = "Runs";
         toReturn.batchTable = "Batches";
+        toReturn.logTable = "Logs";
 
         /* If you edit any tables, add the fields here and it will change it in the query */
         toReturn.productFields = "(ProductID int AUTO_INCREMENT, Name varchar(255), Customer varchar(255), Description varchar(255), DateCreated date, PRIMARY KEY (ProductID))";
         toReturn.runFields = "(RunID int AUTO_INCREMENT, ProductID int, Date date, PRIMARY KEY (RunID), FOREIGN KEY (ProductID) REFERENCES Products(ProductID))";
         toReturn.batchFields = "(RunID int, Amount float, Location VARCHAR(100), Foreign Key (RunID) References Runs(RunID))";
+        toReturn.logFields = "(LogID int AUTO_INCREMENT, LogType int, ProductID int, UserID int, CustomerID int, Time datetime, GenericVar int, PRIMARY KEY (LogID), "
+            + "FOREIGN KEY (ProductID) REFERENCES Products(ProductID), FOREIGN KEY (UserID) REFERENCES Users(UserID), FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID))";
 
         toReturn.beginTransaction = function() {
             connection = mySQL.createConnection({
