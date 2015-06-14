@@ -7,7 +7,8 @@ var Q = require("q");
         var connection;
 
         var toReturn = {};
-        toReturn.databaseName = config.databaseName;
+        toReturn.databaseName = config.app.mysql.databaseName;
+        console.log(toReturn.databaseName);
 
         /* To substitute into the query, if you want to add more tables, add them here and then insert them into query */
         toReturn.productTable = "Products";
