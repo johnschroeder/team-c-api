@@ -10,7 +10,7 @@ PermsID int AUTO_INCREMENT,
 Perms int,
 PRIMARY KEY (PermsID)
 );
-ALTER TABLE Permissions AUTO_INCREMENT 601;
+ALTER TABLE Permissions AUTO_INCREMENT = 601;
 
 CREATE TABLE Users (
 Username varchar(25),
@@ -41,7 +41,7 @@ Description varchar(255),
 DateCreated date,
 PRIMARY KEY (ProductID)
 );
-ALTER TABLE Products AUTO_INCREMENT=101;
+ALTER TABLE Products AUTO_INCREMENT = 101;
 
 CREATE TABLE ProdCustMap (
 ProductID int,
@@ -50,23 +50,33 @@ FOREIGN KEY (ProductID) REFERENCES Products(ProductID),
 FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
 );
 
-CREATE TABLE Runs (
-RunID int AUTO_INCREMENT,
+CREATE TABLE Piles (
+PileID int AUTO_INCREMENT,
 ProductID int,
-DateCreated date,
-QuantityAvailable int,
-QuantityReserved int,
 Location varchar(50),
-PRIMARY KEY (RunID),
+PRIMARY KEY (PileID),
 FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
 ON DELETE CASCADE
 );
-ALTER TABLE Runs AUTO_INCREMENT=301;
+ALTER TABLE Piles AUTO_INCREMENT = 301;
+
+CREATE TABLE Runs (
+RunID int AUTO_INCREMENT,
+PileID int,
+DateCreated date,
+QuantityAvailable int,
+QuantityReserved int,
+PRIMARY KEY (RunID),
+FOREIGN KEY (PileID) REFERENCES Piles(PileID)
+ON DELETE CASCADE
+);
+ALTER TABLE Runs AUTO_INCREMENT = 501;
 
 CREATE TABLE RunMarkers (
 RunID int,
 Marker varchar(30),
 FOREIGN KEY (RunID) REFERENCES Runs(RunID)
+ON DELETE CASCADE
 );
 
 CREATE TABLE SizeMap (
@@ -74,6 +84,7 @@ ProductID int,
 Name varchar(50),
 Size int,
 FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+ON DELETE CASCADE
 );
 
 CREATE TABLE Logs (
@@ -96,4 +107,5 @@ LogID int,
 Username varchar(25),
 FOREIGN KEY (LogID) REFERENCES Logs(LogID),
 FOREIGN KEY (Username) REFERENCES Users(Username)
+ON DELETE CASCADE
 );
