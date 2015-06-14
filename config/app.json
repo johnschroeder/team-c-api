@@ -5,7 +5,8 @@
         "mysql":{
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
-            "password":"IMPdev321"
+            "password":"IMPdev321",
+            "databaseName":"imp_db"
         }
     },
     "dev":{
@@ -21,7 +22,8 @@
         "mysql":{
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
-            "password":"IMPdev321"
+            "password":"IMPdev321",
+            "databaseName":"imp_db_prod"
         }
     },
     "kun":{
