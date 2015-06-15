@@ -86,9 +86,11 @@ ON DELETE CASCADE
 );
 
 CREATE TABLE SizeMap (
+SizeMapID int AUTO_INCREMENT,
 ProductID int,
 Name varchar(50),
 Size int,
+PRIMARY KEY (SizeMapID),
 FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
 ON DELETE CASCADE
 );
@@ -129,7 +131,7 @@ FOREIGN KEY (Reporter) REFERENCES Users(Username)
 CREATE TABLE CartContents(
 CartContentID int AUTO_INCREMENT,
 CartID int,
-ProductID int,
+SizeMapID int,
 Quantity int,
 RunID int,
 PRIMARY KEY (CartContentID),
