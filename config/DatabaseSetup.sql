@@ -26,6 +26,12 @@ FOREIGN KEY (PermsID) REFERENCES Permissions(PermsID)
 );
 ALTER TABLE Users AUTO_INCREMENT = 201;
 
+CREATE TABLE UserGroups (
+GroupName varchar(25),
+Username varchar(25),
+FOREIGN KEY (Username) REFERENCES Users(Username)
+);
+
 CREATE TABLE Customers (
 CustomerID int AUTO_INCREMENT,
 Name varchar(255),
@@ -108,4 +114,23 @@ Username varchar(25),
 FOREIGN KEY (LogID) REFERENCES Logs(LogID),
 FOREIGN KEY (Username) REFERENCES Users(Username)
 ON DELETE CASCADE
+);
+
+CREATE TABLE Cart (
+CartID int AUTO_INCREMENT,
+CartName varchar(40),
+Reporter varchar(25),
+Assignee varchar(25),
+TimeCreated datetime,
+PRIMARY KEY (CartID),
+FOREIGN KEY (Reporter) REFERENCES Users(Username)
+);
+
+CREATE TABLE CartContents(
+CartID int,
+ProductID int,
+Quantity int,
+RunID int,
+FOREIGN KEY (CartID) REFERENCES Cart(CartID),
+FOREIGN KEY (RunID) REFERENCES Runs(RunID)
 );
