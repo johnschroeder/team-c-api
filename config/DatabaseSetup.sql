@@ -129,13 +129,13 @@ PRIMARY KEY (CartID),
 FOREIGN KEY (Reporter) REFERENCES Users(Username)
 );
 
-CREATE TABLE CartContents(
-CartContentID int AUTO_INCREMENT,
+CREATE TABLE CartItems(
+CartItemID int AUTO_INCREMENT,
 CartID int,
 SizeMapID int,
 Quantity int,
 RunID int,
-PRIMARY KEY (CartContentID),
+PRIMARY KEY (CartItemID),
 FOREIGN KEY (CartID) REFERENCES Cart(CartID),
 FOREIGN KEY (RunID) REFERENCES Runs(RunID)
 );
