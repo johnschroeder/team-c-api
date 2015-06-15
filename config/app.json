@@ -27,7 +27,11 @@
         }
     },
     "kun":{
-
+        "mysql":{
+            "host":"localhost",
+            "user":"kun",
+            "password":"1234"
+        }
     },
     "hinyun":{
         "mysql":{
