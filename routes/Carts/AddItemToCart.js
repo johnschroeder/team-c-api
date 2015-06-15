@@ -12,12 +12,10 @@ var Q = require('q');
  localhost:50001/Carts/{CartID}/{ProductID}/{Assignee}/{DateToDelete}
  {CartID}: The ID of the cart being added to
  {SizeMapID}: grouping size for this item
- {quantity}: NOTE:?Thistem
- {DateCreated}: YYYY-MM-DD
- {DateToDelete}: YYYY-MM-DD, when does the cart expire and deleted by nightly job
- NOTE: The MM field of {DateCreated} allows values from 0-12, which is a total of 13 months
+ {Quantity}: NOTE:?This quantity is the number of GROUPINGS (ie. 3 boxes), NOT the total quantity.
+ {RunID}: which run to reserve from
  */
-router.route("/:CartName/:Reporter/:Assignee/:DateToDelete").get(function(req, res) {
+router.route("/:CartID/:SizeMapID/:Quantity/:RunID").get(function(req, res) {
 
     //Q.longStackSupport = true;
 
@@ -26,17 +24,15 @@ router.route("/:CartName/:Reporter/:Assignee/:DateToDelete").get(function(req, r
     /**
      *  Package up some values from the route
      */
-    var CartName = req.params.CartName;
-    var Reporter = req.params.Reporter;
-    var Assignee = req.params.Assignee;
-    var DateToDelete = req.params.DateToDelete;
-    var DateCreated = new Date();
+    var CartID = req.params.CartID;
+    var SizeMapID = req.params.SizeMapID;
+    var Quantity = req.params.Quantity;
+    var RunID = req.params.RunID;
     var values = "(NULL, "
-        + mySQL.escape(CartName) + ", "
-        + mySQL.escape(Reporter) + ", "
-        + mySQL.escape(Assignee) + ", "
-        + mySQL.escape(DateCreated) + ", "
-        + mySQL.escape(DateToDelete.toString()) + ")";
+        + mySQL.escape(CartID) + ", "
+        + mySQL.escape(SizeMapID) + ", "
+        + mySQL.escape(Quantity) + ", "
+        + mySQL.escape(RunID) + ")";
 
     /**
      * The initial use of Q.fcall() is required to kickstart the chain.
