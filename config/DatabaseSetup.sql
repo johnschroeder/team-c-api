@@ -124,6 +124,7 @@ CartName varchar(40),
 Reporter varchar(25),
 Assignee varchar(25),
 TimeCreated datetime,
+DateToDelete datetime,
 PRIMARY KEY (CartID),
 FOREIGN KEY (Reporter) REFERENCES Users(Username)
 );
