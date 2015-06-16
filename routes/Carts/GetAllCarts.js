@@ -8,13 +8,10 @@ var router = express.Router();
 var Q = require('q');
 /*
  Usage:
- localhost:50001/Carts/GetCartItems/{CartID}
- {CartID}: which cart's items do you want to diplay
+ localhost:50001/Carts/GetAllCarts/
 
- return table column names
- CartItemID, ProductID, ProductName, PileID, Location, SizeMapID, SizeName, CountPerBatch, BatchCount, Total, id
  */
-router.route("/:CartID").get(function(req, res) {
+router.route("/").get(function(req, res) {
 
     //Q.longStackSupport = true;
     var db = require("../../imp_services/impdb.js").connect();
@@ -25,7 +22,7 @@ router.route("/:CartID").get(function(req, res) {
     var CartID = req.params.CartID;
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CALL " + db.spGetCartItems + "(" + CartID + ");"))
+        .then(db.query("SELECT * FROM Cart;"))
         .then(function(rows, columns){
             console.log("Success");
             var invUnit = JSON.stringify(rows[0]);
