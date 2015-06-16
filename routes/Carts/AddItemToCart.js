@@ -9,7 +9,7 @@ var router = express.Router();
 var Q = require('q');
 /*
  Usage:
- localhost:50001/Carts/{CartID}/{ProductID}/{Assignee}/{DateToDelete}
+ localhost:50001/Carts/AddItemToCart/{CartID}/{SizeMapID}/{Quantity}/{RunID}
  {CartID}: The ID of the cart being added to
  {SizeMapID}: grouping size for this item
  {Quantity}: NOTE:?This quantity is the number of GROUPINGS (ie. 3 boxes), NOT the total quantity.
@@ -28,12 +28,6 @@ router.route("/:CartID/:SizeMapID/:Quantity/:RunID").get(function(req, res) {
     var SizeMapID = req.params.SizeMapID;
     var Quantity = req.params.Quantity;
     var RunID = req.params.RunID;
-    var values = "(NULL, "
-        + mySQL.escape(CartID) + ", "
-        + mySQL.escape(SizeMapID) + ", "
-        + mySQL.escape(Quantity) + ", "
-        + mySQL.escape(RunID) + ")";
-
     /**
      * The initial use of Q.fcall() is required to kickstart the chain.
      * Once that's done, the resulting object is a promise.
@@ -52,7 +46,13 @@ router.route("/:CartID/:SizeMapID/:Quantity/:RunID").get(function(req, res) {
      */
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("INSERT INTO " + db.cartTable + " VALUES " + values))
+        .then(db.query("set @m='';"))
+        .then(db.query("CALL " + db.spAddItemToCart + "("
+            + CartID + ", "
+            + SizeMapID + ", "
+            + Quantity + ", "
+            + RunID + "," + "@m);"
+        ))
     /**
      * The args here are results of the previous promise's wrapped function.
      * Note that I had to make the function in the then a promise by using the

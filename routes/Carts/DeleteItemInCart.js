@@ -9,11 +9,8 @@ var router = express.Router();
 var Q = require('q');
 /*
  Usage:
- localhost:50001/Carts/{CartID}/{ProductID}/{Assignee}/{DateToDelete}
- {CartID}: The ID of the cart being added to
- {SizeMapID}: grouping size for this item
- {Quantity}: NOTE:?This quantity is the number of GROUPINGS (ie. 3 boxes), NOT the total quantity.
- {RunID}: which run to reserve from
+ localhost:50001/Carts/DeleteItemInCart/{CartItemID}
+ {CartItemID}: The ID of the CartItem to be deleted
  */
 router.route("/:CartItemID").get(function(req, res) {
 
@@ -25,7 +22,6 @@ router.route("/:CartItemID").get(function(req, res) {
      *  Package up some values from the route
      */
     var CartItemID = req.params.CartItemID;
-    var Mesage = "";
 
     /**
      * The initial use of Q.fcall() is required to kickstart the chain.

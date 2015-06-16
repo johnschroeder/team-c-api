@@ -1,6 +1,11 @@
 /**
- * Created by Kun on 6/15/2015.
+ * Created by Kun on 6/16/2015.
  */
+
+/**
+ * Created by Kun on 6/16/2015.
+ */
+
 
 var mySQL = require("mysql");
 var express = require("express");
@@ -8,15 +13,10 @@ var router = express.Router();
 var Q = require('q');
 /*
  Usage:
- localhost:50001/Carts/CreateCart/{CartName}/{Reporter}/{Assignee}/{DateToDelete}
- {CartName}: The name of the cart being created
- {Reporter}: who build the cart
- {Assignee}: who has access to fill the cart
- {DateCreated}: YYYY-MM-DD
- {DateToDelete}: YYYY-MM-DD, when does the cart expire and deleted by nightly job
- NOTE: The MM field of {DateCreated} allows values from 0-12, which is a total of 13 months
+ localhost:50001/Carts/DeleteCart/{CartID}
+ {CartID}: The ID of the Cart to be deleted
  */
-router.route("/:CartName/:Reporter/:Assignee/:DateToDelete").get(function(req, res) {
+router.route("/:CartID").get(function(req, res) {
 
     //Q.longStackSupport = true;
 
@@ -25,17 +25,7 @@ router.route("/:CartName/:Reporter/:Assignee/:DateToDelete").get(function(req, r
     /**
      *  Package up some values from the route
      */
-    var CartName = req.params.CartName;
-    var Reporter = req.params.Reporter;
-    var Assignee = req.params.Assignee;
-    var DateToDelete = req.params.DateToDelete;
-    var DateCreated = new Date();
-    var values = "(NULL, "
-        + mySQL.escape(CartName) + ", "
-        + mySQL.escape(Reporter) + ", "
-        + mySQL.escape(Assignee) + ", "
-        + mySQL.escape(DateCreated) + ", "
-        + mySQL.escape(DateToDelete.toString()) + ")";
+    var CartID = req.params.CartID;
 
     /**
      * The initial use of Q.fcall() is required to kickstart the chain.
@@ -55,7 +45,9 @@ router.route("/:CartName/:Reporter/:Assignee/:DateToDelete").get(function(req, r
      */
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("INSERT INTO " + db.cartTable + " VALUES " + values))
+        .then(db.query("set @m='';"))
+        .then(db.query("CALL " + db.spDeleteCart + "( "+ CartID +","+"@m" +")"))
+        //.then(db.query("select @m;"))
     /**
      * The args here are results of the previous promise's wrapped function.
      * Note that I had to make the function in the then a promise by using the
@@ -88,3 +80,4 @@ router.route("/:CartName/:Reporter/:Assignee/:DateToDelete").get(function(req, r
 });
 
 module.exports = router;
+
