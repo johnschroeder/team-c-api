@@ -1,10 +1,4 @@
 
-/*
-#test script below
-set @m='';
-call DeleteCart(1,@m);
-select @m;
-*/
 
 use dev_ImpDB;
 DROP PROCEDURE IF EXISTS ExpireCarts;
