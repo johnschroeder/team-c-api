@@ -3,19 +3,19 @@
 To test this stored procedure, use below
 #####success test####
 set @m='';
-call AddItemtoCart(0,1,2,501,@m);
+call AddItemToCart(0,1,2,501,@m);
 select @m;
 #####not enough inventory test####
 set @m='';
-call AddItemtoCart(0,1,200000,501,@m);
+call AddItemToCart(0,1,200000,501,@m);
 select @m;
 */
 
 use dev_ImpDB;
-DROP PROCEDURE IF EXISTS AddItemtoCart;
+DROP PROCEDURE IF EXISTS AddItemToCart;
 
 DELIMITER $$
-CREATE PROCEDURE AddItemtoCart
+CREATE PROCEDURE AddItemToCart
 (IN _CartID int, IN _SizeMapID int, IN _Quantity int, IN _RunID int, OUT _Msg varchar(512))
 BEGIN
 
