@@ -3,11 +3,11 @@
 To test this stored procedure, use below
 #####success test####
 set @m='';
-call AddItemToCart(0,1,2,501,@m);
+call AddItemToCart(1,1,2,501,@m);
 select @m;
 #####not enough inventory test####
 set @m='';
-call AddItemToCart(0,1,200000,501,@m);
+call AddItemToCart(1,1,200000,501,@m);
 select @m;
 */
 
