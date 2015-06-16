@@ -16,6 +16,7 @@ var Q = require("q");
         toReturn.batchTable = "Batches";
         toReturn.logTable = "Logs";
         toReturn.cartTable = "Cart";
+        toReturn.spDeleteItemInCart = "DeleteItemInCart";
 
         /* If you edit any tables, add the fields here and it will change it in the query */
         toReturn.productFields = "(ProductID int AUTO_INCREMENT, Name varchar(255), Customer varchar(255), Description varchar(255), DateCreated date, PRIMARY KEY (ProductID))";
