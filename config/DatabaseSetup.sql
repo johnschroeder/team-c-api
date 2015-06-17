@@ -1,4 +1,5 @@
 ##### Create database and tables #####
+
 DROP DATABASE IF EXISTS dev_ImpDB;
 
 CREATE DATABASE dev_ImpDB;
