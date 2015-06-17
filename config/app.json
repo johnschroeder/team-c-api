@@ -28,10 +28,10 @@
     },
     "kun":{
         "mysql":{
-            "host":"localhost",
-            "user":"root",
-            "password":"1234",
-            "databaseName":"dev_ImpDB"
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "databaseName":"imp_db_dev"
         }
     },
     "hinyun":{
