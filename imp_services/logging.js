@@ -1,7 +1,7 @@
 exports.LOGTYPES = {
     ADDPILE              : {value: 100, name: "AddPile"},
     ADDRUN               : {value: 200, name: "AddRun"},
-    REMOVEPILE           : {value: 300, name: "REMOVEPILE"},
+    REMOVEPILE           : {value: 300, name: "RemovePile"},
     REMOVERUN            : {value: 400, name: "RemoveRun"},
     AUDIT                : {value: 500, name: "Audit"},
     NOTE                 : {value: 600, name: "Note"},
