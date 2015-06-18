@@ -6,18 +6,28 @@ var L = require('../../imp_services/logging.js');
 
 /*
  Usage:
- addBatch - localhost:50001/changeInventory/addBatch/runId/batchAmount/batchLocation
+ localhost:50001/changeInventory/removePile/productId/pileId
  */
 
-router.route("/:runId/:batchAmount/:batchLocation").get(function(req, res) {
+router.route("/:productId/:pileId").get(function(req, res) {
     var db = require("../../imp_services/impdb.js").connect();
 
     //Q.longStackSupport = true;   // for error checking
 
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("INSERT INTO " + db.batchTable + " Values " + "(" + req.params.runId + ", " + req.params.batchAmount + ", " + req.params.batchLocation + ")"))
-        .then(L.updateLog(db, L.LOGTYPES.ADD.value, null, null, null, req.params.batchAmount))
+        .then(db.query("DELETE from " + db.pileTable + " WHERE PileID = " + req.params.pileId))
+        .then(function(rows) {
+            // check if database changed
+            var deferred = Q.defer();
+            if (rows[0].affectedRows == 0) {
+                deferred.reject("Trying to remove batch that doesn't exist");
+            } else {
+                deferred.resolve();
+            }
+            return deferred.promise;
+        })
+        .then(L.updateLog(db, L.LOGTYPES.REMOVEPILE.value, req.params.productId, null, null))
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(){

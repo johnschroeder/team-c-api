@@ -6,10 +6,10 @@ var L = require('../../imp_services/logging.js');
 
 /*
  Usage:
- removeRun - localhost:50001/changeInventory/removeRun/inventoryId/runId
+ localhost:50001/changeInventory/removeRun/productId//pileId/runId
  */
 
-router.route("/:runId").get(function(req, res) {
+router.route("/:productId/:pileId/:runId").get(function(req, res) {
     var db = require("../../imp_services/impdb.js").connect();
 
     //Q.longStackSupport = true;   // for error checking
@@ -27,7 +27,7 @@ router.route("/:runId").get(function(req, res) {
             }
             return deferred.promise;
         })
-        .then(L.updateLog(db, L.LOGTYPES.REMOVE.value, null, null, null, null))
+        .then(L.updateLog(db, L.LOGTYPES.REMOVERUN.value, req.params.productId, null, null))
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(){
