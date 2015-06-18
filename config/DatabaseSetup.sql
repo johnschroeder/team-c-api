@@ -130,5 +130,6 @@ Quantity int,
 RunID int,
 PRIMARY KEY (CartItemID),
 FOREIGN KEY (CartID) REFERENCES Cart(CartID),
+FOREIGN KEY (SizeMapID) REFERENCES SizeMap(SizeMapID),
 FOREIGN KEY (RunID) REFERENCES Runs(RunID)
 );
