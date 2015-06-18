@@ -65,9 +65,10 @@
     "tim":{
         "port":50001,
         "mysql":{
-            "host":"localhost",
-            "user":"tswart",
-            "password":"password"
+            "host": "localhost",
+            "user": "tswart",
+            "password": "password",
+            "databaseName": "dev_impDB"
         }
 
     },

@@ -1,5 +1,4 @@
 ##### Create database and tables #####
-
 DROP DATABASE IF EXISTS dev_ImpDB;
 
 CREATE DATABASE dev_ImpDB;
@@ -30,7 +29,7 @@ ALTER TABLE Users AUTO_INCREMENT = 201;
 CREATE TABLE UserGroups (
 GroupName varchar(25),
 Username varchar(25),
-FOREIGN KEY (Username) REFERENCES Users(Username)
+FOREIGN KEY (Username) REFERENCES Users(Username) ON DELETE CASCADE
 );
 
 CREATE TABLE Customers (
@@ -53,8 +52,8 @@ ALTER TABLE Products AUTO_INCREMENT = 101;
 CREATE TABLE ProdCustMap (
 ProductID int,
 CustomerID int,
-FOREIGN KEY (ProductID) REFERENCES Products(ProductID),
-FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+FOREIGN KEY (ProductID) REFERENCES Products(ProductID) ON DELETE CASCADE,
+FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID) ON DELETE CASCADE
 );
 
 CREATE TABLE Piles (
@@ -62,8 +61,7 @@ PileID int AUTO_INCREMENT,
 ProductID int,
 Location varchar(50),
 PRIMARY KEY (PileID),
-FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
-ON DELETE CASCADE
+FOREIGN KEY (ProductID) REFERENCES Products(ProductID) ON DELETE CASCADE
 );
 ALTER TABLE Piles AUTO_INCREMENT = 301;
 
@@ -74,16 +72,14 @@ DateCreated date,
 QuantityAvailable int,
 QuantityReserved int,
 PRIMARY KEY (RunID),
-FOREIGN KEY (PileID) REFERENCES Piles(PileID)
-ON DELETE CASCADE
+FOREIGN KEY (PileID) REFERENCES Piles(PileID) ON DELETE CASCADE
 );
 ALTER TABLE Runs AUTO_INCREMENT = 501;
 
 CREATE TABLE RunMarkers (
 RunID int,
 Marker varchar(30),
-FOREIGN KEY (RunID) REFERENCES Runs(RunID)
-ON DELETE CASCADE
+FOREIGN KEY (RunID) REFERENCES Runs(RunID) ON DELETE CASCADE
 );
 
 CREATE TABLE SizeMap (
@@ -92,8 +88,7 @@ ProductID int,
 Name varchar(50),
 Size int,
 PRIMARY KEY (SizeMapID),
-FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
-ON DELETE CASCADE
+FOREIGN KEY (ProductID) REFERENCES Products(ProductID) ON DELETE CASCADE
 );
 
 CREATE TABLE Logs (
@@ -101,22 +96,19 @@ LogID int AUTO_INCREMENT,
 LogType int,
 ProductID int,
 Username varchar(25),
-CustomerID int,
 Time datetime,
 GenericVar int,
 PRIMARY KEY (LogID),
-FOREIGN KEY (ProductID) REFERENCES Products(ProductID),
-FOREIGN KEY (Username) REFERENCES Users(Username),
-FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+FOREIGN KEY (ProductID) REFERENCES Products(ProductID) ON DELETE CASCADE,
+FOREIGN KEY (Username) REFERENCES Users(Username) ON DELETE SET NULL
 );
 ALTER TABLE Logs AUTO_INCREMENT = 1001;
 
 CREATE TABLE LogViewMap (
 LogID int,
 Username varchar(25),
-FOREIGN KEY (LogID) REFERENCES Logs(LogID),
-FOREIGN KEY (Username) REFERENCES Users(Username)
-ON DELETE CASCADE
+FOREIGN KEY (LogID) REFERENCES Logs(LogID) ON DELETE CASCADE,
+FOREIGN KEY (Username) REFERENCES Users(Username) ON DELETE CASCADE
 );
 
 CREATE TABLE Cart (
@@ -127,7 +119,7 @@ Assignee varchar(25),
 TimeCreated datetime,
 DateToDelete datetime,
 PRIMARY KEY (CartID),
-FOREIGN KEY (Reporter) REFERENCES Users(Username)
+FOREIGN KEY (Reporter) REFERENCES Users(Username) ON DELETE SET NULL
 );
 
 CREATE TABLE CartItems(

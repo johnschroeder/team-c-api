@@ -1,14 +1,17 @@
 exports.LOGTYPES = {
-    ADD               : {value: 100, name: "Add"},
-    REMOVE            : {value: 200, name: "Remove"},
-    AUDIT             : {value: 300, name: "Audit"},
-    NOTE              : {value: 400, name: "Note"},
-    NEWPRODUCTCREATED : {value: 500, name: "New Product Created"}
+    ADDPILE              : {value: 100, name: "AddPile"},
+    ADDRUN               : {value: 200, name: "AddRun"},
+    REMOVEPILE           : {value: 300, name: "REMOVEPILE"},
+    REMOVERUN            : {value: 400, name: "RemoveRun"},
+    AUDIT                : {value: 500, name: "Audit"},
+    NOTE                 : {value: 600, name: "Note"},
+    NEWPRODUCTCREATED    : {value: 700, name: "New Product Created"}
 };
 
 /* Use of Logs.GenericVar in DB:
- ADD - quantity added
- REMOVE - quantity removed
+ ADDPILE - unused
+ ADDRUN - quantity available for run added
+ REMOVERUN - unused
  AUDIT - unused
  NOTE - unused
  NEWPRODUCTCREATED - unused
@@ -18,12 +21,10 @@ exports.LOGTYPES = {
  database - already established DB connections (require("../imp_services/impdb.js").connect())
  logType  - type of log action, see above (LOGTYPES.ADD.value)
  productId - product ID of related inventory product
- userId - userId for user causing log action
- customerId - customer ID for related customer
- date - current data/time that transaction took place
+ username - username for user causing log action
  general - extra variable depending on transaction type (see use of Logs.GenericVar above)
  */
-exports.updateLog = function(database, logType, productId, userId, customerId, general) {
+exports.updateLog = function(database, logType, productId, username, general) {
     // TODO: Look into using Q.defer() here
     if (database == null) {
         console.log("database arg in updateLog() is null");
@@ -37,20 +38,16 @@ exports.updateLog = function(database, logType, productId, userId, customerId, g
         // TODO: go retrieve from DB, remove line below
         productId = 101;
     }
-    if (userId == null) {
+    if (username == null) {
         // TODO: handle this error, remove line below
-        userId = 204;
-    }
-    if (customerId == null) {
-        // TODO: go retrieve from DB, remove line below
-        customerId = 402;
+        username = "'hansolo'";
     }
     if (general == null) {
         // not used in all cases, valid for it to be null
         general = "NULL";
     }
     var time = formattedTime();  // get current time as formatted string
-    return database.query("INSERT INTO " + database.logTable + " VALUES (NULL, " + logType + ", " + productId + ", " + userId + ", " + customerId + ", " + time + ", " + general + ")");
+    return database.query("INSERT INTO " + database.logTable + " VALUES (NULL, " + logType + ", " + productId + ", " + username + ", " + time + ", " + general + ")");
 };
 
 // Get date/time and format into an acceptable string for MySql datetime data type

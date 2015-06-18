@@ -8,15 +8,12 @@ router.route("/").get(function(req,res){
     var db = require("../imp_services/impdb.js").connect();
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CREATE TABLE IF NOT EXISTS " + db.batchTable + " " + db.batchFields + ";"))
-        .then(db.query("CREATE TABLE IF NOT EXISTS " + db.productTable + " " + db.productFields + ";"))
-        .then(db.query("CREATE TABLE IF NOT EXISTS " + db.runTable + " " + db.runFields + ";"))
-        .then(db.query("SELECT * FROM "
-            + db.batchTable + " NATURAL JOIN "
-            + db.runTable   + " NATURAL JOIN "
-            + db.productTable + " "
-        + "GROUP BY " + " ProductID, " + "RunID;"))
-        .then(function(rows, columns){
+        .then(db.query("SELECT Pr.ProductID, Pr.Name, Pr.Description, Pi.PileID, Pi.Location, R.RunID, R.QuantityAvailable, R.QuantityReserved, R.DateCreated FROM "
+            + db.pileTable + " Pi NATURAL JOIN "
+            + db.runTable   + " R NATURAL JOIN "
+            + db.productTable + " Pr "
+        + "GROUP BY " + " Pr.ProductID, " + "Pi.PileID;"))
+        .then(function(rows){
             console.log("Success");
             var invUnit = JSON.stringify(rows[0]);
             res.send(invUnit);
