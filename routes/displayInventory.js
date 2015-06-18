@@ -8,17 +8,11 @@ router.route("/").get(function(req,res){
     var db = require("../imp_services/impdb.js").connect();
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CREATE TABLE IF NOT EXISTS " + db.batchTable + " " + db.batchFields + ";"))
-        .then(db.query("CREATE TABLE IF NOT EXISTS " + db.productTable + " " + db.productFields + ";"))
-        .then(db.query("CREATE TABLE IF NOT EXISTS " + db.runTable + " " + db.runFields + ";"))
-        .then(db.query("SELECT * FROM "
-            + db.batchTable + " NATURAL JOIN "
-            + db.runTable   + " NATURAL JOIN "
-            + db.productTable + " "
-        + "GROUP BY " + " ProductID, " + "RunID;"))
+        .then(db.query("CALL GetAllInventory"))
         .then(function(rows, columns){
             console.log("Success");
-            var invUnit = JSON.stringify(rows[0]);
+            var invUnit = JSON.stringify(rows[0][0]);
+            console.log("invUnit: " + invUnit);
             res.send(invUnit);
             db.endTransaction();
         })

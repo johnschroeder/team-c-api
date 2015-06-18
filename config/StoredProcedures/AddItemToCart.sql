@@ -11,7 +11,7 @@ call AddItemToCart(1,1,200000,501,@m);
 select @m;
 */
 
-use dev_ImpDB;
+use imp_db_dev;
 DROP PROCEDURE IF EXISTS AddItemToCart;
 
 DELIMITER $$

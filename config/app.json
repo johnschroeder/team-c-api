@@ -54,9 +54,10 @@
     },
     "john":{
         "mysql":{
-            "host":"localhost",
-            "user":"js22",
-            "password":"capstone"
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "databaseName":"imp_db_dev"
         }
     },
     "mike":{

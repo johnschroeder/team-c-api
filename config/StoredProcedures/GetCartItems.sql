@@ -2,7 +2,7 @@
 # Result set columns
 #CartItemID, ProductID, ProductName, PileID, Location, SizeMapID, SizeName, CountPerBatch, BatchCount, Total, id
 
-use dev_ImpDB;
+use imp_db_dev;
 DROP PROCEDURE IF EXISTS GetCartItems;
 
 DELIMITER $$

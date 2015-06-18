@@ -70,6 +70,7 @@ CREATE TABLE Runs (
 RunID int AUTO_INCREMENT,
 PileID int,
 DateCreated date,
+InitialQuantity int unsigned,
 QuantityAvailable int unsigned,
 QuantityReserved int unsigned,
 PRIMARY KEY (RunID),

@@ -1,5 +1,5 @@
 
-use dev_ImpDB;
+use imp_db_dev;
 DROP PROCEDURE IF EXISTS GetCartsByUser;
 
 DELIMITER $$
