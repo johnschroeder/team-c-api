@@ -16,7 +16,7 @@ router.route("/:productId/:pileId/:runDate/:quantAvail").get(function(req, res) 
 
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("INSERT INTO " + db.runTable + " Values " + "(NULL, " + req.params.pileId + ", " + req.params.runDate + ", " + req.params.quantAvail + ", " + "0" + ") "))
+        .then(db.query("INSERT INTO " + db.runTable + " Values " + "(NULL, " + req.params.pileId + ", '" + req.params.runDate + "', " + req.params.quantAvail + ", " + "0" + ") "))
         .then(L.updateLog(db, L.LOGTYPES.ADDRUN.value, req.params.productId, null, req.params.quantAvail))
         .then(db.commit())
         .then(db.endTransaction())

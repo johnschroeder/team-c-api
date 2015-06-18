@@ -36,6 +36,7 @@ exports.updateLog = function(database, logType, productId, username, general) {
     }
     if (productId == null) {
         // TODO: go retrieve from DB, remove line below
+        // null if new product being created
         productId = 101;
     }
     if (username == null) {
@@ -46,16 +47,19 @@ exports.updateLog = function(database, logType, productId, username, general) {
         // not used in all cases, valid for it to be null
         general = "NULL";
     }
-    var time = formattedTime();  // get current time as formatted string
+    var time = formattedDateTime();  // get current time as formatted string
     return database.query("INSERT INTO " + database.logTable + " VALUES (NULL, " + logType + ", " + productId + ", " + username + ", " + time + ", " + general + ")");
 };
 
 // Get date/time and format into an acceptable string for MySql datetime data type
-function formattedTime() {
+function formattedDateTime() {
     var newTime = new Date();
     // add a 0 to pad 1, 2, 3, 4, 5, 6, 7, 8, 9 to 01, 02, etc.
     function pad(n) {
-        return n < 10 ? '0' + n : n;
+        if (n < 10)
+            return '0' + n;
+        else
+            return n;
     }
     return "'" + newTime.getFullYear() + "-" + pad(1 + newTime.getMonth()) + "-" + pad(newTime.getDate()) + " " + pad(newTime.getHours()) + ":" + pad(newTime.getMinutes()) + ":" + pad(newTime.getSeconds()) + "'";
 }
