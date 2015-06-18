@@ -1,4 +1,4 @@
-use imp_db;
+use imp_db_dev;
 DROP PROCEDURE IF EXISTS GetAllInventory;
 #columns returned are ProductID, ProductName, TotalQuantity, LastRunDate, LastRunID, LastRunInitialQuantity
 DELIMITER $$

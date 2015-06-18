@@ -1,4 +1,4 @@
-use dev_impdb;
+use imp_db_dev;
 insert into Permissions values(null, 5);
 insert into Users values("test01","bla","blalast", "sdfdsf","601", "1234","salt","2015-01-01");
 insert into Users values("test02","sdf","fefew", "asdfaee","601", "dve","savvlt","2015-05-01");

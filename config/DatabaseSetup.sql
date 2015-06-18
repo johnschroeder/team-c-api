@@ -1,9 +1,9 @@
 ##### Create database and tables #####
-DROP DATABASE IF EXISTS dev_ImpDB;
+DROP DATABASE IF EXISTS imp_db_dev;
 
-CREATE DATABASE imp_db;
+CREATE DATABASE imp_db_dev;
 
-USE imp_db;
+USE imp_db_dev;
 
 CREATE TABLE Permissions (
 PermsID int AUTO_INCREMENT,
