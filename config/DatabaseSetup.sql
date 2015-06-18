@@ -72,6 +72,7 @@ PileID int,
 DateCreated date,
 QuantityAvailable int unsigned,
 QuantityReserved int unsigned,
+InitialQuantity int unsigned,
 PRIMARY KEY (RunID),
 FOREIGN KEY (PileID) REFERENCES Piles(PileID)
 ON DELETE CASCADE
