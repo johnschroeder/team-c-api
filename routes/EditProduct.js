@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 var Q = require('q');
 
-router.route("/:productID").get(function(req,res){
+router.route("/:productId").get(function(req,res){
     Q.longStackSupport = true;
     var db = require("../imp_services/impdb.js").connect();
     Q.fcall(db.beginTransaction())

@@ -1,16 +1,16 @@
 var express = require("express");
 var Q = require('q');
 var router = express.Router();
-var L = require('../../imp_services/logging.js');
+var L = require('../imp_services/logging.js');
 
 
 /*
  Usage:
- localhost:50001/changeInventory/removeRun/productId//pileId/runId
+ localhost:50001/removeRun/productId/pileId/runId
  */
 
 router.route("/:productId/:pileId/:runId").get(function(req, res) {
-    var db = require("../../imp_services/impdb.js").connect();
+    var db = require("../imp_services/impdb.js").connect();
 
     //Q.longStackSupport = true;   // for error checking
 

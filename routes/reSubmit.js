@@ -10,6 +10,7 @@ router.route("/:ProductID/:productName/:description").get(function(req, res) {
     var productName = req.params.productName;
     var description = req.params.description;
     Q.fcall(db.beginTransaction())
+        .then(db.query("USE " + db.databaseName))
         .then(db.query("UPDATE " + db.productTable + " SET Description='" + description + "', Name='" + productName + "' WHERE ProductID=" + prodID +";"))
         .then(function(rows){
             console.log("Success");

@@ -6,8 +6,8 @@ CREATE DATABASE imp_db_dev;
 USE imp_db_dev;
 
 CREATE TABLE Permissions (
-PermsID int AUTO_INCREMENT,
-Perms int,
+PermsID int unsigned AUTO_INCREMENT,
+Perms int unsigned,
 PRIMARY KEY (PermsID)
 );
 ALTER TABLE Permissions AUTO_INCREMENT = 601;
@@ -17,7 +17,7 @@ Username varchar(25),
 FirstName varchar(100),
 LastName varchar(100),
 Email varchar(255),
-PermsID int,
+PermsID int unsigned,
 Password varchar(356),
 Salt varchar(256),
 DateCreated date,
@@ -33,7 +33,7 @@ FOREIGN KEY (Username) REFERENCES Users(Username) ON DELETE CASCADE
 );
 
 CREATE TABLE Customers (
-CustomerID int AUTO_INCREMENT,
+CustomerID int unsigned AUTO_INCREMENT,
 Name varchar(255),
 DateCreated date,
 PRIMARY KEY (CustomerID)
@@ -41,7 +41,7 @@ PRIMARY KEY (CustomerID)
 ALTER TABLE Customers AUTO_INCREMENT = 401;
 
 CREATE TABLE Products (
-ProductID int AUTO_INCREMENT,
+ProductID int unsigned AUTO_INCREMENT,
 Name varchar(255),
 Description varchar(255),
 DateCreated date,
@@ -50,15 +50,15 @@ PRIMARY KEY (ProductID)
 ALTER TABLE Products AUTO_INCREMENT = 101;
 
 CREATE TABLE ProdCustMap (
-ProductID int,
-CustomerID int,
+ProductID int unsigned,
+CustomerID int unsigned,
 FOREIGN KEY (ProductID) REFERENCES Products(ProductID) ON DELETE CASCADE,
 FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID) ON DELETE CASCADE
 );
 
 CREATE TABLE Piles (
-PileID int AUTO_INCREMENT,
-ProductID int,
+PileID int unsigned AUTO_INCREMENT,
+ProductID int unsigned,
 Location varchar(50),
 PRIMARY KEY (PileID),
 FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
@@ -66,40 +66,39 @@ FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
 ALTER TABLE Piles AUTO_INCREMENT = 301;
 
 CREATE TABLE Runs (
-RunID int AUTO_INCREMENT,
-PileID int,
+RunID int unsigned AUTO_INCREMENT,
+PileID int unsigned,
 DateCreated date,
 InitialQuantity int unsigned,
 QuantityAvailable int unsigned,
 QuantityReserved int unsigned,
-InitialQuantity int unsigned,
 PRIMARY KEY (RunID),
 FOREIGN KEY (PileID) REFERENCES Piles(PileID)
 );
 ALTER TABLE Runs AUTO_INCREMENT = 501;
 
 CREATE TABLE RunMarkers (
-RunID int,
+RunID int unsigned,
 Marker varchar(30),
 FOREIGN KEY (RunID) REFERENCES Runs(RunID)ON DELETE CASCADE
 );
 
 CREATE TABLE SizeMap (
-SizeMapID int AUTO_INCREMENT,
-ProductID int,
+SizeMapID int unsigned AUTO_INCREMENT,
+ProductID int unsigned,
 Name varchar(50),
-Size int,
+Size int unsigned,
 PRIMARY KEY (SizeMapID),
 FOREIGN KEY (ProductID) REFERENCES Products(ProductID)ON DELETE CASCADE
 );
 
 CREATE TABLE Logs (
-LogID int AUTO_INCREMENT,
-LogType int,
-ProductID int,
+LogID int unsigned AUTO_INCREMENT,
+LogType int unsigned,
+ProductID int unsigned,
 Username varchar(25),
 Time datetime,
-GenericVar int,
+GenericVar int unsigned,
 PRIMARY KEY (LogID),
 FOREIGN KEY (ProductID) REFERENCES Products(ProductID),
 FOREIGN KEY (Username) REFERENCES Users(Username)
@@ -107,14 +106,14 @@ FOREIGN KEY (Username) REFERENCES Users(Username)
 ALTER TABLE Logs AUTO_INCREMENT = 1001;
 
 CREATE TABLE LogViewMap (
-LogID int,
+LogID int unsigned,
 Username varchar(25),
 FOREIGN KEY (LogID) REFERENCES Logs(LogID) ON DELETE CASCADE,
 FOREIGN KEY (Username) REFERENCES Users(Username) ON DELETE CASCADE
 );
 
 CREATE TABLE Cart (
-CartID int AUTO_INCREMENT,
+CartID int unsigned AUTO_INCREMENT,
 CartName varchar(40),
 Reporter varchar(25),
 Assignee varchar(25),
@@ -125,11 +124,11 @@ FOREIGN KEY (Reporter) REFERENCES Users(Username) ON DELETE SET NULL
 );
 
 CREATE TABLE CartItems(
-CartItemID int AUTO_INCREMENT,
-CartID int,
-SizeMapID int,
-Quantity int,
-RunID int,
+CartItemID int unsigned AUTO_INCREMENT,
+CartID int unsigned,
+SizeMapID int unsigned,
+Quantity int unsigned,
+RunID int unsigned,
 PRIMARY KEY (CartItemID),
 FOREIGN KEY (CartID) REFERENCES Cart(CartID) ON DELETE CASCADE,
 FOREIGN KEY (SizeMapID) REFERENCES SizeMap(SizeMapID) ON DELETE SET NULL,

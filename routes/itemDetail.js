@@ -9,11 +9,9 @@ router.route("/:productID").get(function(req,res){
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
         .then(db.query(
-            "SELECT " + db.runTable +".ProductID, " + db.productTable + ".Name, SUM(" + db.batchTable + ".amount) AS total, MAX(" + db.runTable + ".date) AS mostRecent "
-            + "FROM " + db.runTable + " "
-            + "JOIN " + db.productTable + " on " + db.runTable + ".ProductID = " + db.productTable + ".ProductID "
-            + "JOIN " + db.batchTable + " on " + db.batchTable + ".RunID = " + db.runTable + ".RunID "
-            + "WHERE " + db.runTable + ".ProductID = " + req.params.productID))
+            "SELECT Pr.ProductID, Pr.Name, SUM(R.QuantityAvailable) AS TotalAvailable, SUM(R.QuantityReserved) AS TotalReserved, MAX(R.DateCreated) AS MostRecent "
+            + "FROM " + db.productTable + " AS Pr JOIN " + db.pileTable + " AS Pi ON Pr.ProductID = Pi.ProductID JOIN " + db.runTable + " AS R ON R.PileID = Pi.PileID "
+            + "WHERE Pr.ProductID = " + req.params.productID))
         .then(function(rows){
             console.log("Success");
             var invUnit = JSON.stringify(rows[0]);
