@@ -2,16 +2,16 @@
  var express = require("express");
  var router = express.Router();
  var Q = require('q');
+ var L = require('../imp_services/logging.js');
  /*
  Usage:
- localhost:50001/newProductSubmission/{Name}/{Customer}/{Description}/{DateCreated}
- {Name}: The name of the product being created
- {Customer}: The company the product is being produced for
- {Description}: High-level description of the product
- {DateCreated}: YYYY-MM-DD
+ localhost:50001/newProductSubmission/ProductName/Description/DateCreated
+ ProductName: The name of the product being created
+ Description: High-level description of the product
+ DateCreated: YYYY-MM-DD
  NOTE: The MM field of {DateCreated} allows values from 0-12, which is a total of 13 months
  */
-router.route("/:productName/:customer/:description/:date").get(function(req, res) {
+ router.route("/:productName/:description/:date").get(function(req, res) {
     /**
      * This is a really helpful line for getting good output out of promise errors.
      * The slowdown is significant though, so only use it when you have a problem.
@@ -29,12 +29,10 @@ router.route("/:productName/:customer/:description/:date").get(function(req, res
      *  Package up some values from the route
      */
     var productName = req.params.productName;
-    var customer = req.params.customer;
     var description = req.params.description;
     var date = req.params.date;
     var values = "(NULL, "
         + mySQL.escape(productName) + ", "
-        + mySQL.escape(customer) + ", "
         + mySQL.escape(description) + ", "
         + mySQL.escape(date.toString()) + ")";
 
@@ -64,12 +62,13 @@ router.route("/:productName/:customer/:description/:date").get(function(req, res
      * if you need results from one of the wrapped method beyond success/failure.
      * Uncomment the console log to see that it's accessing values from the table
      */
-        .then(function(rows, columns){
+        .then(function(rows){
             var deferred = Q.defer();
             //console.log(rows);
             deferred.resolve();
             return deferred.promise;
         })
+        .then(L.updateLog(db, L.LOGTYPES.NEWPRODUCTCREATED.value, null, null, null))
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(){
