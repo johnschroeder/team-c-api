@@ -6,20 +6,17 @@ var L = require('../../imp_services/logging.js');
 
 /*
  Usage:
- removeBatch - localhost:50001/changeInventory/removeBatch/runId/batchAmount/batchLocation
+ localhost:50001/changeInventory/removePile/productId/pileId
  */
 
-router.route("/:runId/:batchAmount/:batchLocation").get(function(req, res) {
+router.route("/:productId/:pileId").get(function(req, res) {
     var db = require("../../imp_services/impdb.js").connect();
 
     //Q.longStackSupport = true;   // for error checking
 
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("DELETE from " + db.batchTable +
-            " WHERE RunID = " + req.params.runId + " AND Amount = " + req.params.batchAmount + " AND Location = " + req.params.batchLocation +
-            " Order BY Amount ASC" +
-            " limit 1"))
+        .then(db.query("DELETE from " + db.pileTable + " WHERE PileID = " + req.params.pileId))
         .then(function(rows) {
             // check if database changed
             var deferred = Q.defer();
@@ -30,7 +27,7 @@ router.route("/:runId/:batchAmount/:batchLocation").get(function(req, res) {
             }
             return deferred.promise;
         })
-        .then(L.updateLog(db, L.LOGTYPES.REMOVE.value, null, null, null, req.params.batchAmount))
+        .then(L.updateLog(db, L.LOGTYPES.REMOVEPILE.value, req.params.productId, null, null))
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(){
