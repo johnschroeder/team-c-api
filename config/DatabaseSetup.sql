@@ -102,7 +102,7 @@ Time datetime,
 GenericVar int,
 PRIMARY KEY (LogID),
 FOREIGN KEY (ProductID) REFERENCES Products(ProductID),
-FOREIGN KEY (Username) REFERENCES Users(Username),
+FOREIGN KEY (Username) REFERENCES Users(Username)
 );
 ALTER TABLE Logs AUTO_INCREMENT = 1001;
 
