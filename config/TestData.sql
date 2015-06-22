@@ -99,3 +99,6 @@ VALUES (NULL, 101, "Batch", 100),
         (NULL, 100, 102, "don", "2015-05-29 13:25:44", 100),
 		(NULL, 100, 102, "don", "2015-05-29 13:33:56", 100),
         (NULL, 200, 104, "hansolo", "2015-06-17 11:17:20", 25);
+        
+insert into Cart values(null,"cart1","don","Other","2015-02-01", "2015-04-01");
+insert into Cart values(null,"cart2","don","test01","2015-02-01", "2015-04-01");        
