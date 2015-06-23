@@ -19,7 +19,7 @@ router.route("/:productId/:name/:size").get(function(req, res) {
 
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CALL AddInventory (" + req.params.productId + ", " + req.params.quantity + ", '" + req.location + "')"))
+        .then(db.query("CALL AddInventory (" + req.params.productId + ", " + req.params.quantity + ", '" + req.params.location + "')"))
         // TODO: log this entry?
         .then(db.commit())
         .then(db.endTransaction())
