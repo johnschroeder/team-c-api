@@ -12,7 +12,7 @@ var router = express.Router();
  localhost:50001/AddInventory/productId/quantity/location
  */
 
-router.route("/:productId/:name/:size").get(function(req, res) {
+router.route("/:productId/:quantity/:location").get(function(req, res) {
     var db = require("../imp_services/impdb.js").connect();
 
     //Q.longStackSupport = true;   // for error checking
