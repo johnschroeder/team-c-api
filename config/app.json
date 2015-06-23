@@ -73,7 +73,7 @@
         "mysql":{
             "host":"localhost",
             "user":"tswart",
-            "password":"password"
+            "password":""
         }
 
     },
