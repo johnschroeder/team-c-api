@@ -144,4 +144,4 @@ FOREIGN KEY (SizeMapID) REFERENCES SizeMap(SizeMapID)
 );
 
 
-
+ALTER TABLE SizeMap  ADD CONSTRAINT uq_SizeMap UNIQUE(ProductID, Size);
