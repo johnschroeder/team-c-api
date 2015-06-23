@@ -12,7 +12,7 @@ insert into Piles values(null, _ProductID, _Location);
 
 select @plid:=max(PileID) from Piles
 where ProductID=_ProductID and Location=_Location;
-
+#
 insert into Runs values(null,@plid, CURDATE(),_Quantity,_Quantity,0);
 
 END $$
