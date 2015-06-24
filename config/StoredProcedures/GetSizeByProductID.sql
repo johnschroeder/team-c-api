@@ -6,7 +6,7 @@ DELIMITER $$
 CREATE PROCEDURE GetSizeByProductID(IN _ProductID INT)
 BEGIN
 
-SELECT SizeMapID, Name,Size from SizeMap
+SELECT distinct(Size), SizeMapID, Name from SizeMap
 WHERE ProductID=_ProductID;
 
 END $$
