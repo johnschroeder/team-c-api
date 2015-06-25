@@ -59,7 +59,7 @@ router.route("/:CartID/:SizeMapID/:Quantity").get(function(req, res) {
 
             console.log("message: " + message);
             console.log("result: " + result);
-            res.send(message + ' ' + result);
+            res.send(message + '####' + result);
             deferred.resolve();
             return deferred.promise;
         })
