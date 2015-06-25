@@ -23,10 +23,10 @@ router.route("/:Username").get(function(req, res) {
     var Username = req.params.Username;
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CALL " + db.spGetCartsByUser + "(" + Username + ");"))
+        .then(db.query("CALL " + db.spGetCartsByUser + "('" + Username + "');"))
         .then(function(rows, columns){
             console.log("Success");
-            var invUnit = JSON.stringify(rows[0]);
+            var invUnit = JSON.stringify(rows[0][0]);
             res.send(invUnit);
             db.endTransaction();
         })

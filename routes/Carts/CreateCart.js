@@ -29,20 +29,12 @@ router.route("/:CartName/:Reporter/:Assignee/:DaysToDelete").get(function(req, r
     var Reporter = req.params.Reporter;
     var Assignee = req.params.Assignee;
     var DaysToDelete = req.params.DaysToDelete;
-    var DateCreated = new Date();
-    var DateToDelete = new Date(DateCreated);
-    DateToDelete.setDate(DateCreated.getDate()+DaysToDelete);
-    var values = "(NULL, "
-        + mySQL.escape(CartName) + ", "
-        + mySQL.escape(Reporter) + ", "
-        + mySQL.escape(Assignee) + ", "
-        + mySQL.escape(DateCreated) + ", "
-        + mySQL.escape(DateToDelete)+ ")";
+;
 
 
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("INSERT INTO " + db.cartTable + " VALUES " + values))
+        .then(db.query("CALL CreateCart('"+CartName+"','"+Reporter+"','"+Assignee+"',"+DaysToDelete+");"))
         .then(function(rows, columns){
             var deferred = Q.defer();
             //console.log(rows);
