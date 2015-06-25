@@ -16,6 +16,7 @@ FROM CartItems ci
 NATURAL JOIN Runs r
 NATURAL JOIN Piles pl
 NATURAL JOIN SizeMap sm
+NATURAL JOIN RunMarkers rm
 JOIN Products p on sm.ProductID = p.ProductID;
 
 END $$

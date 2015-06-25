@@ -24,6 +24,10 @@ router.route("/:CartID/:CartItemID/:SizeMapID/:Quantity/:RunID").get(function(re
      *  Package up some values from the route
      */
     var CartID = req.params.CartID;
+    var CartItemID = req.params.CartItemID;
+    var SizeMapID = req.params.SizeMapID;
+    var Quantity = req.params.Quantity;
+    var RunID = req.params.RunID;
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
         .then(db.query("CALL " + db.spDeleteItemInCart + "( "+ CartItemID +","+"@m" +")"))
@@ -34,7 +38,7 @@ router.route("/:CartID/:CartItemID/:SizeMapID/:Quantity/:RunID").get(function(re
             + RunID + "," + "@m);"
         ))
         .then(function(rows, columns){
-            console.log("Success");
+            console.log("Made it through to results.");
             console.log(JSON.stringify(rows));
             var invUnit = JSON.stringify(rows[0]);
             res.send(invUnit);

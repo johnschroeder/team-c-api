@@ -28,7 +28,7 @@ router.route("/:CartID").get(function(req, res) {
         .then(db.query("CALL " + db.spGetCartItems + "(" + CartID + ");"))
         .then(function(rows, columns){
             console.log("Success");
-            console.log(JSON.stringify(rows));
+            //console.log(JSON.stringify(rows));
             var invUnit = JSON.stringify(rows[0]);
             res.send(invUnit);
             db.endTransaction();
