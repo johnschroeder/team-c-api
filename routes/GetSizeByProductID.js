@@ -1,6 +1,7 @@
 /**
- * Created by Kun on 6/16/2015.
+ * Created by Kun on 6/22/2015.
  */
+
 
 var mySQL = require("mysql");
 var express = require("express");
@@ -8,22 +9,21 @@ var router = express.Router();
 var Q = require('q');
 /*
  Usage:
- localhost:50001/Carts/GetCartsByUser/{Username}
- This route returns all carts that has a given user as assign AND all carts whose group assignee includes this user
- {Username}:
+ localhost:50001/GetSizeByProductID/{ProductID}
+ This route returns all possible package sizes for a given productID
  */
-router.route("/:Username").get(function(req, res) {
+router.route("/:ProductID").get(function(req, res) {
 
     //Q.longStackSupport = true;
-    var db = require("../../imp_services/impdb.js").connect();
+    var db = require("../imp_services/impdb.js").connect();
 
     /**
      *  Package up some values from the route
      */
-    var Username = req.params.Username;
+    var ProductID = req.params.ProductID;
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CALL " + db.spGetCartsByUser + "('" + Username + "');"))
+        .then(db.query("CALL GetSizeByProductID" + "(" + ProductID + ");"))
         .then(function(rows, columns){
             console.log("Success");
             var invUnit = JSON.stringify(rows[0][0]);
