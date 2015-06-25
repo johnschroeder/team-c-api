@@ -78,4 +78,3 @@ router.route("/:CartID/:SizeMapID/:Quantity").get(function(req, res) {
 });
 
 module.exports = router;
-
