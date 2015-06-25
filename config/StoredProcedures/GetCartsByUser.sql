@@ -15,7 +15,10 @@ UNION
 SELECT c.CartID, c.CartName, c.Reporter, c.Assignee, c.TimeCreated, c.DateToDelete
 FROM Users u
 JOIN Cart c on c.Assignee = u.Username
-WHERE u.Username = _Username;
+WHERE u.Username = _Username
+UNION
+SELECT c.CartID, c.CartName, c.Reporter, c.Assignee, c.TimeCreated, c.DateToDelete
+FROM Cart c where c.Reporter = _Username;
 
 END $$
 
