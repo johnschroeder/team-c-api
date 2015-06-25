@@ -19,6 +19,7 @@ var Q = require("q");
         toReturn.cartitemTable = "CartItems";
         toReturn.spDeleteItemInCart = "DeleteItemInCart";
         toReturn.spAddItemToCart = "AddItemToCart";
+        toReturn.spAddItemToCartGeneral = "AddItemToCartGeneral";
         toReturn.spDeleteCart = "DeleteCart";
         toReturn.spGetCartItems = "GetCartItems";
         toReturn.spGetCartsByUser = "GetCartsByUser";

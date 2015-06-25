@@ -8,7 +8,7 @@ var router = express.Router();
 var Q = require('q');
 /*
  Usage:
- localhost:50001/Carts/CreateCart/{CartName}/{Reporter}/{Assignee}/{DateToDelete}
+ localhost:50001/Carts/CreateCart/{CartName}/{Reporter}/{Assignee}/{DaysToDelete}
  {CartName}: The name of the cart being created
  {Reporter}: who build the cart
  {Assignee}: who has access to fill the cart
