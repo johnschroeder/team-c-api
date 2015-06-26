@@ -5,12 +5,13 @@ use imp_db_dev;
 INSERT INTO Permissions
 VALUES (NULL, 0);
 
-## Users(Username, FirstName, LastName, Email, PermsID, Password, Salt, DateCreated) ##
+## Users(Username, FirstName, LastName, Email, PermsID, HP, US, DateCreated) ##
 INSERT INTO Users
 VALUES ("rickgib", "Rick", "Gibbins", "rick@gmail.com", 601, "rickster", "1234", "2015-05-01"),
 	   ("kellygirl", "Kelly", "Sazzle", "kgirl22@yahoo.com", 601, "password", "5678", "2015-06-09"),
        ("don", "Donovan", "DaMan", "dman@hotmail.com", 601, "donovan", "9101", "2015-05-25"),
-       ("hansolo", "Han", "Solo", "igosolo@pdx.edu", 601, "fuzzball", "1121", "1977-05-25");
+       ("hansolo", "Han", "Solo", "igosolo@pdx.edu", 601, "fuzzball", "1121", "1977-05-25"),
+       ('mvalenti', 'Michael', 'Valentine', 'namespace.valentine@gmail.com', 601, 'SHA256$2f8d863f$1$3bf52cc169f0e0258c3c871b65d1289952cbadec20db7dce4659e8894be3f816', 'ogMjWj33/pCEnBCogLYu0X+WLKOHaVjAWeZj/z/Zjpo=', curdate());
 
 ## UserGroups(GroupName, Username) ##
 INSERT INTO UserGroups
@@ -99,6 +100,8 @@ VALUES (NULL, 101, "Batch", 100),
         (NULL, 100, 102, "don", "2015-05-29 13:25:44", 100),
 		(NULL, 100, 102, "don", "2015-05-29 13:33:56", 100),
         (NULL, 200, 104, "hansolo", "2015-06-17 11:17:20", 25);
-        
-insert into Cart values(null,"cart1","don","Other","2015-02-01", "2015-04-01");
-insert into Cart values(null,"cart2","don","don","2015-02-01", "2015-04-01");        
+
+## Carts(CartID, CartName, Reporter, Assignee, TimeCreated, DateToDelete) ##
+INSERT INTO Cart
+VALUES (null,"cart1","don","Other","2015-02-01", "2015-04-01"),
+       (null,"cart2","don","don","2015-02-01", "2015-04-01");
