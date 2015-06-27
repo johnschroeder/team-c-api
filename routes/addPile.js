@@ -1,21 +1,23 @@
 var express = require("express");
 var Q = require('q');
 var router = express.Router();
+var L = require('../imp_services/logging.js');
 
 
 /*
  Usage:
- addBatch - localhost:50001/changeInventory/addBatch/runId/batchAmount/batchLocation
+ localhost:50001/addPile/productId/location
  */
 
-router.route("/:runId/:batchAmount/:batchLocation").get(function(req, res) {
-    var db = require("../../imp_services/impdb.js").connect();
+router.route("/:productId/:location").get(function(req, res) {
+    var db = require("../imp_services/impdb.js").connect();
 
     //Q.longStackSupport = true;   // for error checking
 
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("INSERT INTO " + db.batchTable + " Values " + "(" + req.params.runId + ", " + req.params.batchAmount + ", " + req.params.batchLocation + ")"))
+        .then(db.query("INSERT INTO " + db.pileTable + " Values " + "(" + "NULL" + ", " + req.params.productId + ", " + req.params.location + ")"))
+        .then(L.updateLog(db, L.LOGTYPES.ADDPILE.value, req.params.productId, null, null))
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(){

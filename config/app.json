@@ -3,9 +3,10 @@
         "port":50001,
         "frontend": "http://localhost:50000",
         "mysql":{
-            "host":"localhost",
-            "user":"rtrevor",
-            "password":"P@$$w0rd"
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "databaseName":"imp_db_dev"
         }
     },
     "dev":{
@@ -21,11 +22,17 @@
         "mysql":{
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
-            "password":"IMPdev321"
+            "password":"IMPdev321",
+            "databaseName":"imp_db_prod"
         }
     },
     "kun":{
-
+        "mysql":{
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "databaseName":"imp_db_dev"
+        }
     },
     "hinyun":{
         "mysql":{
@@ -47,9 +54,10 @@
     },
     "john":{
         "mysql":{
-            "host":"localhost",
-            "user":"js22",
-            "password":"capstone"
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "databaseName":"imp_db_dev"
         }
     },
     "mike":{

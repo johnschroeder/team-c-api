@@ -10,35 +10,32 @@ router.route("/:buttonPressed/:checkedBoxes").get(function(req,res) {
     var checkedBoxes = req.params.checkedBoxes;
 
     var query;
-    var ifnotquery = "CREATE TABLE IF NOT EXISTS userLogMap " +
-        "(UserID int, LogID int, FOREIGN KEY (UserID) REFERENCES Users(UserID), FOREIGN KEY (LogID) REFERENCES Logs(LogID));"
-
-    var removeList = String(checkedBoxes).split("p");
+    console.log("Clear Logs - button pressed = " + buttonNum + " checkedBoxes = " + checkedBoxes);
     switch (buttonNum)
     {
         case "0":
-            query = "DELETE FROM userLogMap;"; break;
+            console.log("Clear Logs - Case 0 begin");
+            query = "DELETE FROM UserLogMap WHERE UserID = 1;"; break;
         case "1":
-            // console.log("Case 1 begin");
-
+            console.log("Clear Logs - Case 1 begin");
+            var removeList = String(checkedBoxes).split("p");
             if (removeList[0] == " ") { // This is SUPPOSE to protect us from the case of the button being pressed w/o checks [hopefully]
-                removeList[0] = '0';
+                removeList[0] = '0'; // zero is not used as a logID
             }
-            var whereClause = "WHERE";
+            var whereClause = "WHERE UserID = 1 AND (";
 
             for (i = 0; i < removeList.length; i++) {
                 whereClause = whereClause + " logID = " + removeList[i] + " OR";
             }
-            whereClause = whereClause + " logID = 0;"; // doesn't do anything just makes the sql statement clean
+            whereClause = whereClause + " logID = 0);"; // doesn't do anything just makes the sql statement clean
             console.log(whereClause);
-            query = "DELETE FROM userLogMap " + whereClause; break;
+            query = "DELETE FROM UserLogMap " + whereClause; break;
         default:
-            query = "SELECT * FROM userLogMap WHERE logID = 0;"; // This shouldn't do anything.
+            query = "SELECT * FROM UserLogMap WHERE logID = 0;"; // This shouldn't do anything.
     }
-
+console.log (query);
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query(ifnotquery))
         .then(db.query(query))
         .then(function(rows, columns){
             console.log("Success");

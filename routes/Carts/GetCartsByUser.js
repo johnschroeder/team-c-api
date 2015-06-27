@@ -1,18 +1,30 @@
+/**
+ * Created by Kun on 6/16/2015.
+ */
+
+var mySQL = require("mysql");
 var express = require("express");
 var router = express.Router();
 var Q = require('q');
+/*
+ Usage:
+ localhost:50001/Carts/GetCartsByUser/{Username}
+ This route returns all carts that has a given user as assign AND all carts whose group assignee includes this user
+ {Username}:
+ */
+router.route("/:Username").get(function(req, res) {
 
+    //Q.longStackSupport = true;
+    var db = require("../../imp_services/impdb.js").connect();
 
-router.route("/:productID").get(function(req,res){
-    Q.longStackSupport = true;
-    var db = require("../imp_services/impdb.js").connect();
+    /**
+     *  Package up some values from the route
+     */
+    var Username = req.params.Username;
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query(
-            "SELECT Pr.ProductID, Pr.Name, SUM(R.QuantityAvailable) AS TotalAvailable, SUM(R.QuantityReserved) AS TotalReserved, MAX(R.DateCreated) AS MostRecent "
-            + "FROM " + db.productTable + " AS Pr JOIN " + db.pileTable + " AS Pi ON Pr.ProductID = Pi.ProductID JOIN " + db.runTable + " AS R ON R.PileID = Pi.PileID "
-            + "WHERE Pr.ProductID = " + req.params.productID))
-        .then(function(rows){
+        .then(db.query("CALL " + db.spGetCartsByUser + "(" + Username + ");"))
+        .then(function(rows, columns){
             console.log("Success");
             var invUnit = JSON.stringify(rows[0]);
             res.send(invUnit);
