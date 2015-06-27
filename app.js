@@ -1,8 +1,23 @@
 var express = require('express');
 var config = require('konfig')();
 var glob = require('glob');
+var redis = require('redis');
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+
+//TODO create the client using the actual host when connected to dev or prod
+var client = redis.createClient();//CREATE REDIS CLIENT
+client.on('connect', function() {
+    console.log('connected');
+});
+
 
 var app = express();
+
+//get and parse cookie and place it into req.cookies
+app.use(cookieParser());
+
 
 // Add headers
 app.use(function (req, res, next) {
@@ -23,6 +38,28 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
+
+app.use(function(req,res,next)
+{
+    //change hardcoded cookie into whatever cookie is passed to me by the cookie parser
+    //do this by changing the string to "req.cookies"
+    client.exists('user1', function(err, reply) {
+        if(reply == 1) {
+            console.log("Successfully Authenticated!");
+            next();
+        }
+        else{
+            //TODO go to login page maybe?
+            console.log("Oops, something went wrong with authentication!");
+            res.status(404).send("User not Found");
+        }
+
+    });
+
+
+
+});
+
 
 var path = process.cwd()+'/routes';
 glob.sync('**/*.js',{'cwd':path}).forEach(
