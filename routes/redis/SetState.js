@@ -2,6 +2,8 @@
  * Created by Kun on 6/28/2015.
  */
 
+//http://www.sitepoint.com/using-redis-node-js/
+
 
 var express = require("express");
 var Q = require('q');
