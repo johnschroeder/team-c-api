@@ -18,8 +18,8 @@ FirstName varchar(100),
 LastName varchar(100),
 Email varchar(255),
 PermsID int unsigned,
-Password varchar(356),
-Salt varchar(256),
+HP varchar(100),
+US varchar(50),
 DateCreated date,
 PRIMARY KEY (Username),
 FOREIGN KEY (PermsID) REFERENCES Permissions(PermsID)
@@ -136,4 +136,4 @@ FOREIGN KEY (RunID) REFERENCES Runs(RunID) ON DELETE SET NULL
 );
 
 
-
+ALTER TABLE SizeMap  ADD CONSTRAINT uq_SizeMap UNIQUE(ProductID, Size);
