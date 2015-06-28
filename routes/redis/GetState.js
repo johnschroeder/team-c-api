@@ -9,7 +9,7 @@ var Q = require('q');
 var router = express.Router();
 
 
-router.get('/redis/get/:cookie', function(req, res) {
+router.get('/redis/GetState/:cookie', function(req, res) {
     client.get(req.params.cookie, function (error, val) {
         if (error !== null) {
             console.log("error: " + error);

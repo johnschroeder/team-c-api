@@ -8,7 +8,7 @@ var Q = require('q');
 var router = express.Router();
 
 
-router.get('/SetState/:cookie/:username', function(req, res) {
+router.get('/redis/SetState/:cookie/:username', function(req, res) {
     client.set(req.params.cookie, req.params.username, function (error, result) {
         if (error !== null) {
             console.log("error: " + error);
