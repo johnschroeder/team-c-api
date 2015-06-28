@@ -10,13 +10,14 @@ var router = express.Router();
 
 
 router.get('/redis/GetState/:cookie', function(req, res) {
-    client.get(req.params.cookie, function (error, val) {
+    client.hgetall(req.params.cookie, function (error, val) {
         if (error !== null) {
             console.log("error: " + error);
             res.send("error: " + error);
         }
         else {
-            res.send(val);//val should be username
+            console.log(val);
+            res.send(val);
         }
     });
 });

@@ -8,28 +8,16 @@ var Q = require('q');
 var router = express.Router();
 
 
-router.get('/redis/SetState/:cookie/:username', function(req, res) {
-    client.set(req.params.cookie, req.params.username, function (error, result) {
+router.get('/redis/SetState/:cookie/:username/:page', function(req, res) {
+    client.hmset(req.params.cookie,"Username",req.params.username,"Page" ,reg.params.page,function (error, result) {
         if (error !== null) {
             console.log("error: " + error);
             res.send("error: " + error);
         }
         else {
-            res.send("Success");
+            console.log(res);
+            res.send(res);
         }
     });
 });
 
-
-
-
-
-
-// Set a value
-client.set("ck1", "yoyoyoyo", redis.print);
-// Get the value back
-client.get("string key", function (err, reply) {
-    console.log(reply.toString());
-});
-
-//client.quit();
