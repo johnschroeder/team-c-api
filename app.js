@@ -1,6 +1,7 @@
 var express = require('express');
 var config = require('konfig')();
 var glob = require('glob');
+var redis = require('redis');
 
 var app = express();
 
