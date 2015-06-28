@@ -2,18 +2,7 @@
  * Created by Trevor on 6/26/2015.
  */
 
-var bodyParser = require('body-parser')
-var multer  = require('multer')
-
 var express = require("express");
-
-var app = express();
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
-
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
-app.use(multer());
-
 var router = express.Router();
 var Q = require('q');
 

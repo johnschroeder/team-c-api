@@ -1,6 +1,7 @@
 var express = require('express');
 var config = require('konfig')();
 var glob = require('glob');
+var bodyParser = require('body-parser');
 
 var app = express();
 
@@ -23,6 +24,12 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
+
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+
 
 var path = process.cwd()+'/routes';
 glob.sync('**/*.js',{'cwd':path}).forEach(
