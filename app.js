@@ -2,6 +2,9 @@ var express = require('express');
 var config = require('konfig')();
 var glob = require('glob');
 var redis = require('redis');
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
 
 var app = express();
 
