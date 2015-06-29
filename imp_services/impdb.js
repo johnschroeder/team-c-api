@@ -2,9 +2,10 @@ var mySQL = require("mysql");
 var config = require("konfig")();
 var Q = require("q");
 
-var MAX_CONNECTIONS = 3;
+// Modify the number of allowed connections here (please limit to 3 for development)
+var MAX_CONNECTIONS = config.app.mysql.maxConnections;
 
-var pool = false;
+var pool = false; // pool doesn't yet exist.  This should only be the case on server restart
 
 exports.connect = function() {
     if(!pool) {
@@ -13,19 +14,26 @@ exports.connect = function() {
     return createAPIObject(pool);
 };
 
+/**
+ * Creates the connection pool
+ */
 var createPool = function() {
     pool = [];
+    for(var i = 0; i < MAX_CONNECTIONS; ++i)
+    {
         var connection = mySQL.createConnection({
-                host: config.app.mysql.host,
-                user: config.app.mysql.user,
-                password: config.app.mysql.password
+            host: config.app.mysql.host,
+            user: config.app.mysql.user,
+            password: config.app.mysql.password
         });
         pool.push(connection);
-    console.log(pool);
+    }
     return createAPIObject(pool);
 };
 
-
+/**
+ * Creates the connection-delivering object which require delivers on demand
+ */
 var createAPIObject = function(pool) {
     /* Connects to mySQL server */
     var connection = null;
@@ -53,11 +61,13 @@ var createAPIObject = function(pool) {
         if(pool.length <= 0) {
             console.log("Error: No database connections available");
         }
-        connection = pool.shift();
+        connection = pool.shift(); // dequeue from pool
+        handleDisconnect(connection); // ensures connection has not timed out
         return Q.nfbind(connection.beginTransaction.bind(connection));
     };
 
     toReturn.query = function(queryInput) {
+        handleDisconnect(connection); // ensures connection has not timed out
         return Q.nfbind(connection.query.bind(connection, queryInput));
     };
 
@@ -66,13 +76,34 @@ var createAPIObject = function(pool) {
     };
 
     toReturn.endTransaction = function() {
-        pool.push(connection);
-        connection = null;
+        pool.push(connection); // enqueue connection (return to pool)
+        connection = null; // set local connection reference to null
     };
 
     toReturn.rollback = function() {
         return Q.nfbind(connection.rollback.bind(connection));
     };
+
+    /**
+     * SO code.  handles timeouts
+     */
+    function handleDisconnect(connection) {
+        connection.on('error', function(err) {
+            if (!err.fatal) {
+                return;
+            }
+
+            if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
+                throw err;
+            }
+
+            console.log('Re-connecting lost connection: ' + err.stack);
+
+            connection = mysql.createConnection(connection.config);
+            handleDisconnect(connection);
+            connection.connect();
+        });
+    }
 
     return toReturn;
 };
