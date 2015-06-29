@@ -2,6 +2,9 @@
 # input arguments. Before attemping to update the row it will check to make sure that the input is valid - doesn't violate
 # foreign key constraints.
 
+# For some reason this procedure doesn't work via API if debug table is not included. Not sure why as that shouldn't have
+# any affect. Works either way from MySQL workbench though.
+
 DROP PROCEDURE IF EXISTS EditCartItem;
 
 DELIMITER $$
@@ -23,6 +26,20 @@ SET @testRunID = 0;
 SET @flag = 1;
 SET @message = 'ERROR(S):';
 
+DROP TABLE IF EXISTS EditCartItemDebug;
+CREATE TABLE EditCartItemDebug (
+Label int,
+testCartItemID int,
+testCartID int,
+testSizeMapID int,
+testRunID int,
+flag boolean,
+Message varchar(1024)
+);
+
+INSERT INTO EditCartItemDebug
+VALUES (1, @testCartItemID, @testCartID, @testSizeMapID, @testRunID, @flag, @message);
+
 # verify CartItemID
 SELECT EXISTS(
 SELECT 1
@@ -34,6 +51,9 @@ IF @testCartItemID = 0 THEN
 	SET @message = CONCAT(@message, ' Invalid CartItemID input.');
     SET @flag = 0;
 END IF;
+
+INSERT INTO EditCartItemDebug
+VALUES (2, @testCartItemID, @testCartID, @testSizeMapID, @testRunID, @flag, @message);
 
 # verify CartID
 SELECT EXISTS(
@@ -47,6 +67,9 @@ IF @testCartID = 0 THEN
     SET @flag = 0;
 END IF;
 
+INSERT INTO EditCartItemDebug
+VALUES (3, @testCartItemID, @testCartID, @testSizeMapID, @testRunID, @flag, @message);
+
 # verify SizeMapID
 SELECT EXISTS(
 SELECT SizeMapID
@@ -58,6 +81,9 @@ IF @testSizeMapID = 0 THEN
 	SET @message = CONCAT(@message, ' Invalid SizeMapID input.');
     SET @flag = 0;
 END IF;
+
+INSERT INTO EditCartItemDebug
+VALUES (4, @testCartItemID, @testCartID, @testSizeMapID, @testRunID, @flag, @message);
 
 # verify RunID
 SELECT EXISTS(
@@ -71,6 +97,9 @@ IF @testRunID = 0 THEN
     SET @flag = 0;
 END IF;
 
+INSERT INTO EditCartItemDebug
+VALUES (5, @testCartItemID, @testCartID, @testSizeMapID, @testRunID, @flag, @message);
+
 IF @flag = 1 THEN
 	UPDATE CartItems
 	SET CartID=_CartID, SizeMapID=_SizeMapID, Quantity=_Quantity, RunID=_RunID
@@ -78,6 +107,9 @@ IF @flag = 1 THEN
 
     SET @message = 'Success';
 END IF;
+
+INSERT INTO EditCartItemDebug
+VALUES (6, @testCartItemID, @testCartID, @testSizeMapID, @testRunID, @flag, @message);
 
 SELECT @message;
 

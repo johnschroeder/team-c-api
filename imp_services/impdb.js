@@ -23,6 +23,7 @@ var Q = require("q");
         toReturn.spDeleteCart = "DeleteCart";
         toReturn.spGetCartItems = "GetCartItems";
         toReturn.spGetCartsByUser = "GetCartsByUser";
+        toReturn.spEditCartItem = "EditCartItem";
 
 
         /* If you edit any tables, add the fields here and it will change it in the query */
