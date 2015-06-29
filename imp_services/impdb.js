@@ -2,66 +2,78 @@ var mySQL = require("mysql");
 var config = require("konfig")();
 var Q = require("q");
 
-    exports.connect = function() {
-        /* Connects to mySQL server */
-        var connection;
+var MAX_CONNECTIONS = 3;
 
-        var toReturn = {};
-        toReturn.databaseName = config.app.mysql.databaseName;
-        console.log(toReturn.databaseName);
+var pool = false;
 
-        /* To substitute into the query, if you want to add more tables, add them here and then insert them into query */
-        toReturn.productTable = "Products";
-        toReturn.pileTable = "Piles";
-        toReturn.runTable = "Runs";
-        toReturn.logTable = "Logs";
-        toReturn.cartTable = "Cart";
-        toReturn.cartitemTable = "CartItems";
-        toReturn.spDeleteItemInCart = "DeleteItemInCart";
-        toReturn.spAddItemToCart = "AddItemToCart";
-        toReturn.spAddItemToCartGeneral = "AddItemToCartGeneral";
-        toReturn.spDeleteCart = "DeleteCart";
-        toReturn.spGetCartItems = "GetCartItems";
-        toReturn.spGetCartsByUser = "GetCartsByUser";
-        toReturn.spEditCartItem = "EditCartItem";
+exports.connect = function() {
+    if(!pool) {
+        return createPool();
+    }
+    return createAPIObject(pool);
+};
 
-
-        /* If you edit any tables, add the fields here and it will change it in the query */
-        //toReturn.productFields = "(ProductID int AUTO_INCREMENT, Name varchar(255), Customer varchar(255), Description varchar(255), DateCreated date, PRIMARY KEY (ProductID))";
-        //toReturn.runFields = "(RunID int AUTO_INCREMENT, ProductID int, Date date, PRIMARY KEY (RunID), FOREIGN KEY (ProductID) REFERENCES Products(ProductID))";
-        //toReturn.batchFields = "(RunID int, Amount float, Location VARCHAR(100), Foreign Key (RunID) References Runs(RunID))";
-        //toReturn.logFields = "(LogID int AUTO_INCREMENT, LogType int, ProductID int, UserID int, CustomerID int, Time datetime, GenericVar int, PRIMARY KEY (LogID), "
-        //    + "FOREIGN KEY (ProductID) REFERENCES Products(ProductID), FOREIGN KEY (UserID) REFERENCES Users(UserID), FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID))";
-
-        toReturn.beginTransaction = function() {
-            connection = mySQL.createConnection({
+var createPool = function() {
+    pool = [];
+        var connection = mySQL.createConnection({
                 host: config.app.mysql.host,
                 user: config.app.mysql.user,
                 password: config.app.mysql.password
-            });
-            toReturn.connection = connection;
-            return Q.nfbind(connection.beginTransaction.bind(connection));
-        };
+        });
+        pool.push(connection);
+    console.log(pool);
+    return createAPIObject(pool);
+};
 
-        toReturn.query = function(queryInput) {
-            return Q.nfbind(connection.query.bind(connection, queryInput));
-        };
 
-        toReturn.commit = function() {
-            return Q.nfbind(connection.commit.bind(connection));
-        };
+var createAPIObject = function(pool) {
+    /* Connects to mySQL server */
+    var connection = null;
 
-        toReturn.endTransaction = function() {
-            return Q.nfbind(connection.end.bind(connection));
-        };
+    var toReturn = {};
+    toReturn.databaseName = config.app.mysql.databaseName;
+    console.log(toReturn.databaseName);
 
-        toReturn.rollback = function() {
-            return Q.nfbind(connection.rollback.bind(connection));
-        };
+    /* To substitute into the query, if you want to add more tables, add them here and then insert them into query */
+    toReturn.productTable = "Products";
+    toReturn.pileTable = "Piles";
+    toReturn.runTable = "Runs";
+    toReturn.logTable = "Logs";
+    toReturn.cartTable = "Cart";
+    toReturn.cartitemTable = "CartItems";
+    toReturn.spDeleteItemInCart = "DeleteItemInCart";
+    toReturn.spAddItemToCart = "AddItemToCart";
+    toReturn.spAddItemToCartGeneral = "AddItemToCartGeneral";
+    toReturn.spDeleteCart = "DeleteCart";
+    toReturn.spGetCartItems = "GetCartItems";
+    toReturn.spGetCartsByUser = "GetCartsByUser";
+    toReturn.spEditCartItem = "EditCartItem";
 
-        return toReturn;
+    toReturn.beginTransaction = function() {
+        if(pool.length <= 0) {
+            console.log("Error: No database connections available");
+        }
+        connection = pool.shift();
+        return Q.nfbind(connection.beginTransaction.bind(connection));
     };
 
+    toReturn.query = function(queryInput) {
+        return Q.nfbind(connection.query.bind(connection, queryInput));
+    };
 
+    toReturn.commit = function() {
+        return Q.nfbind(connection.commit.bind(connection));
+    };
 
+    toReturn.endTransaction = function() {
+        pool.push(connection);
+        connection = null;
+    };
+
+    toReturn.rollback = function() {
+        return Q.nfbind(connection.rollback.bind(connection));
+    };
+
+    return toReturn;
+};
 
