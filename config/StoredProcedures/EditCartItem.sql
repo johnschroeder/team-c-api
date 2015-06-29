@@ -1,5 +1,5 @@
 # This procedure locates the cart item matching the _CartItemID input and sets the row values as specified by the remaining
-# input arguments. Before attemping to update the row it will check to make sure that the input is valid - doesn't violate
+# input arguments. Before attempting to update the row it will check to make sure that the input is valid - doesn't violate
 # foreign key constraints.
 
 # For some reason this procedure doesn't work via API if debug table is not included. Not sure why as that shouldn't have
