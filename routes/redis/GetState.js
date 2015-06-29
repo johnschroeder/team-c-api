@@ -9,7 +9,7 @@ var Q = require('q');
 var router = express.Router();
 
 
-router.get('/redis/GetState/:cookie', function(req, res) {
+router.route('/:cookie').get(function(req, res) {
     client.hgetall(req.params.cookie, function (error, val) {
         if (error !== null) {
             console.log("error: " + error);
@@ -21,3 +21,5 @@ router.get('/redis/GetState/:cookie', function(req, res) {
         }
     });
 });
+
+module.exports = router;

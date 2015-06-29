@@ -10,7 +10,7 @@ var Q = require('q');
 var router = express.Router();
 
 
-router.get('/redis/SetState/:cookie/:username/:page', function(req, res) {
+router.route('/:cookie/:username/:page').get(function(req, res) {
     client.hmset(req.params.cookie,"Username",req.params.username,"Page" ,reg.params.page,function (error, result) {
         if (error !== null) {
             console.log("error: " + error);
@@ -23,3 +23,4 @@ router.get('/redis/SetState/:cookie/:username/:page', function(req, res) {
     });
 });
 
+module.exports = router;
