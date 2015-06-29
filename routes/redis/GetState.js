@@ -9,6 +9,8 @@ var Q = require('q');
 var router = express.Router();
 var redis = require('redis');
 var client = redis.createClient(); //needs real host and port
+//var client = redis.createClient(Real_port,real_Amazon_Host);
+
 
 
 router.route('/:cookie').get(function(req, res) {
