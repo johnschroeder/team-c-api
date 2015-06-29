@@ -8,6 +8,8 @@
 var express = require("express");
 var Q = require('q');
 var router = express.Router();
+var redis = require('redis');
+var client = redis.createClient();//needs real host and port
 
 
 router.route('/:cookie/:username/:page').get(function(req, res) {
