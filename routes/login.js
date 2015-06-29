@@ -16,14 +16,16 @@ router.route('/').post( function(req,res){
     var salt = 'ogMjWj33/pCEnBCogLYu0X+WLKOHaVjAWeZj/z/Zjpo=';
     var password = 'foobarbaz';
     var hash = crypto.createHash('sha256').update(password + salt).digest('hex');
-    var oldhash = 'd65cf2f6dad004d515d5ef2d41f7d99bf493e8dece1b17aacbc6c29a0e2fd00b';
+    var oldhash = '4a53da2ab7f90b0b0db0e7ab879c23df466db950444a144f95ffd78bbc89950d';
 
     console.log("The hash is " + hash);
     if (hash == oldhash)
     {
         var cookie = uuid.v4();
-        res.end(cookie);
         console.log("Hash match!");
+        res.cookie('auth', cookie, { secure:false, maxAge: 60 * 1000, httpOnly: false });
+        res.send("Hi " + req.cookies.auth);
+        res.end('yes');
     }
     else
     {
