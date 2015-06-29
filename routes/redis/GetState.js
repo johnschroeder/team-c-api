@@ -14,6 +14,7 @@ var client = redis.createClient(); //needs real host and port
 
 
 router.route('/:cookie').get(function(req, res) {
+    //client.get(req.params.cookie, function (error, val) {
     client.hgetall(req.params.cookie, function (error, val) {
         if (error !== null) {
             console.log("error: " + error);

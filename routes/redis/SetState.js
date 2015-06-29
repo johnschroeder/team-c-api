@@ -14,14 +14,15 @@ var client = redis.createClient();//needs real host and port
 
 
 router.route('/:cookie/:username/:LastPage').get(function(req, res) {
-    client.hmset(req.params.cookie,"Username",req.params.username,"Page" ,req.params.LastPage,function (error, result) {
+    //client.set(req.params.cookie, req.params.LastPage,function (error, result) {
+    client.hmset(req.params.cookie,"Username",req.params.username,"LastPage" ,req.params.LastPage,function (error, result) {
         if (error !== null) {
             console.log("error: " + error);
             res.send("error: " + error);
         }
         else {
-            console.log(res);
-            res.send(res);
+            console.log("Success");
+            res.send("Success");
         }
     });
 });
