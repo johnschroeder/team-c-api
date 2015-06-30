@@ -2,7 +2,7 @@ DROP PROCEDURE IF EXISTS ResetPassword;
 
 DELIMITER $$
 CREATE PROCEDURE ResetPassword
-(IN _Email varchar(255), _HP varchar(100), _US varchar(50))
+(IN _Email varchar(255), IN _HP varchar(100), IN _US varchar(50))
 BEGIN
 
 UPDATE Users
