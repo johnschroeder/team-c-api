@@ -26,7 +26,6 @@ router.route('/:cookie/:username/:LastPage').get(function(req, res) {
         }
         else {
             console.log("Success");
-            console.log("This is our redis cookie " + req.params.cookie);
             res.send("Success");
         }
     });
