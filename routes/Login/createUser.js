@@ -28,12 +28,15 @@ router.route("/").post(function(req, res) {
     var salt = crypto.randomBytes(32).toString('base64');
     var hashedPassword = crypto.createHash('sha256').update(password + salt).digest('hex').toString('base64');
     var db = require("../../imp_services/impdb.js").connect();
+    var date = Date.now();
 
     console.log("Creating user with:\nUsername: " + username + "\nEmail: " + email + "\nName: " + firstName + " " + lastName);
 
+    console.log("\n\nDEBUG INFO:\nHashed Password: "+hashedPassword+"\nSalt: "+salt+"\nDate: "+date);
+
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CALL CreateUser (" + username + ", " + hashedPassword + ", '" + email + "', '" + salt + "', '" + firstName + "', '" + lastName + "', '" + Date.now() + "')"))
+        .then(db.query("CALL CreateUser (" + username + ", " + hashedPassword + ", '" + email + "', '" + salt + "', '" + firstName + "', '" + lastName + "', '" + date + "')"))
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(){
