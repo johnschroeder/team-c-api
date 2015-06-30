@@ -7,7 +7,13 @@
             "user":"dev",
             "password":"IMPdev321",
             "databaseName":"imp_db_dev"
+        },
+        "redis":{
+            "host":"127.0.0.1",
+            "port":"6379"
+
         }
+
     },
     "dev":{
         "frontend": "http://dev.thisisimp.com/",
@@ -16,6 +22,7 @@
             "user":"dev",
             "password":"IMPdev321"
         }
+
     },
     "prod":{
         "frontend": "http://www.thisisimp.com/",
