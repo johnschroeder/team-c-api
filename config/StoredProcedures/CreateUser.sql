@@ -13,6 +13,5 @@ select @pmid:=min(PermsID) from Permissions;
 
 INSERT INTO Users VALUES(_Username,_FirstName,_LastName,_Email,@pmid,_HP,_US,_DateCreated);
 
-
 END $$
 DELIMITER ;
