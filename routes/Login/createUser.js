@@ -18,6 +18,8 @@ var crypto = require('crypto');
  }
  */
 
+//TODO Add user email validation step! This route should be called from a sent email like the password reset
+
 router.route("/").post(function(req, res) {
     var username = req.body.username;
     var password = req.body.password;
