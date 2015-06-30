@@ -1,7 +1,3 @@
-/**
- * Created by John Schroeder on 6/24/2015.
- */
-
 var mySQL = require("mysql");
 var express = require("express");
 var router = express.Router();
@@ -23,24 +19,23 @@ router.route("/:CartID/:CartItemID/:SizeMapID/:Quantity/:RunID").get(function(re
     /**
      *  Package up some values from the route
      */
-    var CartID = req.params.CartID;
     var CartItemID = req.params.CartItemID;
+    var CartID = req.params.CartID;
     var SizeMapID = req.params.SizeMapID;
     var Quantity = req.params.Quantity;
     var RunID = req.params.RunID;
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CALL " + db.spDeleteItemInCart + "( "+ CartItemID +","+"@m" +")"))
-        .then(db.query("CALL " + db.spAddItemToCart + "("
+        .then(db.query("CALL " + db.spEditCartItem + "("
+            + CartItemID + ", "
             + CartID + ", "
             + SizeMapID + ", "
             + Quantity + ", "
-            + RunID + "," + "@m);"
+            + RunID + ");"
         ))
-        .then(function(rows, columns){
-            console.log("Made it through to results.");
-            console.log(JSON.stringify(rows));
-            var invUnit = JSON.stringify(rows[0]);
+        .then(function(rows){
+            console.log(JSON.stringify(rows[0][0]));
+            var invUnit = JSON.stringify(rows[0][0]);
             res.send(invUnit);
             db.endTransaction();
         })
