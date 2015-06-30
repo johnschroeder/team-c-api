@@ -19,7 +19,6 @@ var crypto = require('crypto');
  */
 
 router.route("/").post(function(req, res) {
-    console.log(req.body);
     var username = req.body.username;
     var password = req.body.password;
     var email = req.body.email;
@@ -30,9 +29,9 @@ router.route("/").post(function(req, res) {
     var hashedPassword = crypto.createHash('sha256').update(password + salt).digest('hex').toString('base64');
     var db = require("../../imp_services/impdb.js").connect();
 
-    console.log("CALL CreateUser (" + username + ", " + hashedPassword + ", '" + email + "', '" + salt + "', '" + firstName + "', '" + lastName + "', '" + Date.now() + "')");
+    console.log("Creating user with:\nUsername: " + username + "\nEmail: " + email + "\nName: " + firstName + " " + lastName);
 
-    /*Q.fcall(db.beginTransaction())
+    Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
         .then(db.query("CALL CreateUser (" + username + ", " + hashedPassword + ", '" + email + "', '" + salt + "', '" + firstName + "', '" + lastName + "', '" + Date.now() + "')"))
         .then(db.commit())
@@ -49,7 +48,7 @@ router.route("/").post(function(req, res) {
             console.log("Error: " + err);
             res.status(503).send("ERROR: " + err);
         })
-        .done();*/
+        .done();
 
 
 });
