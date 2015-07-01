@@ -4,7 +4,6 @@ var glob = require('glob');
 var redis = require('redis');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-var session = require('express-session');
 
 
 
@@ -34,14 +33,17 @@ app.use(function (req, res, next) {
 
 //get and parse cookie and place it into req.cookies
 app.use(cookieParser());
-
-//TODO replace this with login route
-app.get("/testRoute/", function(req,res){
-    var client = redis.createClient();
-    client.set("foobarbaz", "test");
-    res.cookie("IMPId", "foobarbaz", { maxAge: 24*60*60*1000, domain:config.app.domain, httpOnly: true });
-    res.send("success");
-});
+if(process.env.NODE_ENV == "dev" || process.env.NODE_ENV == "prod" || process.env.NODE_ENV == "mike"){
+    app.use("/login", require(process.cwd()+"/routes/login"));
+}
+else {
+    app.get("/testRoute/", function (req, res) {
+        var client = redis.createClient();
+        client.set("foobarbaz", "test");
+        res.cookie("IMPId", "foobarbaz", { maxAge: 24 * 60 * 60 * 1000, domain: config.app.domain, httpOnly: true });
+        res.send("success");
+    });
+}
 
 app.use(function(req,res,next)
 {
@@ -64,7 +66,9 @@ var path = process.cwd()+'/routes';
 glob.sync('**/*.js',{'cwd':path}).forEach(
     function(file){
         var ns = '/'+file.replace(/\.js$/,'');
-        app.use(ns, require(path + ns));
+        if(ns != "/login") {
+            app.use(ns, require(path + ns));
+        }
     }
 );
 app.use('*', function(req, res){
