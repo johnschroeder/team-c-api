@@ -17,6 +17,27 @@ var app = express();
 
 //get and parse cookie and place it into req.cookies
 app.use(cookieParser());
+app.use(function(req,res,next)
+{
+    //change hardcoded cookie into whatever cookie is passed to me by the cookie parser
+    //do this by changing the string to "req.cookies"
+    console.log(req.cookies);
+    client.exists(req.cookies, function(err, reply) {
+        if(reply == 1) {
+            console.log("Successfully Authenticated!");
+            next();
+        }
+        else{
+            //TODO go to login page maybe?
+            console.log("Oops, something went wrong with authentication!");
+            res.status(404).send("User not Found");
+        }
+
+    });
+
+
+
+});
 
 
 // Add headers
@@ -39,26 +60,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use(function(req,res,next)
-{
-    //change hardcoded cookie into whatever cookie is passed to me by the cookie parser
-    //do this by changing the string to "req.cookies"
-    client.exists('user1', function(err, reply) {
-        if(reply == 1) {
-            console.log("Successfully Authenticated!");
-            next();
-        }
-        else{
-            //TODO go to login page maybe?
-            console.log("Oops, something went wrong with authentication!");
-            res.status(404).send("User not Found");
-        }
 
-    });
-
-
-
-});
 
 
 var path = process.cwd()+'/routes';
