@@ -6,11 +6,6 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 
-//TODO create the client using the actual host when connected to dev or prod
-var client = redis.createClient();//CREATE REDIS CLIENT
-client.on('connect', function() {
-    console.log('connected');
-});
 
 
 var app = express();
@@ -33,6 +28,12 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
+//TODO create the client using the actual host when connected to dev or prod
+var client = redis.createClient();//CREATE REDIS CLIENT
+client.on('connect', function() {
+    console.log('connected');
+});
+
 
 //get and parse cookie and place it into req.cookies
 app.use(cookieParser());
@@ -40,8 +41,8 @@ app.use(function(req,res,next)
 {
     //change hardcoded cookie into whatever cookie is passed to me by the cookie parser
     //do this by changing the string to "req.cookies"
-    console.log(req.cookies);
-    client.exists(req.cookies, function(err, reply) {
+    console.log(req.cookies.auth);
+    client.exists(req.cookies.auth, function(err, reply) {
         if(reply == 1) {
             console.log("Successfully Authenticated!");
             next();
