@@ -4,7 +4,6 @@ var glob = require('glob');
 var redis = require('redis');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-var session = require('express-session');
 
 
 
@@ -31,15 +30,12 @@ app.use(function (req, res, next) {
 //TODO create the client using the actual host when connected to dev or prod, do this by adding the host and port into the createclient() function
 var client = redis.createClient();//CREATE REDIS CLIENT
 
-
-
 //get and parse cookie and place it into req.cookies
 app.use(cookieParser());
 app.use(function(req,res,next)
 {
-
-    console.log(req.cookies.auth);
-    client.exists(req.cookies.auth, function(err, reply) {
+    console.log(req.cookies.IMPId);
+    client.exists(req.cookies.IMPId, function(err, reply) {
         if(reply == 1) {
             console.log("Successfully Authenticated!");
             next();
@@ -51,9 +47,6 @@ app.use(function(req,res,next)
         }
     });
 });
-
-
-
 
 var path = process.cwd()+'/routes';
 glob.sync('**/*.js',{'cwd':path}).forEach(
