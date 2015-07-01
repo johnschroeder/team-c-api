@@ -5,11 +5,9 @@ var host=config.app.redis.host;
 
 module.exports = function(lookup, callback) {
     var client = redis.createClient(port, host);
-    client.get(lookup, function (error, val) {
-        console.log(lookup);
-        console.log(val);
+    client.hgetall(lookup, function (error, val) {
         if (error !== null) {
-            callback(false);
+            callback({type:"none"});
         }
         else {
             callback(val);
