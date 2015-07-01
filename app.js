@@ -28,19 +28,16 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
-//TODO create the client using the actual host when connected to dev or prod
+//TODO create the client using the actual host when connected to dev or prod, do this by adding the host and port into the createclient() function
 var client = redis.createClient();//CREATE REDIS CLIENT
-client.on('connect', function() {
-    console.log('connected');
-});
+
 
 
 //get and parse cookie and place it into req.cookies
 app.use(cookieParser());
 app.use(function(req,res,next)
 {
-    //change hardcoded cookie into whatever cookie is passed to me by the cookie parser
-    //do this by changing the string to "req.cookies"
+
     console.log(req.cookies.auth);
     client.exists(req.cookies.auth, function(err, reply) {
         if(reply == 1) {
