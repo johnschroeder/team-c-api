@@ -10,7 +10,7 @@ var router = express.Router();
  */
 
 router.route("/:lookup").get(function(req, res) {
-    var result = require("../../imp_services/changepasswordlookup.js")(req.params.lookup, function(result){
+    var result = require("../../imp_services/redislookup.js")(req.params.lookup, function(result){
         if(result){
             res.send(result);
         }
