@@ -4,6 +4,7 @@ var glob = require('glob');
 var redis = require('redis');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
 
 
 
@@ -28,12 +29,23 @@ app.use(function (req, res, next) {
     next();
 });
 //TODO create the client using the actual host when connected to dev or prod, do this by adding the host and port into the createclient() function
-var client = redis.createClient();//CREATE REDIS CLIENT
+
+
 
 //get and parse cookie and place it into req.cookies
 app.use(cookieParser());
+
+//TODO replace this with login route
+app.get("/testRoute/", function(req,res){
+    var client = redis.createClient();
+    client.set("foobarbaz", "test");
+    res.cookie("IMPId", "foobarbaz", { maxAge: 24*60*60*1000, domain:config.app.domain, httpOnly: true });
+    res.send("success");
+});
+
 app.use(function(req,res,next)
 {
+    var client = redis.createClient();
     console.log(req.cookies.IMPId);
     client.exists(req.cookies.IMPId, function(err, reply) {
         if(reply == 1) {
