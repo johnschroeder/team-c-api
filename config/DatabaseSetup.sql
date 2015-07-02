@@ -16,7 +16,7 @@ CREATE TABLE Users (
 Username varchar(25),
 FirstName varchar(100),
 LastName varchar(100),
-Email varchar(255) NOT NULL UNIQUE,
+Email varchar(255),
 PermsID int unsigned,
 HP varchar(100),
 US varchar(50),
