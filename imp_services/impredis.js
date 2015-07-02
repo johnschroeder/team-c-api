@@ -3,7 +3,8 @@ var config = require("konfig")();
 var port=config.app.redis.port;
 var host=config.app.redis.host;
 
-
+//NOTE: Set should be called once for each value being set:
+//impredis.set(key, valuename, valuecontains, callback)
 module.exports = {
     get: function(cookie, callback) {
         var client = redis.createClient(port,host);
@@ -20,9 +21,9 @@ module.exports = {
             }
         });
     },
-    set: function(cookie, username, stateObject, callback){
+    set: function(cookie,objName,objValue, callback){
         var client = redis.createClient(port,host);
-        client.hmset(cookie,"Username",username,"stateObject" ,stateObject,function (error, result) {
+        client.hmset(cookie, objName,objValue,function (error, result) {
             if (error !== null) {
                 console.log("error: " + error);
                 client.quit();

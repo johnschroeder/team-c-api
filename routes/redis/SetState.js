@@ -8,17 +8,18 @@
 var express = require("express");
 var Q = require('q');
 var router = express.Router();
-var impredis = require("../../imp_services/impredis.js");
+impredis = require("../../imp_services/impredis.js");
 
 
-router.route('/:cookie/:username/:stateObject').get(function(req, res) {
-    impredis.set(req.params.cookie, req.params.username, req.params.stateObject,function(result, error){
+//TODO Make sure navigation object stringifies and parses stateObject request and response
+router.route('/:stateObject').get(function(req, res) {
+    impredis.set(req.cookies.IMPId, "stateObject",req.params.stateObject,function(result, error){
         if(error){
             res.send("error: " + error);
         }
         else{
             res.send("Success");
-        }
+            }
     })
 });
 
