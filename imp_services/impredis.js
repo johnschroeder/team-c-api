@@ -5,8 +5,8 @@ var host=config.app.redis.host;
 var client = redis.createClient(port,host);
 
 module.exports = {
-    get: function(callback) {
-        client.get(req.cookies, function (error, val) {
+    get: function(cookie,callback) {
+        client.get(cookie, function (error, val) {
             if (error !== null) {
                 console.log("error: " + error);
                 callback(null, error);
@@ -17,8 +17,8 @@ module.exports = {
             }
         });
     },
-    set: function(stateObject, callback){
-        client.set(req.cookies,stateObject,function (error, result) {
+    set: function(cookie,stateObject, callback){
+        client.set(cookie,stateObject,function (error, result) {
             if (error !== null) {
                 console.log("error: " + error);
                 callback(null, error)
