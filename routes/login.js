@@ -31,9 +31,11 @@ router.route('/').post( function(req,res){
                 if (hash == oldhash) {
                     var cookie = uuid.v4();
                     console.log("Hash match!");
-                    res.cookie('auth', cookie, {secure: false, maxAge: 60 * 1000, httpOnly: false});
-
+                    res.cookie('IMPId', cookie, {secure: false, maxAge: 60 * 1000, httpOnly: false});
                     res.send(cookie);
+                    var redisInput ='/redis/SetState/'+ '"' + cookie + '"' + '/' + username + '/' + '"login.html"';
+                    router.get(redisInput,
+                        function (redisData) {});
                     res.end(cookie);
                 }
                 else {
