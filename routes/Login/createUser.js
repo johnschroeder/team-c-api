@@ -89,7 +89,7 @@ var SendConfirmation = function(email, callback){
                     Destination: { ToAddresses: [email] },
                     Message: {
                         Subject:{
-                            Data: "Password Reset for "+config.app.frontend
+                            Data: "Please confirm your account at "+config.app.frontend
                         },
                         Body: {
                             Text: {
