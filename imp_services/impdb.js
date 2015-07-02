@@ -61,7 +61,10 @@ var createAPIObject = function(pool) {
         if(pool.length <= 0) {
             console.log("Error: No database connections available");
             if(attempts < 5){
-                this.beginTransaction(attempts+1)
+                setTimeout(function(){
+                    this.beginTransaction(attempts+1);
+                }, 5000);
+                
             }
             else{
                 throw "Connection could not be established, no pooled connection available after 5 attempts";
