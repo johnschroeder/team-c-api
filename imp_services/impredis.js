@@ -6,7 +6,7 @@ var client = redis.createClient(port,host);
 
 module.exports = {
     get: function(cookie,callback) {
-        client.get(cookie, function (error, val) {
+        client.hgetall(cookie, function (error, val) {
             if (error !== null) {
                 console.log("error: " + error);
                 callback(null, error);
@@ -17,8 +17,8 @@ module.exports = {
             }
         });
     },
-    set: function(cookie,stateObject, callback){
-        client.set(cookie,stateObject,function (error, result) {
+    set: function(cookie,objName,stateObject, callback){
+        client.hmset(cookie, objName,stateObject,function (error, result) {
             if (error !== null) {
                 console.log("error: " + error);
                 callback(null, error)

@@ -13,7 +13,7 @@ impredis = require("../../imp_services/impredis.js");
 
 
 router.route('/:stateObject').get(function(req, res) {
-    impredis.set(req.cookies.IMPId, req.params.stateObject,function(result, error){
+    impredis.set(req.cookies.IMPId, "stateObject",req.params.stateObject,function(result, error){
         if(error){
             res.send("error: " + error);
         }
