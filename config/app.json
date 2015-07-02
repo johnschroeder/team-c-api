@@ -1,8 +1,7 @@
 {
     "default":{
         "port":50001,
-        "frontend": "http://local.thisisimp.com",
-        "domain": ".thisisimp.com",
+        "frontend": "http://local.thisisimp.com/",
         "mysql":{
             "maxConnections":"5",
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
@@ -15,6 +14,7 @@
             "port":"6379"
 
         }
+
     },
     "dev":{
         "frontend": "http://dev.thisisimp.com/",
@@ -23,6 +23,7 @@
             "user":"dev",
             "password":"IMPdev321"
         }
+
     },
     "prod":{
         "frontend": "http://www.thisisimp.com/",

@@ -26,15 +26,26 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
+//TODO create the client using the actual host when connected to dev or prod, do this by adding the host and port into the createclient() function
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 
-
 //get and parse cookie and place it into req.cookies
 app.use(cookieParser());
+if(process.env.NODE_ENV == "dev" || process.env.NODE_ENV == "prod" || process.env.NODE_ENV == "mike"){
+    app.use("/login", require(process.cwd()+"/routes/login"));
+}
+else {
+    app.get("/testRoute/", function (req, res) {
+        var client = redis.createClient();
+        client.set("foobarbaz", "test");
+        res.cookie("IMPId", "foobarbaz", { maxAge: 24 * 60 * 60 * 1000, domain: config.app.domain, httpOnly: true });
+        res.send("success");
+    });
+}
 
 //These routes shouldnt be cookie tested
 app.use("/login", require(process.cwd()+"/routes/login"));
