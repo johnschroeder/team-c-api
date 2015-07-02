@@ -14,9 +14,7 @@ var config = require("konfig")();
 var port=config.app.redis.port;
 var host=config.app.redis.host;
 var client = redis.createClient(port,host);
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-app.use(cookieParser());
+
 
 
 router.route('/:StateObj').get(function(req, res) {

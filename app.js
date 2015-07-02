@@ -1,9 +1,9 @@
 var express = require('express');
 var config = require('konfig')();
 var glob = require('glob');
-
+var cookieParser = require('cookie-parser');
 var app = express();
-
+app.use(cookieParser());
 // Add headers
 app.use(function (req, res, next) {
 

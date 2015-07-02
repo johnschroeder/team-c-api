@@ -12,7 +12,7 @@ var config = require("konfig")();
 
 var port=config.app.redis.port;
 var host=config.app.redis.host;
-app.use(cookieParser());
+
 
 var client = redis.createClient(port,host);
 
