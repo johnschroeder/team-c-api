@@ -7,7 +7,7 @@ var cookieParser = require('cookie-parser');
 
 var app = express();
 
-// Add headers
+// Allow headers
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
@@ -29,7 +29,6 @@ app.use(function (req, res, next) {
 //TODO create the client using the actual host when connected to dev or prod, do this by adding the host and port into the createclient() function
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
@@ -37,11 +36,15 @@ app.use(bodyParser.json());
 
 //get and parse cookie and place it into req.cookies
 app.use(cookieParser());
+
+//These routes shouldnt be cookie tested
 app.use("/login", require(process.cwd()+"/routes/login"));
 app.use("/Login/confirmUser", require(process.cwd()+"/routes/Login/confirmUser"));
 app.use("/Login/createUser", require(process.cwd()+"/routes/Login/createUser"));
 app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
 
+
+//Middleware for verifying a user is logged in before hittin a route
 app.use(function(req,res,next)
 {
     var client = redis.createClient();
@@ -59,6 +62,7 @@ app.use(function(req,res,next)
     });
 });
 
+//Adds all the routes by path to the app
 var path = process.cwd()+'/routes';
 glob.sync('**/*.js',{'cwd':path}).forEach(
     function(file){
@@ -68,6 +72,8 @@ glob.sync('**/*.js',{'cwd':path}).forEach(
         }
     }
 );
+
+
 app.use('*', function(req, res){
     console.log("Error trying to display route: "+req.path);
     res.status(404).send("Nothing Found");
