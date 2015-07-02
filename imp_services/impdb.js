@@ -57,13 +57,19 @@ var createAPIObject = function(pool) {
     toReturn.spGetCartsByUser = "GetCartsByUser";
     toReturn.spEditCartItem = "EditCartItem";
 
-    toReturn.beginTransaction = function() {
+    toReturn.beginTransaction = function(attempts=0) {
         if(pool.length <= 0) {
             console.log("Error: No database connections available");
+            if(attempts < 5){
+                this.beginTransaction(attempts+1)
+            }
+            else{
+                throw "Connection could not be established, no pooled connection available after 5 attempts";
+            }
         }
-        connection = pool.shift(); // dequeue from pool
-        handleDisconnect(connection); // ensures connection has not timed out
-        return Q.nfbind(connection.beginTransaction.bind(connection));
+        else{
+            afterConnected();
+        }
     };
 
     toReturn.query = function(queryInput) {
@@ -83,6 +89,12 @@ var createAPIObject = function(pool) {
     toReturn.rollback = function() {
         return Q.nfbind(connection.rollback.bind(connection));
     };
+    
+    function afterConnected(){
+        connection = pool.shift(); // dequeue from pool
+        handleDisconnect(connection); // ensures connection has not timed out
+        return Q.nfbind(connection.beginTransaction.bind(connection));
+    }
 
     /**
      * SO code.  handles timeouts
