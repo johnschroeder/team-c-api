@@ -16,11 +16,11 @@ var host=config.app.redis.host;
 var client = redis.createClient(port,host);
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-
+app.use(cookieParser());
 
 
 router.route('/:StateObj').get(function(req, res) {
-    client.set(req.params.cookie, req.params.StateObj,function (error, result) {
+    client.set(req.cookies, req.params.StateObj,function (error, result) {
     //client.hmset(req.params.cookie,"Username",req.params.username,"LastPage" ,req.params.LastPage,function (error, result) {
         if (error !== null) {
             console.log("error: " + error);

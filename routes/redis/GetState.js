@@ -12,12 +12,13 @@ var config = require("konfig")();
 
 var port=config.app.redis.port;
 var host=config.app.redis.host;
+app.use(cookieParser());
 
 var client = redis.createClient(port,host);
 
 
 router.route('/').get(function(req, res) {
-    client.get(req.params.cookie, function (error, val) {
+    client.get(req.cookies, function (error, val) {
     //client.hgetall(req.params.cookie, function (error, val) {
         if (error !== null) {
             console.log("error: " + error);
