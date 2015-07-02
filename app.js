@@ -37,8 +37,11 @@ app.use(bodyParser.json());
 
 //get and parse cookie and place it into req.cookies
 app.use(cookieParser());
-if(process.env.NODE_ENV == "dev" || process.env.NODE_ENV == "prod" || process.env.NODE_ENV == "mike"){
-    app.use("/login", require(process.cwd()+"/routes/login"));
+if(process.env.NODE_ENV == "dev" || process.env.NODE_ENV == "prod" || process.env.NODE_ENV == "mike" || process.env.NODE_ENV == "john"){
+    //app.use("/login", require(process.cwd()+"/routes/login"));
+    app.use("/Login/confirmUser", require(process.cwd()+"/routes/Login/confirmUser"));
+    app.use("/Login/createUser", require(process.cwd()+"/routes/Login/createUser"));
+    app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
 }
 else {
     app.get("/testRoute/", function (req, res) {
@@ -70,7 +73,7 @@ var path = process.cwd()+'/routes';
 glob.sync('**/*.js',{'cwd':path}).forEach(
     function(file){
         var ns = '/'+file.replace(/\.js$/,'');
-        if(ns != "/login") {
+        if(ns != "/login" && ns != "/Login/confirmUser" && ns != "/Login/createUser" && ns != "/Login/testLookup") {
             app.use(ns, require(path + ns));
         }
     }
