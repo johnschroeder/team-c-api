@@ -15,8 +15,7 @@
     "glob": "5.0.6",
     "mysql": "2.6.2",
     "q": "1.4.1",
-    "aws-sdk": "latest"
-    "cookie-parser":"latest",
+    "aws-sdk": "latest",
     "redis":"0.12.1"
   }
 }
