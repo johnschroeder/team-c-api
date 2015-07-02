@@ -26,7 +26,6 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
-//TODO create the client using the actual host when connected to dev or prod, do this by adding the host and port into the createclient() function
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({extended: true}));
@@ -47,7 +46,9 @@ app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
 //Middleware for verifying a user is logged in before hittin a route
 app.use(function(req,res,next)
 {
-    var client = redis.createClient();
+    var port=config.app.redis.port;
+    var host=config.app.redis.host;
+    var client = redis.createClient(port,host);
     console.log(req.cookies.IMPId);
     client.exists(req.cookies.IMPId, function(err, reply) {
         if(reply == 1) {
@@ -55,7 +56,7 @@ app.use(function(req,res,next)
             next();
         }
         else{
-            //TODO go to login page maybe?
+            //TODO Have the navigation object on the login page with a window alert if this happens
             console.log("Oops, something went wrong with authentication!");
             res.status(404).send("User not Found");
         }
