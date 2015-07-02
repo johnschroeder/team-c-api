@@ -57,9 +57,10 @@ var createAPIObject = function(pool) {
     toReturn.spGetCartsByUser = "GetCartsByUser";
     toReturn.spEditCartItem = "EditCartItem";
 
-    toReturn.beginTransaction = function(attempts = 0) {
+    toReturn.beginTransaction = function(x) {
         if(pool.length <= 0) {
             console.log("Error: No database connections available");
+            var attempts = x || 0;
             if(attempts < 5){
                 setTimeout(function(){
                     this.beginTransaction(attempts+1);
