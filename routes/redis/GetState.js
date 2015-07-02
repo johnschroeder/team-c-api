@@ -16,16 +16,16 @@ var host=config.app.redis.host;
 var client = redis.createClient(port,host);
 
 
-router.route('/:cookie').get(function(req, res) {
-    //client.get(req.params.cookie, function (error, val) {
-    client.hgetall(req.params.cookie, function (error, val) {
+router.route('/').get(function(req, res) {
+    client.get(req.params.cookie, function (error, val) {
+    //client.hgetall(req.params.cookie, function (error, val) {
         if (error !== null) {
             console.log("error: " + error);
             res.send("error: " + error);
         }
         else {
-            console.log(val);
-            res.send(val);
+            console.log(json.stringify(val));
+            res.send(json.stringify(val));
         }
     });
 });
