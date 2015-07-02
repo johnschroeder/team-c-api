@@ -28,8 +28,6 @@ app.use(function (req, res, next) {
 });
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
-<<<<<<< Temporary merge branch 1
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
