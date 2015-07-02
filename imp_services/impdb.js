@@ -72,7 +72,9 @@ var createAPIObject = function(pool) {
             }
         }
         else{
-            afterConnected();
+            connection = pool.shift(); // dequeue from pool
+            handleDisconnect(connection); // ensures connection has not timed out
+            return Q.nfbind(connection.beginTransaction.bind(connection));
         }
     };
 
@@ -93,12 +95,6 @@ var createAPIObject = function(pool) {
     toReturn.rollback = function() {
         return Q.nfbind(connection.rollback.bind(connection));
     };
-    
-    function afterConnected(){
-        connection = pool.shift(); // dequeue from pool
-        handleDisconnect(connection); // ensures connection has not timed out
-        return Q.nfbind(connection.beginTransaction.bind(connection));
-    }
 
     /**
      * SO code.  handles timeouts
