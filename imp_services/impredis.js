@@ -17,8 +17,8 @@ module.exports = {
             }
         });
     },
-    set: function(cookie,objName,stateObject, callback){
-        client.hmset(cookie, objName,stateObject,function (error, result) {
+    set: function(cookie,objName,objValue, callback){
+        client.hmset(cookie, objName,objValue,function (error, result) {
             if (error !== null) {
                 console.log("error: " + error);
                 callback(null, error)
