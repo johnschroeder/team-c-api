@@ -1,9 +1,12 @@
 var express = require('express');
 var config = require('konfig')();
 var glob = require('glob');
+var redis = require('redis');
+var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
+
 var app = express();
-app.use(cookieParser());
+
 // Add headers
 app.use(function (req, res, next) {
 
@@ -23,12 +26,56 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
+//TODO create the client using the actual host when connected to dev or prod, do this by adding the host and port into the createclient() function
+
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+
+
+
+//get and parse cookie and place it into req.cookies
+app.use(cookieParser());
+if(process.env.NODE_ENV == "dev" || process.env.NODE_ENV == "prod" || process.env.NODE_ENV == "mike" || process.env.NODE_ENV == "john"){
+    //app.use("/login", require(process.cwd()+"/routes/login"));
+    app.use("/Login/confirmUser", require(process.cwd()+"/routes/Login/confirmUser"));
+    app.use("/Login/createUser", require(process.cwd()+"/routes/Login/createUser"));
+    app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
+}
+else {
+    app.get("/testRoute/", function (req, res) {
+        var client = redis.createClient();
+        client.set("foobarbaz", "test");
+        res.cookie("IMPId", "foobarbaz", { maxAge: 24 * 60 * 60 * 1000, domain: config.app.domain, httpOnly: true });
+        res.send("success");
+    });
+}
+
+app.use(function(req,res,next)
+{
+    var client = redis.createClient();
+    console.log(req.cookies.IMPId);
+    client.exists(req.cookies.IMPId, function(err, reply) {
+        if(reply == 1) {
+            console.log("Successfully Authenticated!");
+            next();
+        }
+        else{
+            //TODO go to login page maybe?
+            console.log("Oops, something went wrong with authentication!");
+            res.status(404).send("User not Found");
+        }
+    });
+});
 
 var path = process.cwd()+'/routes';
 glob.sync('**/*.js',{'cwd':path}).forEach(
     function(file){
         var ns = '/'+file.replace(/\.js$/,'');
-        app.use(ns, require(path + ns));
+        if(ns != "/login" && ns != "/Login/confirmUser" && ns != "/Login/createUser" && ns != "/Login/testLookup") {
+            app.use(ns, require(path + ns));
+        }
     }
 );
 app.use('*', function(req, res){
