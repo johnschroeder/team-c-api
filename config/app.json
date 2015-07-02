@@ -1,15 +1,20 @@
 {
     "default":{
         "port":50001,
-        "frontend": "http://local.thisisimp.com",
-        "domain": ".thisisimp.com",
+        "frontend": "http://local.thisisimp.com/",
         "mysql":{
             "maxConnections":"5",
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
             "password":"IMPdev321",
             "databaseName":"imp_db_dev"
+        },
+        "redis":{
+            "host":"127.0.0.1",
+            "port":"6379"
+
         }
+
     },
     "dev":{
         "frontend": "http://dev.thisisimp.com/",
@@ -18,6 +23,7 @@
             "user":"dev",
             "password":"IMPdev321"
         }
+
     },
     "prod":{
         "frontend": "http://www.thisisimp.com/",

@@ -73,6 +73,7 @@
         .then(db.endTransaction())
         .then(function(){
             console.log("Success");
+            res.status(200).send();
             res.send("Success");
         })
         .catch(function(err){
