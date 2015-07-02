@@ -37,20 +37,10 @@ app.use(bodyParser.json());
 
 //get and parse cookie and place it into req.cookies
 app.use(cookieParser());
-if(process.env.NODE_ENV == "dev" || process.env.NODE_ENV == "prod" || process.env.NODE_ENV == "mike" || process.env.NODE_ENV == "john"){
-    //app.use("/login", require(process.cwd()+"/routes/login"));
-    app.use("/Login/confirmUser", require(process.cwd()+"/routes/Login/confirmUser"));
-    app.use("/Login/createUser", require(process.cwd()+"/routes/Login/createUser"));
-    app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
-}
-else {
-    app.get("/testRoute/", function (req, res) {
-        var client = redis.createClient();
-        client.set("foobarbaz", "test");
-        res.cookie("IMPId", "foobarbaz", { maxAge: 24 * 60 * 60 * 1000, domain: config.app.domain, httpOnly: true });
-        res.send("success");
-    });
-}
+app.use("/login", require(process.cwd()+"/routes/login"));
+app.use("/Login/confirmUser", require(process.cwd()+"/routes/Login/confirmUser"));
+app.use("/Login/createUser", require(process.cwd()+"/routes/Login/createUser"));
+app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
 
 app.use(function(req,res,next)
 {
