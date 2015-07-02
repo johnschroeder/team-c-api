@@ -8,27 +8,18 @@
 var express = require("express");
 var Q = require('q');
 var router = express.Router();
-var redis = require('redis');
-var config = require("konfig")();
-
-var port=config.app.redis.port;
-var host=config.app.redis.host;
-
-var client = redis.createClient(port,host);
+var impredis = require("../../imp_services/impredis.js");
 
 
-router.route('/:cookie/:username/:LastPage').get(function(req, res) {
-    //client.set(req.params.cookie, req.params.LastPage,function (error, result) {
-    client.hmset(req.params.cookie,"Username",req.params.username,"LastPage" ,req.params.LastPage,function (error, result) {
-        if (error !== null) {
-            console.log("error: " + error);
+router.route('/:cookie/:username/:stateObject').get(function(req, res) {
+    impredis.set(req.params.cookie, req.params.username, req.params.stateObject,function(result, error){
+        if(error){
             res.send("error: " + error);
         }
-        else {
-            console.log("Success");
+        else{
             res.send("Success");
         }
-    });
+    })
 });
 
 module.exports = router;

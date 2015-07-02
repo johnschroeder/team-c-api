@@ -7,6 +7,7 @@ var router = express.Router();
 var Q = require('q');
 var crypto = require('crypto');
 var uuid = require('node-uuid');
+var impredis = require("../../imp_services/impredis.js");
 
 router.route('/').post( function(req,res){
 
@@ -33,10 +34,14 @@ router.route('/').post( function(req,res){
                     console.log("Hash match!");
                     res.cookie('IMPId', cookie, {secure: false, maxAge: 60 * 1000, httpOnly: false});
                     res.send(cookie);
-                    var redisInput ='/redis/SetState/'+ '"' + cookie + '"' + '/' + username + '/' + '"login.html"';
-                    router.get(redisInput,
-                        function (redisData) {});
-                    res.end(cookie);
+                    impredis.set(cookie, username, {}, function(result, error){
+                        if(error){
+                            res.status(500).send("ERROR: "+error);
+                        }
+                        else{
+                            res.end(cookie);
+                        }
+                    });
                 }
                 else {
                     console.log("Hash does not match!");
