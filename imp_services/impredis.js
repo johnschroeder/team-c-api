@@ -4,6 +4,8 @@ var port=config.app.redis.port;
 var host=config.app.redis.host;
 var client = redis.createClient(port,host);
 
+//NOTE: Set should be called once for each value being set:
+//impredis.set(key, valuename, valuecontains, callback)
 module.exports = {
     get: function(cookie,callback) {
         client.hgetall(cookie, function (error, val) {
