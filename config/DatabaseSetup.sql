@@ -46,6 +46,7 @@ ProductID int unsigned AUTO_INCREMENT,
 Name varchar(255),
 Description varchar(255),
 DateCreated date,
+ViewOption int default 1,
 PRIMARY KEY (ProductID)
 );
 ALTER TABLE Products AUTO_INCREMENT = 101;

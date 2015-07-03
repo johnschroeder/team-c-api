@@ -113,7 +113,6 @@ VALUES  ('don', 1),
         ('don', 2),
         ('don', 3);
 
-
 ## Carts(CartID, CartName, Reporter, Assignee, TimeCreated, DateToDelete) ##
 INSERT INTO Cart
 VALUES (null,"cart1","don","Other","2015-02-01", "2015-04-01"),
