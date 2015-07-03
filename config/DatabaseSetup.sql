@@ -21,6 +21,7 @@ PermsID int unsigned,
 HP varchar(100),
 US varchar(50),
 DateCreated date,
+isConfirmed bit(1) default 0,
 PRIMARY KEY (Username),
 FOREIGN KEY (PermsID) REFERENCES Permissions(PermsID)
 );
