@@ -93,13 +93,26 @@ VALUES (NULL, 101, "Batch", 100),
        (NULL, 103, "Bucket", 47),
        (NULL, 104, "Grip", 2);
 
-## Logs(LogID, LogType, ProductID, Username, Time, GenericVar) ##
- INSERT INTO Logs
- VALUES (NULL, 100, 101, "rickgib", "2015-05-27 11:30:29", 100),
-        (NULL, 200, 103, "kellygirl", "2015-05-28 14:22:00", 1000),
-        (NULL, 100, 102, "don", "2015-05-29 13:25:44", 100),
-		(NULL, 100, 102, "don", "2015-05-29 13:33:56", 100),
-        (NULL, 200, 104, "hansolo", "2015-06-17 11:17:20", 25);
+## Logs(LogID, LogType, Username, Time, ActionData) ##
+INSERT INTO Logs
+VALUES  (NULL, 400, 'don', default, NULL),
+		(NULL, 100, 'hansolo', default, NULL),
+        (NULL, 200, 'don', default, NULL),
+        (NULL, 300, 'don', default, NULL),
+        (NULL, 600, 'kellygirl', default, NULL),
+        (NULL, 300, 'rickgib', default, NULL);
+
+UPDATE Logs SET ActionData = "{\"value\":\"I\'m a json object?\"}"
+WHERE LogID > 0;
+
+## LogViewMap(Username, LogID) ##
+INSERT INTO LogViewMap
+VALUES  ('don', 1),
+		('hansolo', 3),
+        ('kellygirl', 2),
+        ('don', 2),
+        ('don', 3);
+
 
 ## Carts(CartID, CartName, Reporter, Assignee, TimeCreated, DateToDelete) ##
 INSERT INTO Cart
