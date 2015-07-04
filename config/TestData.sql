@@ -29,10 +29,10 @@ VALUES (NULL, "Mercy Corps", "2014-03-19"),
 
 ## Products(ProductID, Name, Description, DateCreated) ##
 INSERT INTO Products
-VALUES (NULL, "Business Cards", "Super slick business cards", "2015-05-03"),
-	   (NULL, "PSU Stationary", "Letterhead and stationary for PSU", "2015-05-07"),
-       (NULL, "Envelopes", "Warren's customized capstone envelopes, 5 x 8", "2015-05-18"),
-       (NULL, "IMP Display Board", "Project display board, 6 x 10", "2015-05-18");
+VALUES (NULL, "Business Cards", "Super slick business cards", "2015-05-03", default),
+	   (NULL, "PSU Stationary", "Letterhead and stationary for PSU", "2015-05-07", default),
+       (NULL, "Envelopes", "Warren's customized capstone envelopes, 5 x 8", "2015-05-18", default),
+       (NULL, "IMP Display Board", "Project display board, 6 x 10", "2015-05-18", default);
 
 ## ProdCustMap(ProductID, CustomerID) ##
 INSERT INTO ProdCustMap
