@@ -1,7 +1,7 @@
 {
     "default":{
         "port":50001,
-        "frontend": "http://local.thisisimp.com",
+        "frontend": "http://local.thisisimp.com/",
         "mysql":{
             "maxConnections":"5",
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
@@ -10,14 +10,14 @@
             "databaseName":"imp_db_dev"
         },
         "redis":{
-            "host":"impredis.ov3fom.ng.0001.usw2.cache.amazonaws.com",
+            "host":"127.0.0.1",
             "port":"6379"
 
         }
 
     },
     "dev":{
-        "frontend": "http://dev.thisisimp.com",
+        "frontend": "http://dev.thisisimp.com/",
         "mysql":{
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
@@ -31,7 +31,7 @@
 
     },
     "prod":{
-        "frontend": "http://www.thisisimp.com",
+        "frontend": "http://www.thisisimp.com/",
         "mysql":{
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
@@ -39,7 +39,7 @@
             "databaseName":"imp_db_prod"
         },
         "redis":{
-            "host":"127.0.0.1",
+            "host":"impredis.ov3fom.ng.0001.usw2.cache.amazonaws.com",
             "port":"6379"
 
         }
@@ -89,11 +89,11 @@
     "tim":{
         "port":50001,
         "mysql":{
-            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
-            "user":"dev",
-            "password":"IMPdev321",
-            "databaseName":"imp_db_dev"
+            "host":"localhost",
+            "user":"tim",
+            "password":""
         }
+
     },
     "trevor":{
 
