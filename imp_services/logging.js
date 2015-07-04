@@ -1,11 +1,11 @@
 exports.LOGTYPES = {
-    ADDPILE               : {value: 100, name: "AddPile"},
-    ADDRUN                : {value: 200, name: "AddRun"},
-    REMOVEPILE            : {value: 300, name: "RemovePile"},
-    REMOVERUN             : {value: 400, name: "RemoveRun"},
-    AUDIT                 : {value: 500, name: "Audit"},
-    NOTE                  : {value: 600, name: "Note"},
-    NEWPRODUCTCREATED     : {value: 700, name: "New Product Created"}
+    ADDPILE               : {value: 100, name: "Added Pile"},
+    ADDRUN                : {value: 200, name: "Added Run"},
+    REMOVEPILE            : {value: 300, name: "Removed Pile"},
+    REMOVERUN             : {value: 400, name: "Removed Run"},
+    AUDIT                 : {value: 500, name: "Audited"},
+    NOTE                  : {value: 600, name: "Noted"},
+    NEWPRODUCTCREATED     : {value: 700, name: "Created New Product"}
 };
 
 /* Use of Logs.GenericVar in DB:

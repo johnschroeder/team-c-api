@@ -10,7 +10,7 @@
             "databaseName":"imp_db_dev"
         },
         "redis":{
-            "host":"impredis.ov3fom.ng.0001.usw2.cache.amazonaws.com",
+            "host":"127.0.0.1",
             "port":"6379"
 
         }
