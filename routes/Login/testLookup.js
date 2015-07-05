@@ -6,7 +6,7 @@ var router = express.Router();
 
 /*
  Usage:
- www.thisisimp.com/login/testresetidentifier/:lookup
+ www.thisisimp.com/login/testLookup/:lookup
  */
 
 router.route("/:lookup").get(function(req, res) {

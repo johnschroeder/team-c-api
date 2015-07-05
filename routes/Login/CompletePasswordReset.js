@@ -30,19 +30,19 @@ router.route("/").post(function(req, res) {
 
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CALL ResetPassword (" + email + "', '" + hashedPassword + "', '"+ salt +")"))
+        .then(db.query("CALL ResetPassword ('" + email + "', '" + hashedPassword + "', '"+ salt +"')"))
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(){
             console.log("Success");
-            res.send("Success");
+            res.end();
         })
-
         .catch(function(err){
+            console.log("Error: " + err);
             Q.fcall(db.rollback())
                 .then(db.endTransaction())
                 .done();
-            console.log("Error: " + err);
+
             res.status(503).send("ERROR: " + err);
         })
         .done();
