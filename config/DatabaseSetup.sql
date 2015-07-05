@@ -21,6 +21,7 @@ PermsID int unsigned,
 HP varchar(100),
 US varchar(50),
 DateCreated date,
+isConfirmed bit(1) default 0,
 PRIMARY KEY (Username),
 FOREIGN KEY (PermsID) REFERENCES Permissions(PermsID)
 );
@@ -45,6 +46,7 @@ ProductID int unsigned AUTO_INCREMENT,
 Name varchar(255),
 Description varchar(255),
 DateCreated date,
+ViewOption int default 1,
 PRIMARY KEY (ProductID)
 );
 ALTER TABLE Products AUTO_INCREMENT = 101;
@@ -95,19 +97,16 @@ FOREIGN KEY (ProductID) REFERENCES Products(ProductID)ON DELETE CASCADE
 CREATE TABLE Logs (
 LogID int unsigned AUTO_INCREMENT,
 LogType int unsigned,
-ProductID int unsigned,
 Username varchar(25),
-Time datetime,
-GenericVar int unsigned,
+Time datetime default NOW(),
+ActionData varchar(2048),
 PRIMARY KEY (LogID),
-FOREIGN KEY (ProductID) REFERENCES Products(ProductID),
 FOREIGN KEY (Username) REFERENCES Users(Username)
 );
-ALTER TABLE Logs AUTO_INCREMENT = 1001;
 
 CREATE TABLE LogViewMap (
-LogID int unsigned,
 Username varchar(25),
+LogID int unsigned,
 FOREIGN KEY (LogID) REFERENCES Logs(LogID) ON DELETE CASCADE,
 FOREIGN KEY (Username) REFERENCES Users(Username) ON DELETE CASCADE
 );

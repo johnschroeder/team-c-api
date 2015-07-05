@@ -1,7 +1,7 @@
 {
     "default":{
         "port":50001,
-        "frontend": "http://localhost:50000",
+        "frontend": "http://local.thisisimp.com/",
         "mysql":{
             "maxConnections":"5",
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
@@ -14,6 +14,7 @@
             "port":"6379"
 
         }
+
     },
     "dev":{
         "frontend": "http://dev.thisisimp.com/",
@@ -21,7 +22,13 @@
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
             "password":"IMPdev321"
+        },
+        "redis":{
+            "host":"impredis.ov3fom.ng.0001.usw2.cache.amazonaws.com",
+            "port":"6379"
+
         }
+
     },
     "prod":{
         "frontend": "http://www.thisisimp.com/",
@@ -30,6 +37,11 @@
             "user":"dev",
             "password":"IMPdev321",
             "databaseName":"imp_db_prod"
+        },
+        "redis":{
+            "host":"impredis.ov3fom.ng.0001.usw2.cache.amazonaws.com",
+            "port":"6379"
+
         }
     },
     "kun":{

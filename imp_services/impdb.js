@@ -57,13 +57,25 @@ var createAPIObject = function(pool) {
     toReturn.spGetCartsByUser = "GetCartsByUser";
     toReturn.spEditCartItem = "EditCartItem";
 
-    toReturn.beginTransaction = function() {
+    toReturn.beginTransaction = function(x) {
         if(pool.length <= 0) {
             console.log("Error: No database connections available");
+            var attempts = x || 0;
+            if(attempts < 5){
+                setTimeout(function(){
+                    this.beginTransaction(attempts+1);
+                }, 5000);
+                
+            }
+            else{
+                throw "Connection could not be established, no pooled connection available after 5 attempts";
+            }
         }
-        connection = pool.shift(); // dequeue from pool
-        handleDisconnect(connection); // ensures connection has not timed out
-        return Q.nfbind(connection.beginTransaction.bind(connection));
+        else{
+            connection = pool.shift(); // dequeue from pool
+            handleDisconnect(connection); // ensures connection has not timed out
+            return Q.nfbind(connection.beginTransaction.bind(connection));
+        }
     };
 
     toReturn.query = function(queryInput) {
