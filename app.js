@@ -35,12 +35,6 @@ app.use(bodyParser.json());
 //get and parse cookie and place it into req.cookies
 app.use(cookieParser());
 
-//These routes shouldnt be cookie tested
-app.use("/login", require(process.cwd()+"/routes/login"));
-app.use("/Login/confirmUser", require(process.cwd()+"/routes/Login/confirmUser"));
-app.use("/Login/createUser", require(process.cwd()+"/routes/Login/createUser"));
-app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
-
 //Middleware for verifying a user is logged in before hittin a route
 /*app.use(function(req,res,next)
 {
