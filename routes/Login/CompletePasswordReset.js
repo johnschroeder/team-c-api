@@ -11,42 +11,54 @@ var crypto = require('crypto');
  Body:
  {
  "password":String,
- "email":String
+ "lookup":String
  }
  */
 
 router.route("/").post(function(req, res) {
     var password = req.body.password;
-    var email = req.body.email;
+    var lookup = req.body.lookup;
+    var email;
 
-    var salt = crypto.randomBytes(32).toString('base64');
-    var hashedPassword = crypto.createHash('sha256').update(password + salt).digest('hex').toString('base64');
-    var db = require("../../imp_services/impdb.js").connect();
-    var date = Date.now();
+    var result = require("../../imp_services/redislookup.js")(req.params.lookup, function(result){
+        if(result){
+            email = result.email;
+        }
+        else{
+            res.status(500).send("Lookup not found");
+        }
+    });
 
-    console.log("Resetting password for user with email: " + email);
+    if(email) {
+        var salt = crypto.randomBytes(32).toString('base64');
+        var hashedPassword = crypto.createHash('sha256').update(password + salt).digest('hex').toString('base64');
+        var db = require("../../imp_services/impdb.js").connect();
+        var date = Date.now();
 
-    console.log("\n\nDEBUG INFO:\nHashed Password: "+hashedPassword+"\nSalt: "+salt);
+        console.log("Resetting password for user with email: " + email);
 
-    Q.fcall(db.beginTransaction())
-        .then(db.query("USE " + db.databaseName))
-        .then(db.query("CALL ResetPassword ('" + email + "', '" + hashedPassword + "', '"+ salt +"')"))
-        .then(db.commit())
-        .then(db.endTransaction())
-        .then(function(){
-            console.log("Success");
-            res.end();
-        })
-        .catch(function(err){
-            console.log("Error: " + err);
-            Q.fcall(db.rollback())
-                .then(db.endTransaction())
-                .done();
+        console.log("\n\nDEBUG INFO:\nHashed Password: " + hashedPassword + "\nSalt: " + salt);
 
-            res.status(503).send("ERROR: " + err);
-        })
-        .done();
+        Q.fcall(db.beginTransaction())
+            .then(db.query("USE " + db.databaseName))
+            .then(db.query("CALL ResetPassword ('" + email + "', '" + hashedPassword + "', '" + salt + "')"))
+            .then(db.commit())
+            .then(db.endTransaction())
+            .then(function () {
+                console.log("Success");
+                client.del(lookup);
+                res.end();
+            })
+            .catch(function (err) {
+                console.log("Error: " + err);
+                Q.fcall(db.rollback())
+                    .then(db.endTransaction())
+                    .done();
 
+                res.status(503).send("ERROR: " + err);
+            })
+            .done();
+    }
 
 });
 
