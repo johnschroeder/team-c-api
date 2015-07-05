@@ -36,7 +36,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 //These routes shouldnt be cookie tested
-app.use("/login", require(process.cwd()+"/routes/login"));
+app.use("/Login/login", require(process.cwd()+"/routes/Login/login"));
 app.use("/Login/confirmUser", require(process.cwd()+"/routes/Login/confirmUser"));
 app.use("/Login/createUser", require(process.cwd()+"/routes/Login/createUser"));
 app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
