@@ -7,14 +7,14 @@ var router = express.Router();
 var Q = require('q');
 var crypto = require('crypto');
 var uuid = require('node-uuid');
-var impredis = require("../imp_services/impredis.js");
+var impredis = require("../../imp_services/impredis.js");
 
 router.route('/').post( function(req,res){
 
     var username=req.body.user;
     var password=req.body.password;
 
-    var db = require("../imp_services/impdb.js").connect();
+    var db = require("../../imp_services/impdb.js").connect();
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
         .then(db.query("CALL GetUserByUsername(\'" + username + "\');"))
@@ -34,7 +34,7 @@ router.route('/').post( function(req,res){
                     console.log("Hash match!");
                     res.cookie('IMPId', cookie, {secure: false, maxAge: 24* 60 * 60 * 1000, httpOnly: false});
                     res.send(cookie);
-                    impredis.set(cookie, username, {}, function(result, error){
+                    impredis.set(cookie, "username", username, function(result, error){
                         if(error){
                             res.status(500).send("ERROR: "+error);
                         }
@@ -62,4 +62,3 @@ router.route('/').post( function(req,res){
 });
 
 module.exports = router;
-
