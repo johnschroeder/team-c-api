@@ -7,7 +7,7 @@ var router = express.Router();
 var Q = require('q');
 var crypto = require('crypto');
 var uuid = require('node-uuid');
-var impredis = require("../imp_services/impredis.js");
+var impredis = require("../../imp_services/impredis.js");
 
 router.route('/').post( function(req,res){
 
