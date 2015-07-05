@@ -1,69 +1,91 @@
 /**
  * Created by Trevor on 7/3/2015.
  */
+var Q = require("q");
+
+/* var a = {};
+ a["key1"] = "value1";
+ a["key2"] = "value2";
+ */
+
+var LogTypeMap = {};
+LogTypeMap[100] = "Added Pile";
+LogTypeMap[200] = "Added Run";
+LogTypeMap[300] = "Removed Pile";
+LogTypeMap[400] = "Removed Run";
+LogTypeMap[500] = "Audited";
+LogTypeMap[600] = "Noted";
+LogTypeMap[700] = "Created New Product";
+
+var functionMap = {};
+functionMap[100] = toStringDefault;
+functionMap[200] = toStringDefault;
+functionMap[300] = toStringDefault;
+functionMap[400] = toStringDefault;
+functionMap[500] = toStringDefault;
+functionMap[600] = toStringDefault;
+functionMap[700] = toStringDefault;
+
+var stringLogs = [];
+var jsonString = '{"logs":[';
+
+function toStringDefault (jsonObj) {
+    var logObj = JSON.parse(jsonObj);
+    return logObj.username + " on " + logObj.time + " " + LogTypeMap[logObj.logType];  // + " " + logObj.action;
+}
 
 module.exports =
 
 {
-    displayLogs: function () {
+    displayLogs: function (username) {
 
-//Get all logs from the db --- requires db procedure
-//Ignore all logs the user wants ignored --- requires db procedure
+        var db = require("../imp_services/impdb.js").connect();
+        console.log(Q.fcall(db.beginTransaction())
+            .then(db.query("USE " + db.databaseName))
+            .then(db.query("CALL GetLogsUserView(\'" + username + "\');"))
+            .then(function(rows) {
 
+                // We got data about the user
+                if (rows[0][0].length == 0) { // No user by that username
+                    return "Invalid Result!";
+                }
 
-        //For each log left over, get the toString output
-        //Create line output: user, timestamp, type name, and tostring for log
-        // I'm counting action as a String for now. What methods an 'action' will have is not defined yet.
-        // One interpretation I think might work is for action to be the specific instance of a type of log
-        // for instance Date-Trevor-LogType [made user] - action [Steve] - (logID used but not shown)
-        var allLogs = []; //[{timestamp:Date, user:String, action:String, logID:int, type:LogTypes}];
-        var logStrings = ["I am stuff to display", "I am stuff too", "Fly my warguls fly!!!"];
+                var jsonLogs = [];
+                //console.log("---- Now to show the rows ------");
+                for (var i = 0; i < rows[0][0].length; i++)
+                {
+                    var row = rows[0][0][i];
+                    var logID = row.LogID;
+                    var LogType = row.LogType;
+                    var logUsername = row.Username;
+                    var time = row.Time;
+                    var actionData = row.ActionData;
+                    jsonLogs[i] = '{"logID":"' + logID + '", "logType":"' + LogType +
+                        '","username":"' + logUsername + '","time":"' + time + '","action":"' + "hi" /* actionData */ + '"}';
 
-        var jsonLogs = [
-            { "value":"Doe" },
-            { "value":"Smith" },
-            { "value":"Jones" }];
-        /*
-         '{ "logs" : [';
+                    stringLogs[i] = functionMap[LogType](jsonLogs[i]);
+                }
 
-         for (var i = 0; i <= allLogs.length; i++)
-         {
-         jsonLogs += '{"value:":' + Map[allLogs[i].type].toString(allLogs[i]) + '}';
-         if (i +1 < allLogs.length)
-         {
-         jsonLogs += ',';
-         }
+                for (var j = 0; j < stringLogs.length; j++)
+                {
+                    jsonString += '"' + stringLogs[j] + '"';
+                    if (j + 1 < stringLogs.length)
+                    {
+                        jsonString += ',';
+                    }
+                }
+                jsonString += ']}';
 
-         }
+                console.log(jsonString);
+            })
+                .catch(function(err){
+                    Q.fcall(db.rollback())
+                        .then(db.endTransaction())
+                        .then(console.log("We had an error") )
+                        .done();
+                    console.log("Error: " + err);
+                }).done());
 
-         jsonLogs += ']}';
-         */
-
-
-//Return or pipe the logs to the frontend
-        var jsonAsString = JSON.stringify(jsonLogs);
-        console.log(jsonAsString);
-        return jsonAsString;
-
-    },
-
-var:LOGTYPES = {
-    ADDPILE               : {value: 100, name: "Added Pile"},
-    ADDRUN                : {value: 200, name: "Added Run"},
-    REMOVEPILE            : {value: 300, name: "Removed Pile"},
-    REMOVERUN             : {value: 400, name: "Removed Run"},
-    AUDIT                 : {value: 500, name: "Audited"},
-    NOTE                  : {value: 600, name: "Noted"},
-    NEWPRODUCTCREATED     : {value: 700, name: "Created New Product"}
-},
-    var:defaultToString = function (actionObject) {
-        actionObject.user + " on" + actionObject.timestamp + " " + type.name + " " + actionObject.action;
-    },
-
-    var:Map = {
-        Type: this.LOGTYPES,
-        toString: Function
-        //name: "Create User"
+        return '{"logs": ["John","Doe"]}';
     }
-
 };
