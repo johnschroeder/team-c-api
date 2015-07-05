@@ -14,7 +14,7 @@ router.route('/').post( function(req,res){
     var username=req.body.user;
     var password=req.body.password;
 
-    var db = require("../imp_services/impdb.js").connect();
+    var db = require("../../imp_services/impdb.js").connect();
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
         .then(db.query("CALL GetUserByUsername(\'" + username + "\');"))
