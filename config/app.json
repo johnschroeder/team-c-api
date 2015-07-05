@@ -1,12 +1,20 @@
 {
     "default":{
         "port":50001,
-        "frontend": "http://localhost:50000",
+        "frontend": "http://local.thisisimp.com/",
         "mysql":{
-            "host":"localhost",
-            "user":"foo",
-            "password":"bar"
+            "maxConnections":"5",
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "databaseName":"imp_db_dev"
+        },
+        "redis":{
+            "host":"127.0.0.1",
+            "port":"6379"
+
         }
+
     },
     "dev":{
         "frontend": "http://dev.thisisimp.com/",
@@ -14,18 +22,35 @@
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
             "password":"IMPdev321"
+        },
+        "redis":{
+            "host":"impredis.ov3fom.ng.0001.usw2.cache.amazonaws.com",
+            "port":"6379"
+
         }
+
     },
     "prod":{
         "frontend": "http://www.thisisimp.com/",
         "mysql":{
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
-            "password":"IMPdev321"
+            "password":"IMPdev321",
+            "databaseName":"imp_db_prod"
+        },
+        "redis":{
+            "host":"impredis.ov3fom.ng.0001.usw2.cache.amazonaws.com",
+            "port":"6379"
+
         }
     },
     "kun":{
-
+        "mysql":{
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "databaseName":"imp_db_dev"
+        }
     },
     "hinyun":{
         "mysql":{
@@ -39,18 +64,19 @@
     },
     "elijah":{
         "mysql":{
-            "host":"localhost",
-            "user":"elijahvarga",
-            "password":"dev.db124"
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "databaseName":"imp_db_dev"
         }
-
     },
     "john":{
-      "mysql": {
-        "host": "localhost",
-        "user": "js22",
-        "password": "capstone"
-      }
+        "mysql":{
+            "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
+            "user":"dev",
+            "password":"IMPdev321",
+            "databaseName":"imp_db_dev"
+        }
     },
     "mike":{
         "port":50002,
@@ -61,6 +87,12 @@
         }
     },
     "tim":{
+        "port":50001,
+        "mysql":{
+            "host":"localhost",
+            "user":"tim",
+            "password":""
+        }
 
     },
     "trevor":{
