@@ -12,12 +12,12 @@ module.exports = {
             if (error !== null) {
                 console.log("error: " + error);
                 client.quit();
-                callback(null, error);
+                callback(error, null);
             }
             else {
                 console.log(val);
                 client.quit();
-                callback(val, null);
+                callback(null, val);
             }
         });
     },
@@ -27,18 +27,19 @@ module.exports = {
             if (error !== null) {
                 console.log("error: " + error);
                 client.quit();
-                callback(null, error)
+                callback(error, null)
             }
             else {
                 console.log("Success");
                 client.quit();
-                callback(result, null);
+                callback(null, result);
             }
         });
     },
     setExpiration: function(key, timeInHours){
         var client = redis.createClient(port,host);
         client.expire(key, timeInHours*60*60, function(){
+            client.quit();
             client.quit();
         });
     },
