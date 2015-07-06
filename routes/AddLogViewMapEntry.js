@@ -5,7 +5,7 @@ var router = express.Router();
 
 /*
  Usage:
- localhost:50001/addLogViewMapEntry/Username/LogID
+ localhost:50001/AddLogViewMapEntry/Username/LogID
  */
 
 router.route("/:username/:logId").get(function(req, res) {
@@ -16,18 +16,16 @@ router.route("/:username/:logId").get(function(req, res) {
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
         .then(db.query("CALL AddLogViewMapEntry ('" + req.params.username + "', " + req.params.logId + ")"))
-        .then(db.commit())
-        .then(db.endTransaction())
         .then(function(rows){
             var queryResult = JSON.stringify(rows[0][0]);
-            console.log("Success:   " + queryResult);
+            console.log("Query result:   " + queryResult);
             res.send(queryResult);
+            db.endTransaction();
         })
 
         .catch(function(err){
             Q.fcall(db.rollback())
-                .then(db.endTransaction())
-                .done();
+                .then(db.endTransaction());
             console.log("Error: " + err);
             //console.error(err.stack);
             res.status(503).send("ERROR: " + err);
