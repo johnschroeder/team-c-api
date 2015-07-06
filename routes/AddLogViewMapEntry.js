@@ -15,7 +15,7 @@ router.route("/:username/:logId").get(function(req, res) {
 
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CALL AddLogViewMapEntry (" + req.params.username + ", '" + req.params.logId + ")"))
+        .then(db.query("CALL AddLogViewMapEntry ('" + req.params.username + "', " + req.params.logId + ")"))
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(rows){
