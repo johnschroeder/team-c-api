@@ -35,6 +35,13 @@ app.use(bodyParser.json());
 //get and parse cookie and place it into req.cookies
 app.use(cookieParser());
 
+//These routes shouldnt be cookie tested
+app.use("/Login/login", require(process.cwd()+"/routes/Login/login"));
+app.use("/Login/confirmUser", require(process.cwd()+"/routes/Login/confirmUser"));
+app.use("/Login/createUser", require(process.cwd()+"/routes/Login/createUser"));
+app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
+
+
 //Middleware for verifying a user is logged in before hittin a route
 /*app.use(function(req,res,next)
 {
@@ -55,41 +62,8 @@ app.use(cookieParser());
     });
 });*/
 
-//Adds all the routes by path to the app
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
 
 
-//get and parse cookie and place it into req.cookies
-app.use(cookieParser());
-
-//These routes shouldnt be cookie tested
-app.use("/Login/login", require(process.cwd()+"/routes/Login/login"));
-app.use("/Login/confirmUser", require(process.cwd()+"/routes/Login/confirmUser"));
-app.use("/Login/createUser", require(process.cwd()+"/routes/Login/createUser"));
-app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
-
-
-//Middleware for verifying a user is logged in before hittin a route
-app.use(function(req,res,next)
-{
-    var port=config.app.redis.port;
-    var host=config.app.redis.host;
-    var client = redis.createClient(port,host);
-    console.log(req.cookies.IMPId);
-    client.exists(req.cookies.IMPId, function(err, reply) {
-        if(reply == 1) {
-            console.log("Successfully Authenticated!");
-            next();
-        }
-        else{
-            //TODO Have the navigation object on the login page with a window alert if this happens
-            console.log("Oops, something went wrong with authentication!");
-            res.status(404).send("User not Found");
-        }
-    });
-});
 
 //Adds all the routes by path to the app
 var path = process.cwd()+'/routes';
