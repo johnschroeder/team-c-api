@@ -30,6 +30,11 @@ function toStringDefault (jsonObj) {
     return logObj.username + " on " + logObj.time + " " + LogTypeMap[logObj.logType].type + " " + actionPiece;
 }
 
+function verifyKey (key)
+{
+    return LogTypeMap[key] == undefined ? false : true;
+}
+
 module.exports =
 
 {
@@ -69,6 +74,7 @@ module.exports =
                 }
                 jsonString += ']}';
                 console.log(jsonString);
+               console.log(verifyKey(800));
                 callback(jsonString);
 
             }) .then(db.endTransaction()) // This is called right?
@@ -102,5 +108,4 @@ module.exports =
                 console.log("Error: " + err);
             }).done();
     }
-
 };
