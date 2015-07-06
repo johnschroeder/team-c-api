@@ -111,7 +111,7 @@ var createAPIObject = function(pool) {
 
             console.log('Re-connecting lost connection: ' + err.stack);
 
-            connection = mysql.createConnection(connection.config);
+            connection = mySQL.createConnection(connection.config);
             handleDisconnect(connection);
             connection.connect();
         });
