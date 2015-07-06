@@ -33,9 +33,10 @@ var jsonString = '{"logs":[';
 
 function toStringDefault (jsonObj) {
     var logObj = JSON.parse(jsonObj);
-    var actionPiece = JSON.parse(logObj.action);
-    console.log("Action Piece " + actionPiece.value);
-    return logObj.username + " on " + logObj.time + " " + LogTypeMap[logObj.logType] + " " + actionPiece.value;
+    //console.log(jsonObj);
+    var actionPiece = JSON.parse(logObj.action).value;
+    //console.log("Action Piece " + actionPiece);
+    return logObj.username + " on " + logObj.time + " " + LogTypeMap[logObj.logType] + " " + actionPiece;
 }
 
 module.exports =
@@ -93,7 +94,7 @@ module.exports =
         var db = require("../imp_services/impdb.js").connect();
 
         var call = "CALL LogAction("+ LogType + "," + "\'" + username +"\'" + "," + "\'" + ActionData + "\');";
-        console.log(call);
+       // console.log(call);
         Q.fcall(db.beginTransaction())
             .then(db.query("USE " + db.databaseName))
             .then(db.query(call))

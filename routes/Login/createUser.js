@@ -49,7 +49,9 @@ router.route("/").post(function(req, res) {
         .then(function() {
 
             var logsService = require('../../imp_services/displayLogs');
-            logsService.addLog(800, username, username, function success(message) {
+            var actionData = {"value" : username };
+            var actionDataString = JSON.stringify(actionData).replace(/"/g, '\\\\"');
+            logsService.addLog(800, username, actionDataString, function success(message) {
                 console.log(message);
             });
 
