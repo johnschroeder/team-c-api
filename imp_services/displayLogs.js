@@ -30,14 +30,15 @@ function toStringDefault (jsonObj) {
     return logObj.username + " on " + logObj.time + " " + LogTypeMap[logObj.logType].type + " " + actionPiece;
 }
 
-function verifyKey (key)
-{
-    return LogTypeMap[key] == undefined ? false : true;
-}
+
 
 module.exports =
 
 {
+    verifyKey :function (key) {
+        return LogTypeMap[key] == undefined ? false : true;
+    },
+
     displayLogs: function (username, callback) {
         var db = require("../imp_services/impdb.js").connect();
         //var defer = Q.defer();
@@ -74,7 +75,7 @@ module.exports =
                 }
                 jsonString += ']}';
                 console.log(jsonString);
-               console.log(verifyKey(800));
+               console.log(module.exports.verifyKey(800));
                 callback(jsonString);
 
             }) .then(db.endTransaction()) // This is called right?
