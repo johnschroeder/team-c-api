@@ -42,6 +42,7 @@ router.route('/').post( function(req,res){
                             res.end(cookie);
                         }
                     });
+                    impredis.setExpiration(cookie, 24);
                 }
                 else {
                     console.log("Hash does not match!");

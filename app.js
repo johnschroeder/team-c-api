@@ -1,7 +1,6 @@
 var express = require('express');
 var config = require('konfig')();
 var glob = require('glob');
-var redis = require('redis');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 
@@ -45,11 +44,9 @@ app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
 //Middleware for verifying a user is logged in before hittin a route
 app.use(function(req,res,next)
 {
-    var port=config.app.redis.port;
-    var host=config.app.redis.host;
-    var client = redis.createClient(port,host);
+    var impredis = require("./imp_services/impredis.js");
     console.log(req.cookies.IMPId);
-    client.exists(req.cookies.IMPId, function(err, reply) {
+    impredis.exists(req.cookies.IMPId, function(err, reply) {
         if(reply == 1) {
             console.log("Successfully Authenticated!");
             next();

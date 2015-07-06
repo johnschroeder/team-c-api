@@ -2,13 +2,10 @@ var express = require("express");
 var Q = require('q');
 var router = express.Router();
 var crypto = require('crypto');
-var redis = require('redis');
 var config = require("konfig")();
 var uuid = require('node-uuid');
 var aws = require('aws-sdk');
-
-var port=config.app.redis.port;
-var host=config.app.redis.host;
+var impredis = require("../../imp_services/impredis.js");
 
 
 /*
@@ -63,7 +60,6 @@ router.route("/").post(function(req, res) {
             Q.fcall(db.rollback())
                 .then(db.endTransaction())
                 .done();
-
             res.status(503).send("ERROR: " + err);
         })
         .done();
@@ -71,48 +67,60 @@ router.route("/").post(function(req, res) {
 
 });
 
+//TODO, make this a promise chain
 var SendConfirmation = function(email, callback){
-    var ses = new aws.SES({apiVersion: '2010-12-01', region:'us-west-2'});
-    var lookup = uuid.v4();
-    var client = redis.createClient(port,host);
-    console.log("test");
-    client.hmset(lookup,"type","create","email" ,email,function (error, result) {
+    impredis.set(lookup,"type","create", function(error, result){
         if (error !== null) {
             console.log("error: " + error);
-            client.quit();
             callback(error);
         }
         else {
-            console.log("Success");
-            ses.sendEmail( {
-                    Source: 'nick@stevensis.com',
-                    Destination: { ToAddresses: [email] },
-                    Message: {
-                        Subject:{
-                            Data: "Please confirm your account at "+config.app.frontend
-                        },
-                        Body: {
-                            Text: {
-                                Data: "Please visit "+config.app.frontend+"/"+lookup+" to confirm your email"
-                            }
-                        }
-                    }
+            impredis.set("email", email, function (error, result) {
+                if (error !== null) {
+                    console.log("error: " + error);
+                    callback(error);
                 }
-                , function(err, data) {
-                    if(err){
-                        console.error("Error: "+err);
-                        client.quit();
-                        callback(err);
-                    }
-                    else {
-                        console.log('Email sent:');
-                        console.log(data);
-                        client.quit();
-                        callback(null);
-                    }
-                });
+                else {
+                    console.log("Success");
+                    impredis.setExpiration(lookup, 24);
+                    sendEmail(email, function (err, data) {
+                        callback(err, data);
+                    })
+                }
+            });
         }
     });
+
+};
+
+var sendEmail = function(email, callback){
+    var ses = new aws.SES({apiVersion: '2010-12-01', region:'us-west-2'});
+    var lookup = uuid.v4();
+    ses.sendEmail( {
+            Source: 'nick@stevensis.com',
+            Destination: { ToAddresses: [email] },
+            Message: {
+                Subject:{
+                    Data: "Please confirm your account at "+config.app.frontend
+                },
+                Body: {
+                    Text: {
+                        Data: "Please visit "+config.app.frontend+"/"+lookup+" to confirm your email"
+                    }
+                }
+            }
+        }
+        , function(err, data) {
+            if(err){
+                console.error("Error: "+err);
+                callback(err, null);
+            }
+            else {
+                console.log('Email sent:');
+                console.log(data);
+                callback(null, data);
+            }
+        });
 };
 
 module.exports = router;
