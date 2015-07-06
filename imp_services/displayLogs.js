@@ -9,24 +9,15 @@ var Q = require("q");
  */
 
 var LogTypeMap = {};
-LogTypeMap[100] = "Added Pile";
-LogTypeMap[200] = "Added Run";
-LogTypeMap[300] = "Removed Pile";
-LogTypeMap[400] = "Removed Run";
-LogTypeMap[500] = "Audited";
-LogTypeMap[600] = "Noted";
-LogTypeMap[700] = "Created New Product";
-LogTypeMap[800] = "Created User";
+LogTypeMap[100] = {type: "Added Pile", callFunction:toStringDefault};
+LogTypeMap[200] = {type: "Added Run", callFunction:toStringDefault};
+LogTypeMap[300] = {type: "Removed Pile", callFunction:toStringDefault};
+LogTypeMap[400] = {type: "Removed Run", callFunction:toStringDefault};
+LogTypeMap[500] = {type: "Audited", callFunction:toStringDefault};
+LogTypeMap[600] = {type: "Noted", callFunction:toStringDefault};
+LogTypeMap[700] = {type: "Created New Product", callFunction:toStringDefault};
+LogTypeMap[800] = {type: "Created User", callFunction:toStringDefault};
 
-var functionMap = {};
-functionMap[100] = toStringDefault;
-functionMap[200] = toStringDefault;
-functionMap[300] = toStringDefault;
-functionMap[400] = toStringDefault;
-functionMap[500] = toStringDefault;
-functionMap[600] = toStringDefault;
-functionMap[700] = toStringDefault;
-functionMap[800] = toStringDefault;
 
 var stringLogs = [];
 var jsonString = '{"logs":[';
@@ -36,7 +27,7 @@ function toStringDefault (jsonObj) {
     //console.log(jsonObj);
     var actionPiece = JSON.parse(logObj.action).value;
     //console.log("Action Piece " + actionPiece);
-    return logObj.username + " on " + logObj.time + " " + LogTypeMap[logObj.logType] + " " + actionPiece;
+    return logObj.username + " on " + logObj.time + " " + LogTypeMap[logObj.logType].type + " " + actionPiece;
 }
 
 module.exports =
@@ -67,7 +58,7 @@ module.exports =
                     jsonLogs[i] = '{"logID":"' + logID + '", "logType":"' + LogType +
                         '","username":"' + logUsername + '","time":"' + time + '","action":"' + actionData + '"}';
 
-                    stringLogs[i] = functionMap[LogType](jsonLogs[i]);
+                    stringLogs[i] = LogTypeMap[LogType].callFunction(jsonLogs[i]);
                 }
 
                 for (var j = 0; j < stringLogs.length; j++) {
