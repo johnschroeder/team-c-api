@@ -34,16 +34,17 @@ function toStringDefault (jsonObj) {
     return logObj.username + " on " + logObj.time + " " + LogTypeMap[logObj.logType];  // + " " + logObj.action;
 }
 
+
 module.exports =
 
 {
-    displayLogs: function (username) {
-
+    displayLogs: function (username, callback) {
         var db = require("../imp_services/impdb.js").connect();
-        console.log(Q.fcall(db.beginTransaction())
+        //var defer = Q.defer();
+       return Q.fcall(db.beginTransaction())
             .then(db.query("USE " + db.databaseName))
             .then(db.query("CALL GetLogsUserView(\'" + username + "\');"))
-            .then(function(rows) {
+            .then(function (rows) {
 
                 // We got data about the user
                 if (rows[0][0].length == 0) { // No user by that username
@@ -52,8 +53,7 @@ module.exports =
 
                 var jsonLogs = [];
                 //console.log("---- Now to show the rows ------");
-                for (var i = 0; i < rows[0][0].length; i++)
-                {
+                for (var i = 0; i < rows[0][0].length; i++) {
                     var row = rows[0][0][i];
                     var logID = row.LogID;
                     var LogType = row.LogType;
@@ -66,26 +66,24 @@ module.exports =
                     stringLogs[i] = functionMap[LogType](jsonLogs[i]);
                 }
 
-                for (var j = 0; j < stringLogs.length; j++)
-                {
+                for (var j = 0; j < stringLogs.length; j++) {
                     jsonString += '"' + stringLogs[j] + '"';
-                    if (j + 1 < stringLogs.length)
-                    {
+                    if (j + 1 < stringLogs.length) {
                         jsonString += ',';
                     }
                 }
                 jsonString += ']}';
-
                 console.log(jsonString);
-            })
-                .catch(function(err){
-                    Q.fcall(db.rollback())
-                        .then(db.endTransaction())
-                        .then(console.log("We had an error") )
-                        .done();
-                    console.log("Error: " + err);
-                }).done());
+                callback(jsonString);
 
-        return '{"logs": ["John","Doe"]}';
+            })
+            .catch(function (err) {
+                Q.fcall(db.rollback())
+                    .then(db.endTransaction())
+                    .then(console.log("We had an error"))
+                    .done();
+                console.log("Error: " + err);
+            }).done();
     }
+
 };
