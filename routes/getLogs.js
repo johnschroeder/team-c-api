@@ -12,8 +12,6 @@ router.route('/:username').get(function(req,res) {
     console.log("Username in getLogs " + username);
     logsService.displayLogs(username, function(logs) {
 
-        console.log("-- GetLogs logs ---");
-        console.log(logs);
         res.end(logs);
     });
 

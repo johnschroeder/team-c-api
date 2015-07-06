@@ -26,28 +26,7 @@ exports.LOGTYPES = {
  general - extra variable depending on transaction type (see use of Logs.GenericVar above)
  */
 exports.updateLog = function(database, logType, productId, username, general) {
-    // TODO: Look into using Q.defer() here
-    if (database == null) {
-        console.log("database arg in updateLog() is null");
-        // TODO: handle this error
-    }
-    if (logType == null) {
-        console.log("logType arg in updateLog() is null");
-        // TODO: handle this error
-    }
-    if (productId == null) {
-        // TODO: go retrieve from DB, remove line below
-        // null if new product being created
-        productId = 101;
-    }
-    if (username == null) {
-        // TODO: handle this error, remove line below
-        username = "'hansolo'";
-    }
-    if (general == null) {
-        // not used in all cases, valid for it to be null
-        general = "NULL";
-    }
+
     var time = formattedDateTime();  // get current time as formatted string
     return database.query("INSERT INTO " + database.logTable + " VALUES (NULL, " + logType + ", " + productId + ", " + username + ", " + time + ", " + general + ")");
 };

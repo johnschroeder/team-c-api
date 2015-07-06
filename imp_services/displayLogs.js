@@ -16,6 +16,7 @@ LogTypeMap[400] = "Removed Run";
 LogTypeMap[500] = "Audited";
 LogTypeMap[600] = "Noted";
 LogTypeMap[700] = "Created New Product";
+LogTypeMap[800] = "Created User";
 
 var functionMap = {};
 functionMap[100] = toStringDefault;
@@ -25,6 +26,7 @@ functionMap[400] = toStringDefault;
 functionMap[500] = toStringDefault;
 functionMap[600] = toStringDefault;
 functionMap[700] = toStringDefault;
+functionMap[800] = toStringDefault;
 
 var stringLogs = [];
 var jsonString = '{"logs":[';
@@ -76,7 +78,29 @@ module.exports =
                 console.log(jsonString);
                 callback(jsonString);
 
-            })
+            }) .then(db.endTransaction()) // This is called right?
+            .catch(function (err) {
+                Q.fcall(db.rollback())
+                    .then(db.endTransaction())
+                    .then(console.log("We had an error"))
+                    .done();
+                console.log("Error: " + err);
+            }).done();
+    },
+
+    addLog: function (LogType, username, ActionData, callback) {
+        var db = require("../imp_services/impdb.js").connect();
+
+        var call = "CALL LogAction("+ LogType + "," + "\'" + username +"\'" + "," + "\'" + ActionData + "\');";
+        console.log(call);
+        Q.fcall(db.beginTransaction())
+            .then(db.query("USE " + db.databaseName))
+            .then(db.query(call))
+            .then(function (rows) {
+                callback("Log Added!");
+
+            }).then (db.commit())
+            .then(db.endTransaction())
             .catch(function (err) {
                 Q.fcall(db.rollback())
                     .then(db.endTransaction())
