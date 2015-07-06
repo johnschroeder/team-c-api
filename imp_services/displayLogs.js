@@ -33,9 +33,10 @@ var jsonString = '{"logs":[';
 
 function toStringDefault (jsonObj) {
     var logObj = JSON.parse(jsonObj);
-    return logObj.username + " on " + logObj.time + " " + LogTypeMap[logObj.logType];  // + " " + logObj.action;
+    var actionPiece = JSON.parse(logObj.action);
+    console.log("Action Piece " + actionPiece.value);
+    return logObj.username + " on " + logObj.time + " " + LogTypeMap[logObj.logType] + " " + actionPiece.value;
 }
-
 
 module.exports =
 
@@ -63,7 +64,7 @@ module.exports =
                     var time = row.Time;
                     var actionData = row.ActionData;
                     jsonLogs[i] = '{"logID":"' + logID + '", "logType":"' + LogType +
-                        '","username":"' + logUsername + '","time":"' + time + '","action":"' + "hi" /* actionData */ + '"}';
+                        '","username":"' + logUsername + '","time":"' + time + '","action":"' + actionData + '"}';
 
                     stringLogs[i] = functionMap[LogType](jsonLogs[i]);
                 }
