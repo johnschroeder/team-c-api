@@ -2,6 +2,7 @@ var express = require("express");
 var Q = require('q');
 var router = express.Router();
 var crypto = require('crypto');
+var impredis = require("../../imp_services/redislookup.js");
 
 
 /*
@@ -20,7 +21,7 @@ router.route("/").post(function(req, res) {
     var lookup = req.body.lookup;
     var email;
 
-    var result = require("../../imp_services/redislookup.js")(req.params.lookup, function(result){
+    impredis.get(req.params.lookup, function(err, result){
         if(result){
             email = result.email;
         }
