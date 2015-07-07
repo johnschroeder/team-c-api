@@ -20,7 +20,7 @@ module.exports = function(cookie, callback) {
                         throw "Error! That type does not exist, please add it to the displayLogs service mapping"
                     }
                 },
-                store: function (cookie, callback) {
+                store: function (callback) {
                     console.log(this);
                     var db = require("./impdb.js").connect();
                     Q.fcall(db.beginTransaction())
