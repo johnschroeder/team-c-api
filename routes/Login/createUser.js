@@ -65,9 +65,6 @@ router.route("/").post(function(req, res) {
                         res.status(500).send(err);
                     }
                     else{
-                        logService.unstore(function(err, rows){
-                            console.log(rows[0][0]);
-                        });
                         /*SendConfirmation(email, function (err) {
                             if (err) {
                                 res.status(503).send("ERROR: " + err);

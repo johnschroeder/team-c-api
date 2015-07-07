@@ -26,6 +26,9 @@ module.exports = function(cookie, callback) {
                     Q.fcall(db.beginTransaction())
                         .then(db.query("USE " + db.databaseName))
                         .then(db.query("CALL LogAction ('" + this._type + "', '" + this.username + "', '" + JSON.stringify(this.action) + "')"))
+                        .then(function(rows){
+                            console.log(rows);
+                        })
                         .then(db.commit())
                         .then(db.endTransaction())
                         .catch(function (err) {
@@ -38,25 +41,6 @@ module.exports = function(cookie, callback) {
                         })
                         .then(function (rows) {
                             callback(null, rows);
-                        })
-                        .done();
-                },
-                unstore: function(callback){
-                    var db = require("./impdb.js").connect();
-                    Q.fcall(db.beginTransaction())
-                        .then(db.query("USE " + db.databaseName))
-                        .then(db.query("SELECT * FROM Logs WHERE LogID = last_insert_id()"))
-                        .then(function (rows) {
-                            callback(null, rows);
-                        })
-                        .then(db.endTransaction())
-                        .catch(function (err) {
-                            console.log("Log Service Error: " + err);
-                            console.error(err.stack);
-                            Q.fcall(db.rollback())
-                                .then(db.endTransaction())
-                                .done();
-                            callback(err, null);
                         })
                         .done();
                 }
