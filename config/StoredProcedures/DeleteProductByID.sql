@@ -8,7 +8,7 @@ BEGIN
 set @msg='Success';
 
 #check if there are inventory associated with this productID
-SELECT Piles.ProductID, @Quantity:=sum(QuantityReserved+QuantityAvailable) as total
+SELECT @Quantity:=sum(QuantityReserved+QuantityAvailable)#, Piles.ProductID
 FROM Piles
 join Runs on Runs.PileID = Piles.PileID
 where ProductID=_ProductID
@@ -17,7 +17,7 @@ group by Piles.ProductID;
 #check if customers are associated with this productID
 #let delete go through even if the product is associated with customers
 #select @countInCustomers:=count(*) from ProdCustMap where ProductID=_ProductID;
-
+select @Quantity;
 #delete sizemap entries or not?
 
 IF @Quantity=0 THEN
