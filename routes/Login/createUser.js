@@ -46,27 +46,6 @@ router.route("/").post(function(req, res) {
         .then(db.query("CALL CreateUser ('" + username + "', '" + hashedPassword + "', '" + email + "', '" + salt + "', '" + firstName + "', '" + lastName + "', '" + date + "')"))
         .then(db.commit())
         .then(db.endTransaction())
-        .then(function() {
-
-            var logsService = require('../../imp_services/displayLogs');
-            var actionData = {"value" : username };
-            var actionDataString = JSON.stringify(actionData).replace(/"/g, '\\\\"');
-            logsService.addLog(800, username, actionDataString, function success(message) {
-                console.log(message);
-            });
-
-            console.log("Success");
-
-            SendConfirmation(email, function (err) {
-                if (err) {
-                    res.status(503).send("ERROR: " + err);
-                }
-                else {
-                    res.send("Success");
-                }
-            });
-
-        })
         .catch(function(err){
             console.log("Error: " + err);
             Q.fcall(db.rollback())
@@ -74,6 +53,26 @@ router.route("/").post(function(req, res) {
                 .done();
 
             res.status(503).send("ERROR: " + err);
+        })
+        .then(function() {
+            var logService = require('../../imp_services/implogging');
+            logService.action.value = username;
+            logService.setType(800);
+            logService.store(req.cookies.IMPId, function(err, results){
+                if(err){
+                    res.status(500).send(err);
+                }
+                else{
+                    SendConfirmation(email, function (err) {
+                        if (err) {
+                            res.status(503).send("ERROR: " + err);
+                        }
+                        else {
+                            res.send("Success");
+                        }
+                    });
+                }
+            });
         })
         .done();
 
