@@ -5,39 +5,28 @@ set @m='';
 call DeleteItemInCart(1,@m);
 select @m;
 */
-
-use imp_db_dev;
 DROP PROCEDURE IF EXISTS DeleteItemInCart;
 
 DELIMITER $$
 CREATE PROCEDURE DeleteItemInCart
-(IN _CartItemID int, OUT _Msg varchar(512))
+(IN _CartItemID int unsigned, OUT _Msg varchar(512))
 BEGIN
 
 mylabel: BEGIN
 
-
-
-
-
-DECLARE pdtID INT;
-DECLARE sm INT;
-DECLARE qty INT;
-DECLARE rid INT;
-DECLARE sz INT;
-
+DECLARE pdtID int unsigned;
+DECLARE sm int unsigned;
+DECLARE qty int unsigned;
+DECLARE rid int unsigned;
+DECLARE sz int unsigned;
 
 SELECT @sm:=ci.SizeMapID,@qty:=ci.Quantity, @rid:=ci.RunID
 FROM CartItems ci
 WHERE ci.CartItemID = _CartItemID;
 
-
 SELECT @pdtID:=SizeMap.ProductID,@sz:=SizeMap.Size
 FROM SizeMap
 WHERE SizeMap.SizeMapID = @sm;
-
-
-
 
 set @ttlCount=@sz*@qty;
 select @rsv:=Runs.QuantityReserved from Runs where Runs.RunID = @rid;
@@ -59,5 +48,4 @@ SELECT _Msg;
 
 END;
 END $$
-
 DELIMITER ;

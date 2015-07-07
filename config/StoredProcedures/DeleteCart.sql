@@ -6,18 +6,20 @@ call DeleteCart(1,@m);
 select @m;
 */
 
-use imp_db_dev;
+/* TODO: Fix this procedure, doesn't work
+*/
+
 DROP PROCEDURE IF EXISTS DeleteCart;
 
 DELIMITER $$
 CREATE PROCEDURE DeleteCart
-(IN _CartID int, OUT _Msg varchar(512))
+(IN _CartID int unsigned, OUT _Msg varchar(512))
 BEGIN
 
 mylabel: BEGIN
 
 DECLARE n INT DEFAULT 0;
-DECLARE tempCIid INT;
+DECLARE tempCIid int unsigned;
 
 
 
