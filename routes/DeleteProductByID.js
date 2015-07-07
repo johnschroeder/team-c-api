@@ -13,12 +13,10 @@ router.route("/:productID").get(function(req,res){
     var db = require("../imp_services/impdb.js").connect();
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("set @m='';"))
-        .then(db.query("CALL DeleteProductByID(" + req.params.productID+",@m);"))
-        .then(db.query("select @m as message"))
+        .then(db.query("CALL DeleteProductByID(" + req.params.productID+");"))
         .then(function(rows){
             console.log("Success");
-            var invUnit = JSON.stringify(rows[0]);
+            var invUnit = JSON.stringify(rows[0][1]);
             res.send(invUnit);
             db.endTransaction();
         })

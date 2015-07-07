@@ -2,26 +2,31 @@ use imp_db_dev;
 DROP PROCEDURE IF EXISTS DeleteProductByID;
 
 DELIMITER $$
-CREATE PROCEDURE DeleteProductByID(IN _ProductID INT unsigned, OUT _msg varchar(500))
+CREATE PROCEDURE DeleteProductByID(IN _ProductID INT unsigned)
 BEGIN
 
-set _msg='Success';
+set @msg='Success';
 
 #check if there are inventory associated with this productID
-select @countInPile:=count(*) from Piles where ProductID=_ProductID;
+select @Quantity:=Total from
+(SELECT Piles.ProductID, sum(QuantityReserved+QuantityAvailable) as total
+FROM Piles
+join Runs on Runs.PileID = Piles.PileID
+where ProductID=_ProductID
+group by Piles.ProductID) as ProductInventory;
 
 #check if customers are associated with this productID
-select @countInCustomers:=count(*) from ProdCustMap where ProductID=_ProductID;
+#let delete go through even if the product is associated with customers
+#select @countInCustomers:=count(*) from ProdCustMap where ProductID=_ProductID;
 
 #delete sizemap entries or not?
 
-IF @countInPile=0 and @countInCustomers=0 THEN
+IF @Quantity=0 THEN
 	UPDATE Products SET ViewOption=0 WHERE ProductID = _ProductID;
-ELSEIF @countInPile!=0 THEN
-	set _msg='Error: Inventory exists for this product';
-else
-	set _msg='Error: Customers are associated with this product';
+ELSE
+	set @msg='Error: Inventory exists for this product';
 END IF;
+select @msg as message;
 
 END $$
 DELIMITER ;
