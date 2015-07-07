@@ -7,7 +7,8 @@
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
             "password":"IMPdev321",
-            "databaseName":"imp_db_dev"
+            "databaseName":"imp_db_dev",
+            "debug":"false"
         },
         "redis":{
             "host":"127.0.0.1",
@@ -21,7 +22,8 @@
         "mysql":{
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
-            "password":"IMPdev321"
+            "password":"IMPdev321",
+            "debug":"true"
         },
         "redis":{
             "host":"impredis.ov3fom.ng.0001.usw2.cache.amazonaws.com",
@@ -36,7 +38,7 @@
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
             "password":"IMPdev321",
-            "databaseName":"imp_db_prod"
+            "databaseName":"imp_db_dev"
         },
         "redis":{
             "host":"impredis.ov3fom.ng.0001.usw2.cache.amazonaws.com",
@@ -75,7 +77,8 @@
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
             "password":"IMPdev321",
-            "databaseName":"imp_db_dev"
+            "databaseName":"imp_db_dev",
+            "debug":"true"
         }
     },
     "mike":{
