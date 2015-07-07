@@ -23,11 +23,9 @@ module.exports = function(cookie, callback) {
                 store: function (cookie, callback) {
                     console.log(this);
                     var db = require("./impdb.js").connect();
-                    var type = this._type;
-                    var action = this.action;
                     Q.fcall(db.beginTransaction())
                         .then(db.query("USE " + db.databaseName))
-                        .then(db.query("CALL LogAction ('" + type + "', '" + username + "', '" + JSON.stringify(action) + "')"))
+                        .then(db.query("CALL LogAction ('" + this._type + "', '" + this.username + "', '" + JSON.stringify(this.action) + "')"))
                         .then(db.commit())
                         .then(db.endTransaction())
                         .catch(function (err) {
