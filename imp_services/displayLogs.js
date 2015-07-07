@@ -74,16 +74,14 @@ module.exports =
                     }
                 }
                 jsonString += ']}';
-                console.log(jsonString);
-               console.log(module.exports.verifyKey(800));
+                //console.log(jsonString);
+               //console.log(module.exports._verifyKey(800));
                 callback(jsonString);
 
             }) .then(db.endTransaction()) // This is called right?
             .catch(function (err) {
-                Q.fcall(db.rollback())
-                    .then(db.endTransaction())
+                Q.fcall().then(db.endTransaction())
                     .then(console.log("We had an error"))
-                    .done();
                 console.log("Error: " + err);
             }).done();
     }
