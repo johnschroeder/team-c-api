@@ -55,10 +55,10 @@ router.route("/").post(function(req, res) {
             res.status(503).send("ERROR: " + err);
         })
         .then(function() {
-            var logService = require('../../imp_services/implogging');
+            var logService = require('../../imp_services/implogging')(req.cookies.IMPId);
             logService.action.value = username;
             logService.setType(800);
-            logService.store(req.cookies.IMPId, function(err, results){
+            logService.store(function(err, results){
                 if(err){
                     res.status(500).send(err);
                 }
