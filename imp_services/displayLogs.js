@@ -86,27 +86,5 @@ module.exports =
                     .done();
                 console.log("Error: " + err);
             }).done();
-    },
-
-    addLog: function (LogType, username, ActionData, callback) {
-        var db = require("../imp_services/impdb.js").connect();
-
-        var call = "CALL LogAction("+ LogType + "," + "\'" + username +"\'" + "," + "\'" + ActionData + "\');";
-       // console.log(call);
-        Q.fcall(db.beginTransaction())
-            .then(db.query("USE " + db.databaseName))
-            .then(db.query(call))
-            .then(function (rows) {
-                callback("Log Added!");
-
-            }).then (db.commit())
-            .then(db.endTransaction())
-            .catch(function (err) {
-                Q.fcall(db.rollback())
-                    .then(db.endTransaction())
-                    .then(console.log("We had an error"))
-                    .done();
-                console.log("Error: " + err);
-            }).done();
     }
 };
