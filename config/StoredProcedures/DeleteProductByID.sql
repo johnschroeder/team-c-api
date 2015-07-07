@@ -17,7 +17,7 @@ group by Piles.ProductID;
 #check if customers are associated with this productID
 #let delete go through even if the product is associated with customers
 #select @countInCustomers:=count(*) from ProdCustMap where ProductID=_ProductID;
-select @Quantity;
+
 #delete sizemap entries or not?
 
 IF @Quantity=0 THEN
