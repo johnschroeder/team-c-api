@@ -46,7 +46,9 @@ module.exports = function(cookie, callback) {
                     Q.fcall(db.beginTransaction())
                         .then(db.query("USE " + db.databaseName))
                         .then(db.query("SELECT * FROM Logs WHERE LogID = last_insert_id()"))
-                        .then(db.commit())
+                        .then(function (rows) {
+                            callback(null, rows);
+                        })
                         .then(db.endTransaction())
                         .catch(function (err) {
                             console.log("Log Service Error: " + err);
@@ -55,9 +57,6 @@ module.exports = function(cookie, callback) {
                                 .then(db.endTransaction())
                                 .done();
                             callback(err, null);
-                        })
-                        .then(function (rows) {
-                            callback(null, rows);
                         })
                         .done();
                 }
