@@ -8,12 +8,11 @@ BEGIN
 set @msg='Success';
 
 #check if there are inventory associated with this productID
-select @Quantity:=total from
-(SELECT Piles.ProductID, sum(QuantityReserved+QuantityAvailable) as total
+SELECT Piles.ProductID, @Quantity:=sum(QuantityReserved+QuantityAvailable) as total
 FROM Piles
 join Runs on Runs.PileID = Piles.PileID
 where ProductID=_ProductID
-group by Piles.ProductID) as ProductInventory;
+group by Piles.ProductID;
 
 #check if customers are associated with this productID
 #let delete go through even if the product is associated with customers
