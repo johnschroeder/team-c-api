@@ -8,7 +8,7 @@ BEGIN
 set @msg='Success';
 
 #check if there are inventory associated with this productID
-select @Quantity:=Total from
+select @Quantity:=total from
 (SELECT Piles.ProductID, sum(QuantityReserved+QuantityAvailable) as total
 FROM Piles
 join Runs on Runs.PileID = Piles.PileID
