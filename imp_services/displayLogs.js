@@ -35,7 +35,7 @@ function toStringDefault (jsonObj) {
 module.exports =
 
 {
-    verifyKey :function (key) {
+    _verifyKey :function (key) {
         return LogTypeMap[key] == undefined ? false : true;
     },
 
