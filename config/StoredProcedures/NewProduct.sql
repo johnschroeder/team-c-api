@@ -10,7 +10,7 @@ BEGIN
 insert into Products values
 (null, _ProductName,_Description,_Date, 1);
 
-SELECT LAST_INSERT_ID();
+SELECT LAST_INSERT_ID() as ProductID;
 
 END $$
 

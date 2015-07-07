@@ -48,14 +48,14 @@
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
         .then(db.query("CALL NewProduct('" + req.params.productName + "','" + req.params.description + "','" + req.params.date + "')"))
-        //.then(L.updateLog(db, L.LOGTYPES.NEWPRODUCTCREATED.value, null, null, null))
+        .then(function(rows){
+            console.log("Success");
+            var productID = JSON.stringify(rows[0][0][0]);
+            res.status(200);
+            res.send(productID);
+        })
         .then(db.commit())
         .then(db.endTransaction())
-        .then(function(){
-            console.log("Success");
-            res.status(200);
-            res.send("Success");
-        })
         .catch(function(err){
             console.log("err" + err);
             Q.fcall(db.rollback())
