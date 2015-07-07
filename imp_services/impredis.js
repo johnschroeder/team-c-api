@@ -28,6 +28,7 @@ module.exports = {
                 console.log("error: " + error);
                 client.quit();
                 callback(null, error)
+
             }
             else {
                 console.log("Success");

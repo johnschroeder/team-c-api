@@ -46,13 +46,22 @@ router.route("/").post(function(req, res) {
         .then(db.query("CALL CreateUser ('" + username + "', '" + hashedPassword + "', '" + email + "', '" + salt + "', '" + firstName + "', '" + lastName + "', '" + date + "')"))
         .then(db.commit())
         .then(db.endTransaction())
-        .then(function(){
+        .then(function() {
+
+            var logsService = require('../../imp_services/displayLogs');
+            var actionData = {"value" : username };
+            var actionDataString = JSON.stringify(actionData).replace(/"/g, '\\\\"');
+            logsService.addLog(800, username, actionDataString, function success(message) {
+                console.log(message);
+            });
+
             console.log("Success");
-            SendConfirmation(email, function(err){
-                if(err){
+
+            SendConfirmation(email, function (err) {
+                if (err) {
                     res.status(503).send("ERROR: " + err);
                 }
-                else{
+                else {
                     res.send("Success");
                 }
             });

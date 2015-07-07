@@ -12,7 +12,7 @@ impredis = require("../../imp_services/impredis.js");
 
 router.route('/').get(function(req, res) {
     impredis.get(req.cookies.IMPId, function (val, error) {
-        if (err) {
+        if (error) {
             res.send("error: " + error);
         }
         else {
