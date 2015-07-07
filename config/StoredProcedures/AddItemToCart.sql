@@ -10,18 +10,16 @@ set @m='';
 call AddItemToCart(1,1,200000,501,@m);
 select @m;
 */
-
-use imp_db_dev;
 DROP PROCEDURE IF EXISTS AddItemToCart;
 
 DELIMITER $$
 CREATE PROCEDURE AddItemToCart
-(IN _CartID int, IN _SizeMapID int, IN _Quantity int, IN _RunID int, OUT _Msg varchar(512))
+(IN _CartID int unsigned, IN _SizeMapID int unsigned, IN _Quantity int unsigned, IN _RunID int, OUT _Msg varchar(512))
 BEGIN
 
 mylabel: BEGIN
-DECLARE pdtID INT;
-DECLARE sz INT;
+DECLARE pdtID int unsigned;
+DECLARE sz int unsigned;
 SELECT @pdtID:=sm.ProductID,@sz:=sm.Size
 FROM SizeMap sm
 WHERE sm.SizeMapID = _SizeMapID;

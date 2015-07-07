@@ -11,7 +11,7 @@ INSERT INTO Piles
 VALUES (null, _ProductID, _Location);
 
 INSERT INTO Runs
-VALUES (null, last_insert_id(), CURDATE(), _Quantity, _Quantity, 0);
+VALUES (null, LAST_INSERT_ID(), CURDATE(), _Quantity, _Quantity, 0);
 
 END $$
 DELIMITER ;
