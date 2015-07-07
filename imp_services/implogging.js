@@ -42,6 +42,7 @@ module.exports = function(cookie, callback) {
                         .done();
                 },
                 unstore: function(callback){
+                    var db = require("./impdb.js").connect();
                     Q.fcall(db.beginTransaction())
                         .then(db.query("USE " + db.databaseName))
                         .then(db.query("SELECT * FROM Logs WHERE LogID = last_insert_id()"))
