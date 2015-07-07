@@ -65,14 +65,14 @@ router.route("/").post(function(req, res) {
                         res.status(500).send(err);
                     }
                     else{
-                        /*SendConfirmation(email, function (err) {
+                        SendConfirmation(email, function (err) {
                             if (err) {
                                 res.status(503).send("ERROR: " + err);
                             }
                             else {
                                 res.send("Success");
                             }
-                        });*/
+                        });
                     }
                 });
             });
