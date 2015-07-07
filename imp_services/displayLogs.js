@@ -22,12 +22,8 @@ LogTypeMap[800] = {type: "Created User", callFunction:toStringDefault};
 var stringLogs = [];
 var jsonString = '{"logs":[';
 
-function toStringDefault (jsonObj) {
-    var logObj = JSON.parse(jsonObj);
-    //console.log(jsonObj);
-    var actionPiece = JSON.parse(logObj.action).value;
-    //console.log("Action Piece " + actionPiece);
-    return logObj.username + " on " + logObj.time + " " + LogTypeMap[logObj.logType].type + " " + actionPiece;
+function toStringDefault (LogType, logUsername,  time,  actionData) {
+    return logUsername + " on " + time + " " + LogTypeMap[LogType].type + " " + actionData.value;
 }
 
 
@@ -61,10 +57,12 @@ module.exports =
                     var logUsername = row.Username;
                     var time = row.Time;
                     var actionData = row.ActionData;
-                    jsonLogs[i] = '{"logID":"' + logID + '", "logType":"' + LogType +
-                        '","username":"' + logUsername + '","time":"' + time + '","action":"' + actionData + '"}';
+                    console.log(actionData);
+                    /*jsonLogs[i] = '{"logID":"' + logID + '", "logType":"' + LogType +
+                        '","username":"' + logUsername + '","time":"' + time + '","action":"' +'"' + actionData + '"' + '"}';
+                    */
 
-                    stringLogs[i] = LogTypeMap[LogType].callFunction(jsonLogs[i]);
+                    stringLogs[i] = LogTypeMap[LogType].callFunction(LogType, logUsername,  time,  JSON.parse(actionData));
                 }
 
                 for (var j = 0; j < stringLogs.length; j++) {
@@ -76,7 +74,9 @@ module.exports =
                 jsonString += ']}';
                 //console.log(jsonString);
                //console.log(module.exports._verifyKey(800));
-                callback(jsonString);
+                //callback(jsonString);
+
+               callback(jsonString);
 
             }) .then(db.endTransaction()) // This is called right?
             .catch(function (err) {
