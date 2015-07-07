@@ -2,13 +2,13 @@ var displayLogs = require("./displayLogs.js");
 var impredis = require("./impredis.js");
 var Q = require('q');
 
-module.exports = function(cookie) {
+module.exports = function(cookie, callback) {
     impredis.get(cookie, function (result, error) {
         if (error) {
             throw error;
         }
         else {
-            return {
+            callback({
                 action: {},
                 _type: null,
                 username: result ? result.username : "foobarme",
@@ -44,7 +44,7 @@ module.exports = function(cookie) {
                         .done();
 
                 }
-            }
+            });
         }
     });
 };

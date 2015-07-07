@@ -41,6 +41,8 @@ router.route("/").post(function(req, res) {
 
     console.log("Creating user with:\nUsername: " + username + "\nEmail: " + email + "\nName: " + firstName + " " + lastName);
 
+
+
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
         .then(db.query("CALL CreateUser ('" + username + "', '" + hashedPassword + "', '" + email + "', '" + salt + "', '" + firstName + "', '" + lastName + "', '" + date + "')"))
@@ -55,24 +57,26 @@ router.route("/").post(function(req, res) {
             res.status(503).send("ERROR: " + err);
         })
         .then(function() {
-            var logService = require('../../imp_services/implogging')(req.cookies.IMPId);
-            logService.action.value = username;
-            logService.setType(800);
-            logService.store(function(err, results){
-                if(err){
-                    res.status(500).send(err);
-                }
-                else{
-                    SendConfirmation(email, function (err) {
-                        if (err) {
-                            res.status(503).send("ERROR: " + err);
-                        }
-                        else {
-                            res.send("Success");
-                        }
-                    });
-                }
+            require('../../imp_services/implogging')(req.cookies.IMPId, function(logService){
+                logService.action.value = username;
+                logService.setType(800);
+                logService.store(function(err, results){
+                    if(err){
+                        res.status(500).send(err);
+                    }
+                    else{
+                        SendConfirmation(email, function (err) {
+                            if (err) {
+                                res.status(503).send("ERROR: " + err);
+                            }
+                            else {
+                                res.send("Success");
+                            }
+                        });
+                    }
+                });
             });
+
         })
         .done();
 
