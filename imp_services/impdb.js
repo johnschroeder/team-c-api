@@ -107,6 +107,7 @@ var createAPIObject = function(pool) {
         if(debug) {
             console.log("****DB****");
             console.log(Date.now() + " --- Query beginning with connection " + poolElement.ID);
+            console.log(queryInput);
             console.log("****/DB****");
         }
         handleDisconnect(poolElement); // ensures connection has not timed out
@@ -123,23 +124,35 @@ var createAPIObject = function(pool) {
     };
 
     toReturn.endTransaction = function() {
-        toReturn.commit();
-        if(debug) {
+        if(poolElement != null) {
+            if (debug) {
+                console.log("****DB****");
+                console.log(Date.now() + " --- Returning connection " + poolElement.ID + " to the pool");
+                console.log("****/DB****");
+            }
+            pool.push(poolElement); // enqueue connection (return to pool)
+            poolElement = null; // set local connection reference to null
+        } else {
             console.log("****DB****");
-            console.log(Date.now() + " --- Returning connection " + poolElement.ID + " to the pool");
+            console.log(Date.now() + " --- endTransaction called while no transaction was open.")
             console.log("****/DB****");
         }
-        pool.push(poolElement); // enqueue connection (return to pool)
-        poolElement = null; // set local connection reference to null
     };
 
     toReturn.rollback = function() {
-        if(debug) {
+        if(poolElement != null) {
+            if (debug) {
+                console.log("****DB****");
+                console.log(Date.now() + " --- Rolling back transaction with connection " + poolElement.ID);
+                console.log("****/DB****");
+            }
+            return Q.nfbind(poolElement.connection.rollback.bind(poolElement.connection));
+        } else {
             console.log("****DB****");
-            console.log(Date.now() + " --- Rolling back transaction with connection " + poolElement.ID);
+            console.log(Date.now() + " --- rollback called while no transaction was open.")
             console.log("****/DB****");
         }
-        return Q.nfbind(poolElement.connection.rollback.bind(poolElement.connection));
+
     };
 
     /**
