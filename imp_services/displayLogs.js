@@ -40,7 +40,6 @@ module.exports =
         require("../imp_services/impredis.js").get(cookie, function usernameReturn(val)
         {
             var username = val.username;
-            var jsonString = '{"logs":[';
 
             return Q.fcall(db.beginTransaction())
                 .then(db.query("USE " + db.databaseName))
@@ -59,18 +58,16 @@ module.exports =
                         var time = row.Time;
                         var actionData = row.ActionData;
 
-                        stringLogs[i] = LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData));
+                        stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
                         console.log(stringLogs[i]);
                     }
 
-                    for (var j = 0; j < stringLogs.length; j++) {
-                        jsonString += '"' + stringLogs[j] + '"';
-                        if (j + 1 < stringLogs.length) {
-                            jsonString += ',';
-                        }
-                    }
-                    jsonString += ']}';
 
+                    var jsonObject = {logs:stringLogs};
+                    stringLogs = [];
+                    var jsonString = "";
+
+                    jsonString = JSON.stringify(jsonObject);
                     callback(jsonString);
 
                 }).then(db.endTransaction())
