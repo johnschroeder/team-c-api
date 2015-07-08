@@ -20,7 +20,7 @@ group by Piles.ProductID;
 
 #delete sizemap entries or not?
 
-IF @Quantity=0 THEN
+IF (@Quantity=0 OR @Quantity is null)THEN
 	UPDATE Products SET ViewOption=0 WHERE ProductID = _ProductID;
 ELSE
 	set @msg='Error: Inventory exists for this product';
