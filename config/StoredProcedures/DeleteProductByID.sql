@@ -9,7 +9,7 @@ set @msg='Success';
 
 #check if there are inventory associated with this productID
 SELECT @Quantity:=sum(QuantityReserved+QuantityAvailable)#, Piles.ProductID
-FROM Piles
+FROM Piles 
 join Runs on Runs.PileID = Piles.PileID
 where ProductID=_ProductID
 group by Piles.ProductID;
@@ -20,7 +20,7 @@ group by Piles.ProductID;
 
 #delete sizemap entries or not?
 
-IF @Quantity=0 THEN
+IF (@Quantity=0 OR @Quantity is null)THEN
 	UPDATE Products SET ViewOption=0 WHERE ProductID = _ProductID;
 ELSE
 	set @msg='Error: Inventory exists for this product';
