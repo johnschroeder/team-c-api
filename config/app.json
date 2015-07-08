@@ -1,7 +1,7 @@
 {
     "default":{
         "port":50001,
-        "frontend": "http://local.thisisimp.com/",
+        "frontend": "http://local.thisisimp.com",
         "mysql":{
             "maxConnections":"5",
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
@@ -18,7 +18,7 @@
 
     },
     "dev":{
-        "frontend": "http://dev.thisisimp.com/",
+        "frontend": "http://dev.thisisimp.com",
         "mysql":{
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
@@ -33,7 +33,7 @@
 
     },
     "prod":{
-        "frontend": "http://www.thisisimp.com/",
+        "frontend": "http://www.thisisimp.com",
         "mysql":{
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
