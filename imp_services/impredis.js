@@ -8,7 +8,7 @@ var host=config.app.redis.host;
 module.exports = {
     get: function(key, callback) {
         var client = redis.createClient(port,host);
-        client.hgetall(cookie, function (error, val) {
+        client.hgetall(key, function (error, val) {
             if (error !== null) {
                 console.log("error: " + error);
                 client.quit();
@@ -23,7 +23,7 @@ module.exports = {
     },
     set: function(key,objName,objValue, callback){
         var client = redis.createClient(port,host);
-        client.hmset(cookie, objName,objValue,function (error, result) {
+        client.hmset(key, objName,objValue,function (error, result) {
             if (error !== null) {
                 console.log("error: " + error);
                 client.quit();
@@ -39,7 +39,6 @@ module.exports = {
     setExpiration: function(key, timeInHours){
         var client = redis.createClient(port,host);
         client.expire(key, timeInHours*60*60, function(){
-            client.quit();
             client.quit();
         });
     },
