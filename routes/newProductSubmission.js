@@ -47,7 +47,7 @@
      */
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CALL NewProduct('" + req.params.productName + "','" + req.params.description + "','" + req.params.date + "')"))
+        .then(db.query('CALL NewProduct("' + req.params.productName + '","' + req.params.description + '","' + req.params.date + '")'))
         .then(function(rows){
             console.log("Success");
             var productID = JSON.stringify(rows[0][0][0]);
