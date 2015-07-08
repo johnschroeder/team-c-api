@@ -25,7 +25,7 @@ router.route('/').post(function(req, res) {
             res.status(500).send("error: " + error);
         }
         else{
-            impredis.set("email" ,email,function (error, result) {
+            impredis.set(lookup, "email" ,email,function (error, result) {
                 if (error !== null) {
                     console.log("error: " + error);
                     res.status(500).send("error: " + error);
