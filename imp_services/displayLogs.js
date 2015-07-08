@@ -1,12 +1,4 @@
-/**
- * Created by Trevor on 7/3/2015.
- */
 var Q = require("q");
-
-/* var a = {};
- a["key1"] = "value1";
- a["key2"] = "value2";
- */
 
 var LogTypeMap = {};
 LogTypeMap[100] = {type: "Added Pile", callFunction:toStringDefault};
@@ -24,8 +16,6 @@ var stringLogs = [];
 function toStringDefault (LogType, logUsername,  time,  actionData) {
     return logUsername + " on " + time + " " + LogTypeMap[LogType].type + " " + actionData.value;
 }
-
-
 
 module.exports =
 {
@@ -59,17 +49,12 @@ module.exports =
                         var time = row.Time;
                         var actionData = row.ActionData;
 
-                        stringLogs[i] = LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData));
+                        stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
                         console.log(stringLogs[i]);
                     }
 
-                    for (var j = 0; j < stringLogs.length; j++) {
-                        jsonString += '"' + stringLogs[j] + '"';
-                        if (j + 1 < stringLogs.length) {
-                            jsonString += ',';
-                        }
-                    }
-                    jsonString += ']}';
+                    var jsonObject = {logs:stringLogs};
+                    var jsonString = JSON.stringify(jsonObject);
 
                     callback(jsonString);
 
