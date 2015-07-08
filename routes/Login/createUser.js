@@ -57,6 +57,7 @@ router.route("/").post(function(req, res) {
             res.status(503).send("ERROR: " + err);
         })
         .then(function() {
+         //TODO Make this a promise change
             require('../../imp_services/implogging')(req.cookies.IMPId, function(logService){
                 logService.action.value = username;
                 logService.setType(800);
