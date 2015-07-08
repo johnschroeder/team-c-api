@@ -1,0 +1,12 @@
+DROP PROCEDURE IF EXISTS RemoveCustomersByProductID;
+
+DELIMITER $$
+CREATE PROCEDURE RemoveCustomersByProductID
+(IN _ProductID INT)
+BEGIN
+
+DELETE FROM ProdCustMap
+WHERE ProductID = _ProductID;
+
+END $$
+DELIMITER ;
