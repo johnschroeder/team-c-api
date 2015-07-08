@@ -9,7 +9,7 @@ set @msg='Success';
 
 #check if there are inventory associated with this productID
 SELECT @Quantity:=sum(QuantityReserved+QuantityAvailable)#, Piles.ProductID
-FROM Piles
+FROM Piles 
 join Runs on Runs.PileID = Piles.PileID
 where ProductID=_ProductID
 group by Piles.ProductID;
