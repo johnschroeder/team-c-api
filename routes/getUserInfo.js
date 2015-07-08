@@ -13,7 +13,7 @@ router.route('/').get(function(req, res) {
         else {
             Q.fcall(db.beginTransaction())
                 .then(db.query("USE " + db.databaseName))
-                .then(db.query("SELECT FirstName, LastName, Email FROM Users WHERE username="+val.username))
+                .then(db.query("CALL GetUserInfo ('"+val.username+"')"))
                 .then(function(rows, columns){
                     res.send(rows[0])
                 })
