@@ -34,7 +34,7 @@ router.route('/').post( function(req,res){
                     console.log("Hash match!");
                     res.cookie('IMPId', cookie, {secure: false, maxAge: 24* 60 * 60 * 1000, httpOnly: false});
                     res.send(cookie);
-                    impredis.set(cookie, username, {}, function(result, error){
+                    impredis.set(cookie, "username", username, function(result, error){
                         if(error){
                             res.status(500).send("ERROR: "+error);
                         }
