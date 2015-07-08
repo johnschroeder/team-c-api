@@ -1,7 +1,3 @@
-/**
- * Created by Trevor on 6/26/2015.
- */
-
 var express = require("express");
 var router = express.Router();
 var Q = require('q');
