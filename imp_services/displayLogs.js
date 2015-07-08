@@ -30,7 +30,6 @@ module.exports =
         require("../imp_services/impredis.js").get(cookie, function usernameReturn(val)
         {
             var username = val.username;
-            var jsonString = '{"logs":[';
 
             return Q.fcall(db.beginTransaction())
                 .then(db.query("USE " + db.databaseName))
