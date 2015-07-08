@@ -106,7 +106,7 @@ var SendConfirmation = function(email, callback){
                         },
                         Body: {
                             Text: {
-                                Data: "Please visit "+config.app.frontend+"/"+lookup+" to confirm your email"
+                                Data: "Please visit "+config.app.frontend+"/lookup/"+lookup+" to confirm your email"
                             }
                         }
                     }
