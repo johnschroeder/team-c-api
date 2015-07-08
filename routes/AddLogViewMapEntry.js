@@ -18,14 +18,16 @@ router.route("/:username/:logId").get(function(req, res) {
         .then(db.query("CALL AddLogViewMapEntry ('" + req.params.username + "', " + req.params.logId + ")"))
         .then(function(rows){
             var queryResult = JSON.stringify(rows[0][0]);
-            console.log("Query result:   " + queryResult);
+            console.log("Attempt to add entry to LogViewMap - Query result:   " + queryResult);
             res.send(queryResult);
-            db.endTransaction();
         })
+        .then(db.commit())
+        .then(db.endTransaction())
 
         .catch(function(err){
             Q.fcall(db.rollback())
-                .then(db.endTransaction());
+                .then(db.endTransaction())
+                .done();
             console.log("Error: " + err);
             //console.error(err.stack);
             res.status(503).send("ERROR: " + err);
