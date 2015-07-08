@@ -17,7 +17,7 @@ router.route('/').get(function(req, res) {
             res.send("error: " + error);
         }
         else {
-            res.send(val);
+            res.send(val.stateObject);
         }
     })
     });
