@@ -28,13 +28,6 @@
     /**
      *  Package up some values from the route
      */
-    var productName = req.params.productName;
-    var description = req.params.description;
-    var date = req.params.date;
-    var values = "(NULL, "
-        + mySQL.escape(productName) + ", "
-        + mySQL.escape(description) + ", "
-        + mySQL.escape(date.toString()) + ")";
 
     /**
      * The initial use of Q.fcall() is required to kickstart the chain.
@@ -54,29 +47,17 @@
      */
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("INSERT INTO " + db.productTable + " VALUES " + values))
-    /**
-     * The args here are results of the previous promise's wrapped function.
-     * Note that I had to make the function in the then a promise by using the
-     * defer() method to allow for further chaining.  This part is only necessary
-     * if you need results from one of the wrapped method beyond success/failure.
-     * Uncomment the console log to see that it's accessing values from the table
-     */
+        .then(db.query("CALL NewProduct('" + req.params.productName + "','" + req.params.description + "','" + req.params.date + "')"))
         .then(function(rows){
-            var deferred = Q.defer();
-            //console.log(rows);
-            deferred.resolve();
-            return deferred.promise;
+            console.log("Success");
+            var productID = JSON.stringify(rows[0][0][0]);
+            res.status(200);
+            res.send(productID);
         })
-        .then(L.updateLog(db, L.LOGTYPES.NEWPRODUCTCREATED.value, null, null, null))
         .then(db.commit())
         .then(db.endTransaction())
-        .then(function(){
-            console.log("Success");
-            res.status(200).send();
-            res.send("Success");
-        })
         .catch(function(err){
+            console.log("err" + err);
             Q.fcall(db.rollback())
                 .then(db.endTransaction())
                 .done();

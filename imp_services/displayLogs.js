@@ -20,7 +20,6 @@ LogTypeMap[800] = {type: "Created User", callFunction:toStringDefault};
 
 
 var stringLogs = [];
-var jsonString = '{"logs":[';
 
 function toStringDefault (LogType, logUsername,  time,  actionData) {
     return logUsername + " on " + time + " " + LogTypeMap[LogType].type + " " + actionData.value;
@@ -41,6 +40,7 @@ module.exports =
         require("../imp_services/impredis.js").get(cookie, function usernameReturn(val)
         {
             var username = val.username;
+            var jsonString = '{"logs":[';
 
             return Q.fcall(db.beginTransaction())
                 .then(db.query("USE " + db.databaseName))
@@ -50,8 +50,6 @@ module.exports =
                     if (rows[0][0].length == 0) { // No user by that username
                         return "Invalid Result!";
                     }
-
-                    var jsonLogs = [];
 
                     for (var i = 0; i < rows[0][0].length; i++) {
                         var row = rows[0][0][i];
