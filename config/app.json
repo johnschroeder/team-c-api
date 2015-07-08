@@ -62,7 +62,11 @@
         }
     },
     "claudiu":{
-
+        "mysql":{
+            "host":"localhost",
+            "user":"username",
+            "password":"password"
+        }
     },
     "elijah":{
         "mysql":{

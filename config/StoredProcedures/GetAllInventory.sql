@@ -5,14 +5,16 @@ DELIMITER $$
 CREATE PROCEDURE GetAllInventory()
 BEGIN
 
-select s1.*,s2.RunID as LastRunID,s2.InitialQuantity as LastRunInitialQuantity
+select c.name as Customer,s1.*,s2.RunID as LastRunID,s2.InitialQuantity as LastRunInitialQuantity
 from
-(select p.ProductID, p.Name as ProductName,
+(select c.name,p.ProductID, p.Name as ProductName,
 sum(r.QuantityAvailable) as TotalQuantity,
 max(r.DateCreated) as LastRunDate
 from Runs r
 join Piles pl on pl.PileID = r.PileID
 join Products p on pl.ProductID = p.ProductID
+join ProdCustMap pcm on pl.ProductID = pcm.ProductID
+join Customers c on pcm.CustomerID = c.CustomerID
 group by p.ProductID) as s1
 
 join
