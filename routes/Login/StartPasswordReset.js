@@ -48,6 +48,7 @@ router.route('/').post(function(req, res) {
 
 var sendEmail = function(email, lookup, callback){
     var ses = new aws.SES({apiVersion: '2010-12-01', region:'us-west-2'});
+    // NOTE: To change the Source email, you must first register a new one with AWS SES
     ses.sendEmail( {
             Source: 'nick@stevensis.com',
             Destination: { ToAddresses: [email] },
