@@ -2,7 +2,7 @@ var express = require("express");
 var Q = require('q');
 var router = express.Router();
 var crypto = require('crypto');
-var impredis = require("../../imp_services/redislookup.js");
+var impredis = require("../../imp_services/impredis.js");
 
 
 /*
