@@ -54,9 +54,8 @@ module.exports =
                     }
 
                     var jsonObject = {logs:stringLogs};
-                    var jsonString = JSON.stringify(jsonObject);
 
-                    callback(jsonString);
+                    callback(JSON.stringify(jsonObject));
 
                 }).then(db.endTransaction())
                 .catch(function (err) {
