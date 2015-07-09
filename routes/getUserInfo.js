@@ -16,7 +16,7 @@ router.route('/').get(function(req, res) {
                 .then(db.query("USE " + db.databaseName))
                 .then(db.query("CALL GetUserInfo ('"+val.username+"')"))
                 .then(function(rows, columns){
-                    res.send(rows[0][0])
+                    res.send(rows[0][0][0])
                 })
                 .catch(function(err){
                     Q.fcall(db.rollback())
