@@ -43,7 +43,7 @@ app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
 
 
 //Middleware for verifying a user is logged in before hittin a route
-/*app.use(function(req,res,next)
+app.use(function(req,res,next)
 {
     var port=config.app.redis.port;
     var host=config.app.redis.host;
@@ -60,7 +60,7 @@ app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
             res.status(404).send("User not Found");
         }
     });
-});*/
+});
 
 
 
