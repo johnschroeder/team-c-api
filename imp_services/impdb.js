@@ -4,7 +4,8 @@ var Q = require("q");
 
 // Modify the number of allowed connections here (please limit to 3 for development)
 var MAX_CONNECTIONS = config.app.mysql.maxConnections;
-
+var connectionID = 0;
+var debug = config.app.mysql.debug === "true";
 var pool = false; // pool doesn't yet exist.  This should only be the case on server restart
 
 exports.connect = function() {
@@ -21,12 +22,22 @@ var createPool = function() {
     pool = [];
     for(var i = 0; i < MAX_CONNECTIONS; ++i)
     {
-        var connection = mySQL.createConnection({
-            host: config.app.mysql.host,
-            user: config.app.mysql.user,
-            password: config.app.mysql.password
-        });
-        pool.push(connection);
+        var poolElement =
+        {
+            connection:mySQL.createConnection({
+                host: config.app.mysql.host,
+                user: config.app.mysql.user,
+                password: config.app.mysql.password
+            }),
+            ID: connectionID++
+
+        };
+        if(debug) {
+            console.log("****DB****");
+            console.log(Date.now() + " --- Connection " + poolElement.ID + " added to pool.");
+            console.log("****/DB****");
+        }
+        pool.push(poolElement);
     }
     return createAPIObject(pool);
 };
@@ -36,7 +47,7 @@ var createPool = function() {
  */
 var createAPIObject = function(pool) {
     /* Connects to mySQL server */
-    var connection = null;
+    var poolElement = null;
 
     var toReturn = {};
     toReturn.databaseName = config.app.mysql.databaseName;
@@ -57,10 +68,14 @@ var createAPIObject = function(pool) {
     toReturn.spGetCartsByUser = "GetCartsByUser";
     toReturn.spEditCartItem = "EditCartItem";
 
-    toReturn.beginTransaction = function(x) {
+    toReturn.beginTransaction = function(numberOfAttempts) {
         if(pool.length <= 0) {
-            console.log("Error: No database connections available");
-            var attempts = x || 0;
+            if(debug) {
+                console.log("****DB****");
+                console.log(Date.now() + " --- Error: No database connections available");
+                console.log("****/DB****");
+            }
+            var attempts = numberOfAttempts || 0;
             if(attempts < 5){
                 setTimeout(function(){
                     this.beginTransaction(attempts+1);
@@ -68,39 +83,83 @@ var createAPIObject = function(pool) {
                 
             }
             else{
+                if(debug) {
+                    console.log("****DB****");
+                    console.log(Date.now() + " --- No connections available after 5 attempts.");
+                    console.log("****/DB****");
+                }
                 throw "Connection could not be established, no pooled connection available after 5 attempts";
             }
         }
         else{
-            connection = pool.shift(); // dequeue from pool
-            handleDisconnect(connection); // ensures connection has not timed out
-            return Q.nfbind(connection.beginTransaction.bind(connection));
+            poolElement = pool.shift(); // dequeue from pool
+            if(debug) {
+                console.log("****DB****");
+                console.log(Date.now() + " --- Transaction begun with connection " + poolElement.ID);
+                console.log("****/DB****");
+            }
+            handleDisconnect(poolElement); // ensures connection has not timed out
+            return Q.nfbind(poolElement.connection.beginTransaction.bind(poolElement.connection));
         }
     };
 
     toReturn.query = function(queryInput) {
-        handleDisconnect(connection); // ensures connection has not timed out
-        return Q.nfbind(connection.query.bind(connection, queryInput));
+        if(debug) {
+            console.log("****DB****");
+            console.log(Date.now() + " --- Query beginning with connection " + poolElement.ID);
+            console.log(queryInput);
+            console.log("****/DB****");
+        }
+        handleDisconnect(poolElement); // ensures connection has not timed out
+        return Q.nfbind(poolElement.connection.query.bind(poolElement.connection, queryInput));
     };
 
     toReturn.commit = function() {
-        return Q.nfbind(connection.commit.bind(connection));
+        if(debug) {
+            console.log("****DB****");
+            console.log(Date.now() + " --- Committing transaction with connection " + poolElement.ID);
+            console.log("****/DB****");
+        }
+        return Q.nfbind(poolElement.connection.commit.bind(poolElement.connection));
     };
 
     toReturn.endTransaction = function() {
-        pool.push(connection); // enqueue connection (return to pool)
-        connection = null; // set local connection reference to null
+        if(poolElement != null) {
+            if (debug) {
+                console.log("****DB****");
+                console.log(Date.now() + " --- Returning connection " + poolElement.ID + " to the pool");
+                console.log("****/DB****");
+            }
+            pool.push(poolElement); // enqueue connection (return to pool)
+            poolElement = null; // set local connection reference to null
+        } else {
+            console.log("****DB****");
+            console.log(Date.now() + " --- endTransaction called while no transaction was open.")
+            console.log("****/DB****");
+        }
     };
 
     toReturn.rollback = function() {
-        return Q.nfbind(connection.rollback.bind(connection));
+        if(poolElement != null) {
+            if (debug) {
+                console.log("****DB****");
+                console.log(Date.now() + " --- Rolling back transaction with connection " + poolElement.ID);
+                console.log("****/DB****");
+            }
+            return Q.nfbind(poolElement.connection.rollback.bind(poolElement.connection));
+        } else {
+            console.log("****DB****");
+            console.log(Date.now() + " --- rollback called while no transaction was open.")
+            console.log("****/DB****");
+        }
+
     };
 
     /**
      * SO code.  handles timeouts
      */
-    function handleDisconnect(connection) {
-        connection.on('error', function(err) {
+    function handleDisconnect(poolElement) {
+        poolElement.connection.on('error', function(err) {
             if (!err.fatal) {
                 return;
             }
@@ -109,11 +168,18 @@ var createAPIObject = function(pool) {
                 throw err;
             }
 
-            console.log('Re-connecting lost connection: ' + err.stack);
 
-            connection = mySQL.createConnection(connection.config);
-            handleDisconnect(connection);
-            connection.connect();
+            if(debug) {
+                console.log("****DB****");
+                console.log(Date.now() + " --- Connection " + poolElement.ID + " was disconnected.  Reconnecting.");
+            }
+            poolElement.connection = mySQL.createConnection(poolElement.connection.config);
+            handleDisconnect(poolElement);
+            poolElement.connection.connect();
+            if(debug) {
+                console.log(Date.now() + " --- Connection " + poolElement.ID + " reconnected.")
+                console.log("****/DB****");
+            }
         });
     }
 

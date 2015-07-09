@@ -1,11 +1,11 @@
+/**
+ * Created by Elijah on 7/8/15.
+ */
 var mySQL = require("mysql");
 var express = require("express");
 var router = express.Router();
 var Q = require('q');
-/*
- Usage:
- localhost:50001/Carts/GetProductByID/ProductID
- */
+
 router.route("/:ProductID").get(function(req, res) {
 
     //Q.longStackSupport = true;
@@ -17,13 +17,13 @@ router.route("/:ProductID").get(function(req, res) {
     var ProductID = req.params.ProductID;
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CALL GetProductByID" + "('" + ProductID + "');"))
-        .then(function(rows, columns){
+        .then(db.query("CALL removeCustomersByProductID" + "('" + ProductID + "');"))
+        .then(function(){
             console.log("Success");
-            var invUnit = JSON.stringify(rows[0][0]);
-            res.send(invUnit);
-            db.endTransaction();
+            res.send("Success");
         })
+        .then(db.commit())
+        .then(db.endTransaction())
         .catch(function(err){
             Q.fcall(db.rollback())
                 .then(db.endTransaction());

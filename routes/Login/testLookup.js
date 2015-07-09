@@ -6,7 +6,7 @@ var impredis = require("../../imp_services/impredis.js");
 
 /*
  Usage:
- www.thisisimp.com/login/testresetidentifier/:lookup
+ www.thisisimp.com/login/testLookup/:lookup
  */
 
 router.route("/:lookup").get(function(req, res) {

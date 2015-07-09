@@ -43,24 +43,35 @@ router.route("/").post(function(req, res) {
         .then(db.query("CALL CreateUser ('" + username + "', '" + hashedPassword + "', '" + email + "', '" + salt + "', '" + firstName + "', '" + lastName + "', '" + date + "')"))
         .then(db.commit())
         .then(db.endTransaction())
-        .then(function(){
-            console.log("Success");
-            SendConfirmation(email, function(err){
-                if(err){
-                    res.status(503).send("ERROR: " + err);
-                }
-                else{
-                    res.send("Success");
-                }
-            });
-
-        })
         .catch(function(err){
             console.log("Error: " + err);
             Q.fcall(db.rollback())
                 .then(db.endTransaction())
                 .done();
             res.status(503).send("ERROR: " + err);
+        })
+        .then(function() {
+         //TODO Make this a promise chain
+            require('../../imp_services/implogging')(req.cookies.IMPId, function(logService){
+                logService.action.value = username;
+                logService.setType(800);
+                logService.store(function(err, results){
+                    if(err){
+                        res.status(500).send(err);
+                    }
+                    else{
+                        SendConfirmation(email, function (err) {
+                            if (err) {
+                                res.status(503).send("ERROR: " + err);
+                            }
+                            else {
+                                res.send("Success");
+                            }
+                        });
+                    }
+                });
+            });
+
         })
         .done();
 
