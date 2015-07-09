@@ -31,10 +31,10 @@ IF flag = false THEN # no foreign key errors
 		INSERT INTO LogViewMap
 		VALUES (_Username, _LogID);
 	END IF;
-		# show entry
-		SELECT *
-		FROM LogViewMap
-		WHERE Username = _Username AND LogID = _LogID;
+	# show entry
+	SELECT *
+	FROM LogViewMap
+	WHERE Username = _Username AND LogID = _LogID;
 ELSE # foreign key errors
 	SELECT message;
 END IF;
