@@ -15,11 +15,12 @@ router.route("/:productID").get(function(req,res){
         .then(db.query("USE " + db.databaseName))
         .then(db.query("CALL DeleteProductByID(" + req.params.productID+");"))
         .then(function(rows){
-            console.log("Success");
+            console.log("Product "+req.params.productID+" is deleted Successfully.");
             var invUnit = JSON.stringify(rows[0][1]);
             res.send(invUnit);
-            db.endTransaction();
         })
+        .then(db.commit())
+        .then(db.endTransaction())
         .catch(function(err){
             Q.fcall(db.rollback())
                 .then(db.endTransaction());

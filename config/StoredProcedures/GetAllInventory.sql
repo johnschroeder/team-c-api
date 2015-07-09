@@ -1,4 +1,3 @@
-use imp_db_dev;
 DROP PROCEDURE IF EXISTS GetAllInventory;
 
 DELIMITER $$
@@ -13,7 +12,7 @@ max(r.DateCreated) as LastRunDate
 from Products p
 left join Piles pl on pl.ProductID = p.ProductID
 left join Runs r on pl.PileID = r.PileID
-
+where p.ViewOption != 0
 group by p.ProductID) as s1
 
 left join
