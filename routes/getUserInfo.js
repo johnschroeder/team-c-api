@@ -14,9 +14,14 @@ router.route('/').get(function(req, res) {
         else {
             Q.fcall(db.beginTransaction())
                 .then(db.query("USE " + db.databaseName))
-                .then(db.query("CALL GetUserInfo ('"+val.username+"')"))
+                .then(db.query("CALL GetUserByUsername ('"+val.username+"')"))
                 .then(function(rows, columns){
-                    res.send(rows[0][0][0])
+                    var response = rows[0][0][0];
+                    res.send({
+                        FirstName: response.FirstName,
+                        LastName: response.LastName,
+                        Email: response.Email
+                    })
                 })
                 .catch(function(err){
                     Q.fcall(db.rollback())
