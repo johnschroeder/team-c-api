@@ -1,12 +1,4 @@
-/**
- * Created by Trevor on 7/3/2015.
- */
 var Q = require("q");
-
-/* var a = {};
- a["key1"] = "value1";
- a["key2"] = "value2";
- */
 
 var LogTypeMap = {};
 LogTypeMap[100] = {type: "Added Pile", callFunction:toStringDefault};
@@ -25,8 +17,6 @@ function toStringDefault (LogType, logUsername,  time,  actionData) {
     return logUsername + " on " + time + " " + LogTypeMap[LogType].type + " " + actionData.value;
 }
 
-
-
 module.exports =
 {
     _verifyKey: function (key) {
@@ -40,7 +30,6 @@ module.exports =
         require("../imp_services/impredis.js").get(cookie, function usernameReturn(val)
         {
             var username = val.username;
-            var jsonString = '{"logs":[';
 
             return Q.fcall(db.beginTransaction())
                 .then(db.query("USE " + db.databaseName))
@@ -59,19 +48,13 @@ module.exports =
                         var time = row.Time;
                         var actionData = row.ActionData;
 
-                        stringLogs[i] = LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData));
+                        stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
                         console.log(stringLogs[i]);
                     }
 
-                    for (var j = 0; j < stringLogs.length; j++) {
-                        jsonString += '"' + stringLogs[j] + '"';
-                        if (j + 1 < stringLogs.length) {
-                            jsonString += ',';
-                        }
-                    }
-                    jsonString += ']}';
+                    var jsonObject = {logs:stringLogs};
 
-                    callback(jsonString);
+                    callback(JSON.stringify(jsonObject));
 
                 }).then(db.endTransaction())
                 .catch(function (err) {
