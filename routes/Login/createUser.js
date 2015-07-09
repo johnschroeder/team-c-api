@@ -80,13 +80,14 @@ router.route("/").post(function(req, res) {
 
 //TODO, make this a promise chain
 var SendConfirmation = function(email, callback){
+    var lookup = uuid.v4();
     impredis.set(lookup,"type","create", function(error, result){
         if (error !== null) {
             console.log("error: " + error);
             callback(error);
         }
         else {
-            impredis.set("email", email, function (error, result) {
+            impredis.set(lookup, "email", email, function (error, result) {
                 if (error !== null) {
                     console.log("error: " + error);
                     callback(error);
@@ -94,7 +95,7 @@ var SendConfirmation = function(email, callback){
                 else {
                     console.log("Success");
                     impredis.setExpiration(lookup, 24);
-                    sendEmail(email, function (err, data) {
+                    sendEmail(email, lookup, function (err, data) {
                         callback(err, data);
                     })
                 }
@@ -104,9 +105,8 @@ var SendConfirmation = function(email, callback){
 
 };
 
-var sendEmail = function(email, callback){
+var sendEmail = function(email, lookup, callback){
     var ses = new aws.SES({apiVersion: '2010-12-01', region:'us-west-2'});
-    var lookup = uuid.v4();
     ses.sendEmail( {
             Source: 'nick@stevensis.com',
             Destination: { ToAddresses: [email] },

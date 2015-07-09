@@ -50,7 +50,7 @@ module.exports = {
     },
     exists: function(key, callback){
         var client = redis.createClient(port,host);
-        client.del(key, function(err, result){
+        client.exists(key, function(error, result){
             if (error !== null) {
                 console.log("error: " + error);
                 client.quit();
