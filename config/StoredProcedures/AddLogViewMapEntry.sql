@@ -23,7 +23,6 @@ IF NOT EXISTS (SELECT * FROM Logs WHERE LogID = _LogID) THEN
 	SET message = CONCAT(message, ' LogID: ', _LogID, ' doesn\'t exist.');
 END IF;
 
-
 IF flag = false THEN # no foreign key errors
 	# check if entry already exists
 	IF NOT EXISTS (SELECT * FROM LogViewMap WHERE LogID = _LogID AND Username = _Username) THEN
