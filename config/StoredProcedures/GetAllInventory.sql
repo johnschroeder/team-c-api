@@ -1,4 +1,3 @@
-use imp_db_dev;
 DROP PROCEDURE IF EXISTS GetAllInventory;
 
 DELIMITER $$
@@ -10,12 +9,13 @@ from
 (select p.ProductID, p.Name as ProductName,
 sum(r.QuantityAvailable) as TotalQuantity,
 max(r.DateCreated) as LastRunDate
-from Runs r
-join Piles pl on pl.PileID = r.PileID
-join Products p on pl.ProductID = p.ProductID
+from Products p
+left join Piles pl on pl.ProductID = p.ProductID
+left join Runs r on pl.PileID = r.PileID
+where p.ViewOption != 0
 group by p.ProductID) as s1
 
-join
+left join
 (select r2.InitialQuantity, r2.DateCreated,r2.RunID, s3.ProductID
 from
 (select Max(r.RunID) as RunID, pl.ProductID
