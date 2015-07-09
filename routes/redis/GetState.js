@@ -11,9 +11,8 @@ var router = express.Router();
 impredis = require("../../imp_services/impredis.js");
 
 router.route('/').get(function(req, res) {
-    var impredis = require('../imp_services/implogging');
-    impredis.get(req.cookies.IMPId, function (val, error) {
-        if (error) {
+    impredis.get(req.cookies.IMPId, function (error, val) {
+        if (err) {
             res.send("error: " + error);
         }
         else {

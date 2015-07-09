@@ -13,7 +13,7 @@ impredis = require("../../imp_services/impredis.js");
 
 //TODO Make sure navigation object stringifies and parses stateObject request and response
 router.route('/:stateObject').get(function(req, res) {
-    impredis.set(req.cookies.IMPId, "stateObject",req.params.stateObject,function(result, error){
+    impredis.set(req.cookies.IMPId, "stateObject",req.params.stateObject,function(error, result){
         if(error){
             res.send("error: " + error);
         }

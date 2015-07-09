@@ -7,7 +7,7 @@ impredis = require("../imp_services/impredis.js");
 router.route('/').get(function(req, res) {
     var implogging = require('../imp_services/implogging');
     var db = require("../imp_services/impdb.js").connect();
-    impredis.get(req.cookies.IMPId, function (val, error) {
+    impredis.get(req.cookies.IMPId, function (error, val) {
         if (error) {
             res.send("error: " + error);
         }
