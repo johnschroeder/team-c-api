@@ -5,11 +5,11 @@ var router = express.Router();
 
 /*
  Usage:
- localhost:50001/AddLogViewMapEntry/Username/LogID
+ localhost:50001/Logging/AddLogViewMapEntry/Username/LogID
  */
 
 router.route("/:username/:logId").get(function(req, res) {
-    var db = require("../imp_services/impdb.js").connect();
+    var db = require("../../imp_services/impdb.js").connect();
 
     //Q.longStackSupport = true;   // for error checking
 
