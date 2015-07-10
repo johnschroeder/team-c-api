@@ -23,6 +23,8 @@ router.route('/').get(function(req, res) {
                         Email: response.Email
                     })
                 })
+                .then(db.commit())
+                .then(db.endTransaction())
                 .catch(function(err){
                     Q.fcall(db.rollback())
                         .then(db.endTransaction());
