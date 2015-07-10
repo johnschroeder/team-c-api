@@ -1,12 +1,4 @@
-/**
- * Created by Trevor on 7/3/2015.
- */
 var Q = require("q");
-
-/* var a = {};
- a["key1"] = "value1";
- a["key2"] = "value2";
- */
 
 var LogTypeMap = {};
 LogTypeMap[100] = {type: "Added Pile", callFunction:toStringDefault};
@@ -24,8 +16,6 @@ var stringLogs = [];
 function toStringDefault (LogType, logUsername,  time,  actionData) {
     return logUsername + " on " + time + " " + LogTypeMap[LogType].type + " " + actionData.value;
 }
-
-
 
 module.exports =
 {
@@ -62,20 +52,20 @@ module.exports =
                         console.log(stringLogs[i]);
                     }
 
-
                     var jsonObject = {logs:stringLogs};
-                    stringLogs = [];
-                    var jsonString = "";
 
-                    jsonString = JSON.stringify(jsonObject);
-                    callback(jsonString);
+                    callback(JSON.stringify(jsonObject));
 
-                }).then(db.endTransaction())
+                })
+                .then(db.commit())
+                .then(db.endTransaction())
                 .catch(function (err) {
-                    Q.fcall().then(db.endTransaction())
-                        .then(console.log("We had an error"));
+                    Q.fcall(db.rollback())
+                        .then(db.endTransaction());
+                    console.log("We had an error");
                     console.log("Error: " + err);
-                }).done();
+                })
+                .done();
         })
     }
 };

@@ -1,34 +1,27 @@
 var express = require("express");
 var Q = require('q');
 var router = express.Router();
-var redis = require('redis');
 var config = require("konfig")();
 var aws = require('aws-sdk');
-
-var port=config.app.redis.port;
-var host=config.app.redis.host;
+var impredis = require("../../imp_services/impredis.js");
 
 
 
 
 router.route('/:lookup').get(function(req, res) {
-    var client = redis.createClient(port,host);
-    client.hgetall(req.params.lookup, function (error, val) {
+    impredis.get(req.params.lookup, function (error, val) {
         if (error !== null) {
             console.log("error: " + error);
-            client.quit();
             res.send("error: " + error);
         }
         else {
             console.log(val);
             confirmUser(val.email, function(err){
                 if(err){
-                    client.quit();
                     res.status(503).send("ERROR: " + err);
                 }
                 else{
-                    client.del(req.params.lookup);
-                    client.quit();
+                    impredis.delete(req.params.lookup);
                     res.send("success!");
                 }
             })

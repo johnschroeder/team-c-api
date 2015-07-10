@@ -1,23 +1,26 @@
+/**
+ * Created by Elijah on 7/8/15.
+ */
+var mySQL = require("mysql");
 var express = require("express");
-var mysql = require("mysql");
 var router = express.Router();
 var Q = require('q');
 
+router.route("/:ProductID").get(function(req, res) {
 
-router.route("/:ProductID/:productName/:description").get(function(req, res) {
     //Q.longStackSupport = true;
     var db = require("../imp_services/impdb.js").connect();
-    var prodID= req.params.ProductID;
-    var productName = req.params.productName;
-    var description = req.params.description;
-    console.log("Call EditProductByID(" +prodID + ", '" + productName + "', '" + description + "');")
+
+    /**
+     *  Package up some values from the route
+     */
+    var ProductID = req.params.ProductID;
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("Call EditProductByID(" +prodID + ", '" + productName + "', '" + description + "');"))
-        .then(function(rows){
+        .then(db.query("CALL removeCustomersByProductID" + "('" + ProductID + "');"))
+        .then(function(){
             console.log("Success");
-            var invUnit = JSON.stringify(rows[0]);
-            res.send(invUnit);
+            res.send("Success");
         })
         .then(db.commit())
         .then(db.endTransaction())

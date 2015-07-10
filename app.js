@@ -1,7 +1,6 @@
 var express = require('express');
 var config = require('konfig')();
 var glob = require('glob');
-var redis = require('redis');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 
@@ -40,18 +39,14 @@ app.use("/Login/login", require(process.cwd()+"/routes/Login/login"));
 app.use("/Login/confirmUser", require(process.cwd()+"/routes/Login/confirmUser"));
 app.use("/Login/createUser", require(process.cwd()+"/routes/Login/createUser"));
 app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
-app.use("/Login/StartPasswordReset", require(process.cwd()+"/routes/Login/StartPasswordReset"));
-app.use("/Login/CompletePasswordReset", require(process.cwd()+"/routes/Login/CompletePasswordReset"));
 
 
 //Middleware for verifying a user is logged in before hittin a route
 app.use(function(req,res,next)
 {
-    var port=config.app.redis.port;
-    var host=config.app.redis.host;
-    var client = redis.createClient(port,host);
+    var impredis = require("./imp_services/impredis.js");
     console.log(req.cookies.IMPId);
-    client.exists(req.cookies.IMPId, function(err, reply) {
+    impredis.exists(req.cookies.IMPId, function(err, reply) {
         if(reply == 1) {
             console.log("Successfully Authenticated!");
             next();
@@ -64,6 +59,9 @@ app.use(function(req,res,next)
     });
 });
 
+
+
+
 //Adds all the routes by path to the app
 var path = process.cwd()+'/routes';
 glob.sync('**/*.js',{'cwd':path}).forEach(
@@ -74,8 +72,6 @@ glob.sync('**/*.js',{'cwd':path}).forEach(
         }
     }
 );
-
-
 app.use('*', function(req, res){
     console.log("Error trying to display route: "+req.path);
     res.status(404).send("Nothing Found");

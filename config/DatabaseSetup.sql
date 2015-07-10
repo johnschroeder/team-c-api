@@ -108,7 +108,8 @@ CREATE TABLE LogViewMap (
 Username varchar(25),
 LogID int unsigned,
 FOREIGN KEY (LogID) REFERENCES Logs(LogID) ON DELETE CASCADE,
-FOREIGN KEY (Username) REFERENCES Users(Username) ON DELETE CASCADE
+FOREIGN KEY (Username) REFERENCES Users(Username) ON DELETE CASCADE,
+UNIQUE (Username, LogID)
 );
 
 CREATE TABLE Cart (
