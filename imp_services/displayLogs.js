@@ -56,12 +56,16 @@ module.exports =
 
                     callback(JSON.stringify(jsonObject));
 
-                }).then(db.endTransaction())
+                })
+                .then(db.commit())
+                .then(db.endTransaction())
                 .catch(function (err) {
-                    Q.fcall().then(db.endTransaction())
-                        .then(console.log("We had an error"));
+                    Q.fcall(db.rollback())
+                        .then(db.endTransaction());
+                    console.log("We had an error");
                     console.log("Error: " + err);
-                }).done();
+                })
+                .done();
         })
     }
 };

@@ -46,6 +46,8 @@ router.route('/').post( function(req,res){
                 }
             }
         })
+        .then(db.commit())
+        .then(db.endTransaction())
         .catch(function(err){
             Q.fcall(db.rollback())
                 .then(db.endTransaction())

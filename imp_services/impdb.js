@@ -16,6 +16,36 @@ exports.connect = function() {
 };
 
 /**
+ * SO code.  handles timeouts
+ */
+function handleDisconnect(poolElement) {
+
+    poolElement.connection.on('error', function(err) {
+        if (!err.fatal) {
+            return;
+        }
+
+        if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
+            throw err;
+        }
+
+
+        if(debug) {
+            console.log("****DB****");
+            console.log(Date.now() + " --- Connection " + poolElement.ID + " was disconnected.  Reconnecting.");
+        }
+        poolElement.connection = mySQL.createConnection(poolElement.connection.config);
+        handleDisconnect(poolElement);
+        poolElement.connection.connect();
+        if(debug) {
+            console.log(Date.now() + " --- Connection " + poolElement.ID + " reconnected.")
+            console.log("****/DB****");
+        }
+    });
+}
+
+
+/**
  * Creates the connection pool
  */
 var createPool = function() {
@@ -37,6 +67,7 @@ var createPool = function() {
             console.log(Date.now() + " --- Connection " + poolElement.ID + " added to pool.");
             console.log("****/DB****");
         }
+        handleDisconnect(poolElement); // ensures connection has not timed out
         pool.push(poolElement);
     }
     return createAPIObject(pool);
@@ -98,7 +129,6 @@ var createAPIObject = function(pool) {
                 console.log(Date.now() + " --- Transaction begun with connection " + poolElement.ID);
                 console.log("****/DB****");
             }
-            handleDisconnect(poolElement); // ensures connection has not timed out
             return Q.nfbind(poolElement.connection.beginTransaction.bind(poolElement.connection));
         }
     };
@@ -110,7 +140,6 @@ var createAPIObject = function(pool) {
             console.log(queryInput);
             console.log("****/DB****");
         }
-        handleDisconnect(poolElement); // ensures connection has not timed out
         return Q.nfbind(poolElement.connection.query.bind(poolElement.connection, queryInput));
     };
 
@@ -154,34 +183,6 @@ var createAPIObject = function(pool) {
         }
 
     };
-
-    /**
-     * SO code.  handles timeouts
-     */
-    function handleDisconnect(poolElement) {
-        poolElement.connection.on('error', function(err) {
-            if (!err.fatal) {
-                return;
-            }
-
-            if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
-                throw err;
-            }
-
-
-            if(debug) {
-                console.log("****DB****");
-                console.log(Date.now() + " --- Connection " + poolElement.ID + " was disconnected.  Reconnecting.");
-            }
-            poolElement.connection = mySQL.createConnection(poolElement.connection.config);
-            handleDisconnect(poolElement);
-            poolElement.connection.connect();
-            if(debug) {
-                console.log(Date.now() + " --- Connection " + poolElement.ID + " reconnected.")
-                console.log("****/DB****");
-            }
-        });
-    }
 
     return toReturn;
 };
