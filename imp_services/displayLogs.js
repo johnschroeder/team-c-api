@@ -11,8 +11,6 @@ LogTypeMap[700] = {type: "Created New Product", callFunction:toStringDefault};
 LogTypeMap[800] = {type: "Created User", callFunction:toStringDefault};
 
 
-var stringLogs = [];
-
 function toStringDefault (LogType, logUsername,  time,  actionData) {
     return logUsername + " on " + time + " " + LogTypeMap[LogType].type + " " + actionData.value;
 }
@@ -25,11 +23,26 @@ module.exports =
 
     displayLogs: function (cookie, callback) {
 
+        var stringLogs = [];
         var db = require("../imp_services/impdb.js").connect();
 
-        require("../imp_services/impredis.js").get(cookie, function usernameReturn(val)
+        var username;
+        require("../imp_services/impredis.js").get(cookie, function usernameReturn(notval, val)
         {
-            var username = val.username;
+            console.log("Val is " + val);
+            //console.log("notval is + " + notval);
+             if (val != null)
+            {
+                username = val.username;
+            }
+            else
+             {
+                 stringLogs = ["We could not connect you to the logs. Check that you are signed in"];
+                 var jsonObject = {logs:stringLogs};
+
+                 callback(JSON.stringify(jsonObject));
+             }
+
 
             return Q.fcall(db.beginTransaction())
                 .then(db.query("USE " + db.databaseName))
@@ -53,7 +66,7 @@ module.exports =
                     }
 
                     var jsonObject = {logs:stringLogs};
-
+                    console.log("String logs is now this long " + stringLogs.length);
                     callback(JSON.stringify(jsonObject));
 
                 })
