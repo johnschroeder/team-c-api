@@ -39,9 +39,7 @@ app.use("/Login/login", require(process.cwd()+"/routes/Login/login"));
 app.use("/Login/confirmUser", require(process.cwd()+"/routes/Login/confirmUser"));
 app.use("/Login/createUser", require(process.cwd()+"/routes/Login/createUser"));
 app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
-
-
-//Middleware for verifying a user is logged in before hittin a route
+//Middleware for verifying a user is logged in before hitting a route
 app.use(function(req,res,next)
 {
     var impredis = require("./imp_services/impredis.js");
@@ -54,7 +52,7 @@ app.use(function(req,res,next)
         else{
             //TODO Have the navigation object on the login page with a window alert if this happens
             console.log("Oops, something went wrong with authentication!");
-            res.status(404).send("User not Found");
+            res.status(511).send("User not Found");
         }
     });
 });
