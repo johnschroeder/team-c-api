@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 var Q = require("q");
 
-router.route('/:username/:firstName/:lastName/:perms:/isConfirmed').get(function(req,res) {
+router.route('/:username/:firstName/:lastName/:perms/:isConfirmed').get(function(req,res) {
 
     var username = req.params.username;
     var firstName = req.params.firstName;
