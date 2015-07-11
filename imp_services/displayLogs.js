@@ -1,13 +1,7 @@
 var Q = require("q");
 
 var LogTypeMap = {};
-LogTypeMap[100] = {type: "Added Pile", callFunction:toStringDefault};
-LogTypeMap[200] = {type: "Added Run", callFunction:toStringDefault};
-LogTypeMap[300] = {type: "Removed Pile", callFunction:toStringDefault};
-LogTypeMap[400] = {type: "Removed Run", callFunction:toStringDefault};
-LogTypeMap[500] = {type: "Audited", callFunction:toStringDefault};
-LogTypeMap[600] = {type: "Noted", callFunction:toStringDefault};
-LogTypeMap[700] = {type: "Created New Product", callFunction:toStringDefault};
+LogTypeMap[100] = {type: "Added Inventory", callFunction:toStringDefault};
 LogTypeMap[800] = {type: "Created User", callFunction:toStringDefault};
 
 

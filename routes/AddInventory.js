@@ -1,7 +1,3 @@
-/**
- * Created by Kun on 6/23/2015.
- */
-
 var express = require("express");
 var Q = require('q');
 var router = express.Router();
@@ -24,9 +20,27 @@ router.route("/:productId/:quantity/:location").get(function(req, res) {
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(){
-            console.log("Success");
+            console.log("Successfully added new inventory. Product: " + req.params.productId + ", Quantity: " + req.params.quantity + ", Location: " + req.params.location + ".");
             res.send("Success");
         })
+        .then(function() {
+            //TODO Make this a promise chain??
+            require('../imp_services/implogging')(req.cookies.IMPId, function(logService){
+                logService.action.productId = req.params.productId;
+                logService.action.quantity = req.params.quantity;
+                logService.action.location = req.params.location;
+                logService.setType(100);
+                logService.store(function(err, results){
+                    if(err){
+                        res.status(500).send(err);
+                    } else {
+                        console.log("Successfully logged new inventory added.")
+                    }
+                });
+            });
+
+        })
+        //.done()
 
         .catch(function(err){
             Q.fcall(db.rollback())
