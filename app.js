@@ -52,7 +52,7 @@ app.use(function(req,res,next)
         else{
             //TODO Have the navigation object on the login page with a window alert if this happens
             console.log("Oops, something went wrong with authentication!");
-            res.status(511).send("User not Found");
+            res.status(404).send("User not Found");
         }
     });
 });

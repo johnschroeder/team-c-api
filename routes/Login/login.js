@@ -28,7 +28,6 @@ router.route('/').post( function(req,res){
                 if (hash == oldhash) {
                     var cookie = uuid.v4();
                     console.log("Hash match!");
-                    console.log(row[0][0][0].PermsID);
                     res.cookie('IMPId', cookie, {secure: false, maxAge: 24* 60 * 60 * 1000, httpOnly: false});
                     res.send(cookie);
                     impredis.set(cookie, "username", username, function(error, result){
