@@ -23,6 +23,14 @@ router.route("/:productId/:quantity/:location").get(function(req, res) {
             console.log("Successfully added new inventory. Product: " + req.params.productId + ", Quantity: " + req.params.quantity + ", Location: " + req.params.location + ".");
             res.send("Success");
         })
+        .catch(function(err){
+            Q.fcall(db.rollback())
+                .then(db.endTransaction())
+                .done();
+            console.log("Error: " + err);
+            //console.error(err.stack);
+            res.status(503).send("ERROR: " + err);
+        })
         .then(function() {
             //TODO Make this a promise chain??
             require('../imp_services/implogging')(req.cookies.IMPId, function(logService){
@@ -38,17 +46,6 @@ router.route("/:productId/:quantity/:location").get(function(req, res) {
                     }
                 });
             });
-
-        })
-        //.done()
-
-        .catch(function(err){
-            Q.fcall(db.rollback())
-                .then(db.endTransaction())
-                .done();
-            console.log("Error: " + err);
-            //console.error(err.stack);
-            res.status(503).send("ERROR: " + err);
         })
         .done();
 });
