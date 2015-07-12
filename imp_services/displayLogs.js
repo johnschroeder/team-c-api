@@ -9,7 +9,7 @@ LogTypeMap[900] = {type: "temp", callFunction:toStringDefault};
 var stringLogs = [];
 
 function toStringDefault (LogType, logUsername,  time,  actionData) {
-    return time + " " + LogTypeMap[LogType].type + " " + actionData.value;
+    return time + " - " + LogTypeMap[LogType].type;
 }
 
 function toStringCreatedUser (LogType, logUsername,  time,  actionData) {
