@@ -14,7 +14,7 @@ LogTypeMap[900] = {
     type: "Logged In User",
 
     callFunction: function (LogType, logUsername,  time,  actionData) {
-        return logUsername + " on " + time + ": User '" + actionData.user + "' has logged in.";
+        return time + " - " + logUsername + ": User '" + actionData.user + "' has logged in.";
     }
 };
 
@@ -34,7 +34,7 @@ module.exports =
 
         var db = require("../imp_services/impdb.js").connect();
 
-        require("../imp_services/impredis.js").get(cookie, function usernameReturn(val)
+        require("../imp_services/impredis.js").get(cookie, function usernameReturn(error, val)
         {
             var username = val.username;
 
