@@ -1,23 +1,28 @@
 var Q = require("q");
 
 var LogTypeMap = {};
-LogTypeMap[100] = {type: "Added Inventory", callFunction:toStringAddInventory};
-LogTypeMap[800] = {type: "Created User", callFunction:toStringCreatedUser};
-LogTypeMap[900] = {type: "temp", callFunction:toStringDefault};
+LogTypeMap[100] = {
+    type: "Added Inventory",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + "Added " + actionData.quantity + " units of product " + actionData.productId + " to location " + actionData.location;
+    }
+};
+LogTypeMap[800] = {
+    type: "Created User",
+    callFunction: function (LogType, logUsername, time, actionData) {
+        return time + " - " + logUsername + ": " + "Created new user " + actionData.value;
+    }
+};
+LogTypeMap[900] = {
+    type: "temp",
+    callFunction:toStringDefault
+};
 
 
 var stringLogs = [];
 
 function toStringDefault (LogType, logUsername,  time,  actionData) {
     return time + " - " + LogTypeMap[LogType].type;
-}
-
-function toStringCreatedUser (LogType, logUsername,  time,  actionData) {
-    return time + " - " + logUsername + ": " + "Created new user " + actionData.value;
-}
-
-function toStringAddInventory (LogType, logUsername, time, actionData) {
-    return time + " - " + logUsername + ": " + "Added " + actionData.quantity + " units of product " + actionData.productId + " to location " + actionData.location;
 }
 
 module.exports =
