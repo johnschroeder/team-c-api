@@ -33,6 +33,7 @@ router.route("/:productId/:quantity/:location").get(function(req, res) {
         })
         .then(function() {
             //TODO Make this a promise chain??
+            console.log("my cookie: " + req.cookies.IMPId);
             require('../imp_services/implogging')(req.cookies.IMPId, function(logService){
                 logService.action.productId = req.params.productId;
                 logService.action.quantity = req.params.quantity;
