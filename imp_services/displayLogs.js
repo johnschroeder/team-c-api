@@ -10,6 +10,13 @@ LogTypeMap[600] = {type: "Noted", callFunction:toStringDefault};
 LogTypeMap[700] = {type: "Created New Product", callFunction:toStringDefault};
 LogTypeMap[800] = {type: "Created User", callFunction:toStringDefault};
 
+LogTypeMap[900] = {
+    type: "Logged In User",
+
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + actionData.user + " logged in";
+    }
+};
 
 var stringLogs = [];
 
@@ -27,7 +34,7 @@ module.exports =
 
         var db = require("../imp_services/impdb.js").connect();
 
-        require("../imp_services/impredis.js").get(cookie, function usernameReturn(val)
+        require("../imp_services/impredis.js").get(cookie, function usernameReturn(error, val)
         {
             var username = val.username;
 
