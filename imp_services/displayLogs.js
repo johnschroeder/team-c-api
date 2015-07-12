@@ -14,7 +14,7 @@ LogTypeMap[900] = {
     type: "Logged In User",
 
     callFunction: function (LogType, logUsername,  time,  actionData) {
-        return logUsername + " on " + time + " " + LogTypeMap[LogType].type + ": User '" + actionData.user + "' has logged in.";
+        return logUsername + " on " + time + ": User '" + actionData.user + "' has logged in.";
     }
 };
 
