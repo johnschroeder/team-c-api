@@ -1,15 +1,18 @@
 var Q = require("q");
 
 var LogTypeMap = {};
-LogTypeMap[100] = {type: "Added Pile", callFunction:toStringDefault};
-LogTypeMap[200] = {type: "Added Run", callFunction:toStringDefault};
-LogTypeMap[300] = {type: "Removed Pile", callFunction:toStringDefault};
-LogTypeMap[400] = {type: "Removed Run", callFunction:toStringDefault};
-LogTypeMap[500] = {type: "Audited", callFunction:toStringDefault};
-LogTypeMap[600] = {type: "Noted", callFunction:toStringDefault};
-LogTypeMap[700] = {type: "Created New Product", callFunction:toStringDefault};
-LogTypeMap[800] = {type: "Created User", callFunction:toStringDefault};
-
+LogTypeMap[100] = {
+    type: "Added Inventory",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + "Added " + actionData.quantity + " units of product " + actionData.productId + " to location " + actionData.location;
+    }
+};
+LogTypeMap[800] = {
+    type: "Created User",
+    callFunction: function (LogType, logUsername, time, actionData) {
+        return time + " - " + logUsername + ": " + "Created new user " + actionData.value;
+    }
+};
 LogTypeMap[900] = {
     type: "Logged In User",
 
@@ -18,10 +21,8 @@ LogTypeMap[900] = {
     }
 };
 
-var stringLogs = [];
-
 function toStringDefault (LogType, logUsername,  time,  actionData) {
-    return logUsername + " on " + time + " " + LogTypeMap[LogType].type + " " + actionData.value;
+    return time + " - " + LogTypeMap[LogType].type;
 }
 
 module.exports =
@@ -31,6 +32,7 @@ module.exports =
     },
 
     displayLogs: function (cookie, callback) {
+        var stringLogs = [];
 
         var db = require("../imp_services/impdb.js").connect();
 
