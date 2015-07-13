@@ -25,6 +25,10 @@ function toStringDefault (LogType, logUsername,  time,  actionData) {
     return time + " - " + LogTypeMap[LogType].type;
 }
 
+function typeNotAddedYet (LogType, logUsername, time, actionData) {
+    return time + " - " + logUsername + ": " + "log type '" + LogType + "' not added yet";
+}
+
 module.exports =
 {
     _verifyKey: function (key) {
@@ -57,7 +61,11 @@ module.exports =
                         var time = row.Time;
                         var actionData = row.ActionData;
 
-                        stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
+                        if (LogTypeMap[LogType] == null) {
+                            stringLogs.push(typeNotAddedYet(LogType, logUsername, time, JSON.parse(actionData)));
+                        } else {
+                            stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
+                        }
                         console.log(stringLogs[i]);
                     }
 
