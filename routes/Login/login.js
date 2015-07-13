@@ -56,6 +56,16 @@ router.route('/').post( function(req,res){
             console.log("Error: " + err);
             res.status(503).send("ERROR: " + err);
         })
+        .then(function() {
+            require('../../imp_services/implogging')(req.cookies.IMPId, function(logService){
+                logService.action.user = req.body.user;
+                logService.setType(900);
+                logService.store(function(err, results){
+                    if (err) res.status(500).send(err);
+                });
+            });
+
+        })
         .done();
 
 });

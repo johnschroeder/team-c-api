@@ -18,6 +18,14 @@ LogTypeMap[900] = {
     callFunction:toStringDefault
 };
 
+LogTypeMap[900] = {
+    type: "Logged In User",
+
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + actionData.user + " logged in";
+    }
+};
+
 function toStringDefault (LogType, logUsername,  time,  actionData) {
     return time + " - " + LogTypeMap[LogType].type;
 }
