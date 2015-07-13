@@ -11,7 +11,7 @@ LogTypeMap[100] = {
 LogTypeMap[200] = {
     type: "Added Product Size",
     callFunction: function (LogType, logUsername,  time,  actionData) {
-        return time + " - " + logUsername + ": " + "Added product size " + actionData.sizeName + " sized " + actionData.size + " for product " + actionData.productId;
+        return time + " - " + logUsername + ": " + "Added product size " + actionData.sizeName + " (" + actionData.size + ") for product " + actionData.productId;
     }
 };
 
