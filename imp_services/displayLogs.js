@@ -18,9 +18,6 @@ LogTypeMap[900] = {
     callFunction:toStringDefault
 };
 
-
-var stringLogs = [];
-
 function toStringDefault (LogType, logUsername,  time,  actionData) {
     return time + " - " + LogTypeMap[LogType].type;
 }
@@ -32,6 +29,7 @@ module.exports =
     },
 
     displayLogs: function (cookie, callback) {
+        var stringLogs = [];
 
         var db = require("../imp_services/impdb.js").connect();
 
