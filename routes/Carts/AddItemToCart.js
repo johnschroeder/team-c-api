@@ -23,6 +23,12 @@ router.route("/:CartID/:SizeMapID/:Quantity/:RunID").get(function(req, res) {
     var SizeMapID = req.params.SizeMapID;
     var Quantity = req.params.Quantity;
     var RunID = req.params.RunID;
+
+    // variables for logging
+    var logCartName;
+    var logProductId;
+    var logAmount;
+
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
         .then(db.query("set @m='';"))
@@ -53,7 +59,47 @@ router.route("/:CartID/:SizeMapID/:Quantity/:RunID").get(function(req, res) {
             res.status(503).send("ERROR: " + err.code);
 
         })
-        // TODO: hard to log anything meaningful here without retrieving more data from DB
+        // get information for logging, then log action
+        .then(function() {
+            var deferred = Q.defer();
+
+            Q.fcall(db.beginTransaction())
+                .then(db.query("USE " + db.databaseName))
+                .then(db.query("CALL GetCartLogInfo(" + CartID + ", " + SizeMapID + ", " + Quantity + ")"))
+                .then(function(rows) {
+                    logCartName = rows[0][0][0].CartName;
+                    logProductId = rows[0][0][0].ProductID;
+                    logAmount = rows[0][0][0].Amount;
+                })
+                .then(db.commit())
+                .then(db.endTransaction())
+                .catch(function(err) {
+                    Q.fcall(db.rollback())
+                        .then(db.endTransaction())
+                        .done();
+                    console.log("Error:");
+                    console.error(err.stack);
+                })
+                .then(function() {
+                    require('../../imp_services/implogging')(req.cookies.IMPId, function(logService){
+                        logService.action.productId = logProductId;
+                        logService.action.cartName = logCartName;
+                        logService.action.amount = logAmount;
+                        logService.setType(300);
+                        logService.store(function(err, results){
+                            if(err){
+                                res.status(500).send(err);
+                            } else {
+                                console.log("Successfully logged items being added to cart.")
+                            }
+                        });
+                    });
+                })
+                .done();
+
+            deferred.resolve();
+            return deferred.promise;
+        })
         .done();
 });
 
