@@ -21,7 +21,7 @@ module.exports = function(cookie, callback) {
                     }
                 },
                 store: function (callback) {
-                    console.log(this);
+                    //console.log(this);
                     var db = require("./impdb.js").connect();
                     Q.fcall(db.beginTransaction())
                         .then(db.query("USE " + db.databaseName))
