@@ -14,11 +14,6 @@ LogTypeMap[800] = {
     }
 };
 LogTypeMap[900] = {
-    type: "temp",
-    callFunction:toStringDefault
-};
-
-LogTypeMap[900] = {
     type: "Logged In User",
 
     callFunction: function (LogType, logUsername,  time,  actionData) {
