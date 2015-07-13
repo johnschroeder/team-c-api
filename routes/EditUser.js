@@ -11,28 +11,24 @@ router.route('/:username/:firstName/:lastName/:perms/:isConfirmed').get(function
     var isConfirmed = req.params.isConfirmed;
 
     var db = require("../imp_services/impdb.js").connect();
+    var args = username + "," +
+        "" + firstName+ "," +
+        "" + lastName+ "," +
+         + parseInt(perms) + "," +
+         + parseInt(isConfirmed);
 
     Q.fcall(db.beginTransaction())
 
         .then(db.query("USE " + db.databaseName))
-        /* .then(db.query("CALL EditUserByUsername(" +
-            "\'" + username+ "\' + " +
-            "\'" + firstName+ "\' +  " +
-            "\'" + lastName+ "\'" +
-            "\'" + perms + "\'" +
-            "\'" + isConfirmed + "\'" +
-
-            ");"))
+         .then(db.query("CALL EditUserByUsername(" + args + ");"))
         .then(function (rows) {
-                //Some check condition?
-            */
-        .then (res.end("Update Complete!"))
-    /*
-            //or
-            //res.end("Could not update!");
-
+            if (rows[0].affectedRows != 1) {
+                res.end("Update Failed!");
+            }
+            else {
+                res.end("Update Complete!");
+            }
         })
-        */
         .then(db.commit())
         .then(db.endTransaction())
         .catch(function (err) {
