@@ -32,7 +32,6 @@ router.route("/:productId/:quantity/:location").get(function(req, res) {
             res.status(503).send("ERROR: " + err);
         })
         .then(function() {
-            console.log("my cookie: " + req.cookies.IMPId);
             require('../imp_services/implogging')(req.cookies.IMPId, function(logService){
                 logService.action.productId = req.params.productId;
                 logService.action.quantity = req.params.quantity;

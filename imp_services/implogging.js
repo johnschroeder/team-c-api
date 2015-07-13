@@ -27,8 +27,8 @@ module.exports = function(cookie, callback) {
                         .then(db.query("USE " + db.databaseName))
                         .then(db.query("CALL LogAction ('" + this._type + "', '" + this.username + "', '" + JSON.stringify(this.action) + "')"))
                         .then(function(rows){
-                            console.log("Just logged: ");
-                            console.log(JSON.parse(rows[0][0][0].ActionData));
+                            //console.log("Just logged: ");
+                            //console.log(JSON.parse(rows[0][0][0].ActionData));
                         })
                         .then(db.commit())
                         .then(db.endTransaction())
