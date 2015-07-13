@@ -7,6 +7,12 @@ LogTypeMap[100] = {
         return time + " - " + logUsername + ": " + "Added " + actionData.quantity + " units of product " + actionData.productId + " to location " + actionData.location;
     }
 };
+LogTypeMap[200] = {
+    type: "Added Product Size",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + "Added product size " + actionData.sizeName + " (" + actionData.size + ") for product " + actionData.productId;
+    }
+};
 LogTypeMap[300] = {
     type: "Added Item to Cart",
     callFunction: function (LogType, logUsername,  time,  actionData) {
