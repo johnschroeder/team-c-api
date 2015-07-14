@@ -1,6 +1,7 @@
 var express = require('express');
 var config = require('konfig')();
 var glob = require('glob');
+var Q = require('q');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 
@@ -40,19 +41,55 @@ app.use("/Login/confirmUser", require(process.cwd()+"/routes/Login/confirmUser")
 app.use("/Login/createUser", require(process.cwd()+"/routes/Login/createUser"));
 app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
 //Middleware for verifying a user is logged in before hitting a route
+var result;
 app.use(function(req,res,next)
 {
+    var allowed = true;
     var impredis = require("./imp_services/impredis.js");
-    console.log(req.cookies.IMPId);
+
+    //TODO figure out how to get the route dynamically
+    var routeToHit = "displayInventory";
+
+    // TODO figure out how to more securely get Permission
+    var UserPerm = req.cookies.IMPperm;
+
+    //run check for if they have permission to access the route
+    var db = require("./imp_services/impdb.js").connect();
+    Q.fcall(db.beginTransaction())
+        .then(db.query("USE " + db.databaseName))
+        .then(db.query("CALL CheckPermissions" + "('" + routeToHit + "'," + UserPerm + " );"))
+        .then(function (rows, columns) {
+            console.log("Success");
+            result = rows[0][0][0];
+        })
+        .then(db.commit())
+        .then(db.endTransaction())
+        .catch(function (err) {
+            Q.fcall(db.rollback())
+                .then(db.endTransaction());
+            console.log("Error:");
+            console.error(err.stack);
+            res.status(503).send("ERROR: " + err.code);
+        })
+        .done();
+    console.log("response:" + result.PermCheck);
+    if(result == 1) {
+        allowed = true;
+    }
     impredis.exists(req.cookies.IMPId, function(err, reply) {
-        if(reply == 1) {
+        if(reply == 1 && allowed) {
             console.log("Successfully Authenticated!");
             next();
+        }
+        else if(reply == 1 && !allowed){
+            //TODO redirect to home page
+            console.log("Sorry, you don't have a security level high enough to go to this page.");
+            res.status(510).send("Unauthorized access attempt");
         }
         else{
             //TODO Have the navigation object on the login page with a window alert if this happens
             console.log("Oops, something went wrong with authentication!");
-            res.status(404).send("User not Found");
+            res.status(511).send("User not Found");
         }
     });
 });
@@ -65,7 +102,7 @@ var path = process.cwd()+'/routes';
 glob.sync('**/*.js',{'cwd':path}).forEach(
     function(file){
         var ns = '/'+file.replace(/\.js$/,'');
-        if(ns != "/login" && ns != "/Login/confirmUser" && ns != "/Login/createUser" && ns != "/Login/testLookup") {
+        if(ns != "Permissions/CheckUserPermission" && ns != "/login" && ns != "/Login/confirmUser" && ns != "/Login/createUser" && ns != "/Login/testLookup") {
             app.use(ns, require(path + ns));
         }
     }
