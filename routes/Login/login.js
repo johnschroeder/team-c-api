@@ -26,19 +26,27 @@ router.route('/').post( function(req,res){
                 var hash = crypto.createHash('sha256').update(password + salt).digest('hex');
 
                 if (hash == oldhash) {
-                    var cookie = {"cookie": uuid.v4(), "perm": row[0][0][0].PermsID};
+                    var cookie = {cookie: uuid.v4(), cookie2: uuid.v4()};
                     console.log("Hash match!");
                     res.cookie('IMPId', cookie.cookie, {secure: false, maxAge: 24* 60 * 60 * 1000, httpOnly: false});
-                    //TODO: possibly send  permsisions a different way, rather then by cookie cause cookie may be able to be duplicated and spoof permission
-                    res.cookie('IMPperm', cookie.perm);
+                    res.cookie('IMPperm',cookie.cookie2);
                     res.send(cookie);
                     impredis.set(cookie.cookie, "username", username, function(error, result){
                         if(error){
                             res.status(500).send("ERROR: "+error);
                         }
-                        else{
-                            res.end(cookie.cookie);
+                        else {
+                            impredis.set(cookie.cookie2, "IMPperm", row[0][0][0].PermsID, function(error, result)
+                            {
+                                if(error) {
+                                    res.status(500).send("ERROR: " + error);
+                                }
+                                else{
+                                    res.end(cookie.cookie);
+                                }
+                            });
                         }
+
                     });
                     impredis.setExpiration(cookie.cookie, 24);
                 }
