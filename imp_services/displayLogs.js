@@ -19,6 +19,24 @@ LogTypeMap[300] = {
         return time + " - " + logUsername + ": " + "Added " + actionData.amount + " units of product " + actionData.productId + " to cart " + actionData.cartName;
     }
 };
+LogTypeMap[400] = {
+    type: "Created Product",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + "Created product '" + actionData.productName + "' on " + actionData.date;
+    }
+};
+LogTypeMap[500] = {
+    type: "Associated Product With Customer",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + "Associated product " + actionData.productId + " with customer " + actionData.customerId;
+    }
+};
+LogTypeMap[600] = {
+    type: "Edited Product",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + "Edited product " + actionData.productId + " (" + actionData.productName + ")";
+    }
+};
 LogTypeMap[700] = {
     type: "Created Cart",
     callFunction: function (LogType, logUsername, time, actionData) {
@@ -35,6 +53,18 @@ LogTypeMap[900] = {
     type: "Logged In User",
     callFunction: function (LogType, logUsername,  time,  actionData) {
         return time + " - " + logUsername + ": " + actionData.user + " logged in";
+    }
+};
+LogTypeMap[1000] = {
+    type: "Disassociated Product With All Customers",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + "Disassociated product " + actionData.productId + " with all customers";
+    }
+};
+LogTypeMap[1100] = {
+    type: "Added Customer",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + "Added customer " + actionData.customerName;
     }
 };
 
