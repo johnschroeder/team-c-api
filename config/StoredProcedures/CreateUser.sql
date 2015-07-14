@@ -1,5 +1,4 @@
 
-use imp_db_dev;
 DROP PROCEDURE IF EXISTS CreateUser;
 
 DELIMITER $$
@@ -11,7 +10,8 @@ BEGIN
 DECLARE pmid INT;
 select @pmid:=min(PermsID) from Permissions;
 
-INSERT INTO Users VALUES(_Username,_FirstName,_LastName,_Email,@pmid,_HP,_US,_DateCreated);
+INSERT INTO Users (Username, FirstName, LastName, Email, PermsID, HP, US, DateCreated)
+VALUES(_Username,_FirstName,_LastName,_Email,@pmid,_HP,_US,_DateCreated);
 
 
 END $$
