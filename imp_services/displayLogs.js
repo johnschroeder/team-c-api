@@ -34,7 +34,7 @@ LogTypeMap[500] = {
 LogTypeMap[600] = {
     type: "Edited Product",
     callFunction: function (LogType, logUsername,  time,  actionData) {
-        return time + " - " + logUsername + ": " + "Edited product " + actionData.productId + "(" + actionData.productName + ")";
+        return time + " - " + logUsername + ": " + "Edited product " + actionData.productId + " (" + actionData.productName + ")";
     }
 };
 LogTypeMap[700] = {
