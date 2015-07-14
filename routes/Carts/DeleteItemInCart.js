@@ -1,8 +1,3 @@
-/**
- * Created by Kun on 6/16/2015.
- */
-
-
 var mySQL = require("mysql");
 var express = require("express");
 var router = express.Router();
@@ -45,7 +40,7 @@ router.route("/:CartItemID").get(function(req, res) {
         .then(function() {
             require('../../imp_services/implogging')(req.cookies.IMPId, function(logService){
                 logService.action.cartItemId = CartItemID;
-                logService.setType(1500);
+                logService.setType(1400);
                 logService.store(function(err, results){
                     if(err){
                         res.status(500).send(err);

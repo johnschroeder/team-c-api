@@ -37,6 +37,12 @@ LogTypeMap[900] = {
         return time + " - " + logUsername + ": " + actionData.user + " logged in";
     }
 };
+LogTypeMap[1200] = {
+    type: "Deleted Product",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + "Deleted product " + actionData.productId;
+    }
+};
 LogTypeMap[1300] = {
     type: "Edited Cart",
     callFunction: function (LogType, logUsername,  time,  actionData) {
