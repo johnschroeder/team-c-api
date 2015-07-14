@@ -43,7 +43,18 @@ LogTypeMap[1300] = {
         return time + " - " + logUsername + ": " + "Updated cart " + actionData.cartId + " -> " + actionData.cartName;
     }
 };
-
+LogTypeMap[1400] = {
+    type: "Edited Cart Item",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + "Updated cart item " + actionData.cartItemId + " in cart " + actionData.cartId;
+    }
+};
+LogTypeMap[1500] = {
+    type: "Deleted Cart Item",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + "Deleted cart item " + actionData.cartItemId;
+    }
+};
 function toStringDefault (LogType, logUsername,  time,  actionData) {
     return time + " - " + LogTypeMap[LogType].type;
 }
