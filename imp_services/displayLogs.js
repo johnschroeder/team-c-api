@@ -7,21 +7,30 @@ LogTypeMap[100] = {
         return time + " - " + logUsername + ": " + "Added " + actionData.quantity + " units of product " + actionData.productId + " to location " + actionData.location;
     }
 };
-
 LogTypeMap[200] = {
     type: "Added Product Size",
     callFunction: function (LogType, logUsername,  time,  actionData) {
         return time + " - " + logUsername + ": " + "Added product size " + actionData.sizeName + " (" + actionData.size + ") for product " + actionData.productId;
     }
 };
-
+LogTypeMap[300] = {
+    type: "Added Item to Cart",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + "Added " + actionData.amount + " units of product " + actionData.productId + " to cart " + actionData.cartName;
+    }
+};
+LogTypeMap[700] = {
+    type: "Created Cart",
+    callFunction: function (LogType, logUsername, time, actionData) {
+        return time + " - " + logUsername + ": " + "Created new cart '" + actionData.cartName + "' assigned to " + actionData.assignee + ", will expire in " + actionData.daysToDelete + " days";
+    }
+};
 LogTypeMap[800] = {
     type: "Created User",
     callFunction: function (LogType, logUsername, time, actionData) {
         return time + " - " + logUsername + ": " + "Created new user " + actionData.value;
     }
 };
-
 LogTypeMap[900] = {
     type: "Logged In User",
     callFunction: function (LogType, logUsername,  time,  actionData) {
@@ -31,6 +40,10 @@ LogTypeMap[900] = {
 
 function toStringDefault (LogType, logUsername,  time,  actionData) {
     return time + " - " + LogTypeMap[LogType].type;
+}
+
+function typeNotAddedYet (LogType, logUsername, time, actionData) {
+    return time + " - " + logUsername + ": " + "log type '" + LogType + "' not added yet";
 }
 
 module.exports =
@@ -65,7 +78,11 @@ module.exports =
                         var time = row.Time;
                         var actionData = row.ActionData;
 
-                        stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
+                        if (LogTypeMap[LogType] == null) {
+                            stringLogs.push(typeNotAddedYet(LogType, logUsername, time, JSON.parse(actionData)));
+                        } else {
+                            stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
+                        }
                         console.log(stringLogs[i]);
                     }
 

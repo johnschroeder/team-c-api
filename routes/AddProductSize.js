@@ -16,7 +16,6 @@ router.route("/:productId/:name/:size").get(function(req, res) {
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
         .then(db.query("CALL AddProductSize (" + req.params.productId + ", '" + req.params.name + "', " + req.params.size + ")"))
-        // TODO: log this entry?
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(){
