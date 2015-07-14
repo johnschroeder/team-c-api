@@ -1,9 +1,16 @@
-DROP PROCEDURE IF EXISTS GetAllInventory;
+DROP PROCEDURE IF EXISTS GetProductsByCustomerName;
 
 DELIMITER $$
-CREATE PROCEDURE GetAllInventory()
+CREATE PROCEDURE GetProductsByCustomerName(IN _CustomerName varchar(50))
 BEGIN
 
+select s9.*,cm.Name as CustomerName
+from Products pt
+left join ProdCustMap map on pt.ProductID=map.ProductID
+left join Customers cm on cm.CustomerID=map.CustomerID
+
+left join
+(
 select s4.*, s5.LastRunID as LastRunID, IFNULL(s5.InitialQuantity,0) as LastRunInitialQuantity
 from(
 select p.ProductID, p.Name as ProductName,
@@ -31,10 +38,14 @@ on s1.DateCreated=s2.LastRunDate and s1.ProductID=s2.ProductID
 group by ProductID) as s3
 join Runs r3 on r3.RunID=s3.LastRunID) as s5
 
-on s4.ProductID = s5.ProductID;
-
-
+on s4.ProductID = s5.ProductID
+)as s9
+on pt.ProductID=s9.ProductID
+where pt.ViewOption != 0
+and cm.Name like CONCAT("%", _CustomerName, "%")
+;
 
 END $$
 
 DELIMITER ;
+

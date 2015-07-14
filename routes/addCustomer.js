@@ -19,7 +19,7 @@ router.route("/:customerName").get(function(req, res) {
 
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CALL AddCustomer ('" + req.params.customerName + "')"))
+        .then(db.query('CALL AddCustomer ("' + req.params.customerName + '")'))
         // TODO: log this entry?
         .then(function(rows, columns){
             console.log("Success");

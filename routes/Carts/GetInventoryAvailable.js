@@ -24,8 +24,9 @@ router.route("/:ProductID/:PileLocation/:RunMarker").get(function(req, res) {
             console.log("Success:   " + JSON.stringify(rows[0][0]));
             var queryResult = JSON.stringify(rows[0][0]);
             res.send(queryResult);
-            db.endTransaction();
         })
+        .then(db.commit())
+        .then(db.endTransaction())
         .catch(function(err){
             Q.fcall(db.rollback())
                 .then(db.endTransaction());

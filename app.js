@@ -59,6 +59,9 @@ app.use(function(req,res,next)
     });
 });
 
+
+
+
 //Adds all the routes by path to the app
 var path = process.cwd()+'/routes';
 glob.sync('**/*.js',{'cwd':path}).forEach(
@@ -69,8 +72,6 @@ glob.sync('**/*.js',{'cwd':path}).forEach(
         }
     }
 );
-
-
 app.use('*', function(req, res){
     console.log("Error trying to display route: "+req.path);
     res.status(404).send("Nothing Found");

@@ -53,7 +53,8 @@
             "user":"dev",
             "password":"IMPdev321",
             "databaseName":"imp_db_dev"
-        }
+        },
+        "frontend": "http://localhost:50000"
     },
     "hinyun":{
         "mysql":{
