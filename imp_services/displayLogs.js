@@ -37,6 +37,12 @@ LogTypeMap[900] = {
         return time + " - " + logUsername + ": " + actionData.user + " logged in";
     }
 };
+LogTypeMap[1300] = {
+    type: "Edited Cart",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + "Updated cart " + actionData.cartId + " -> " + actionData.cartName;
+    }
+};
 
 function toStringDefault (LogType, logUsername,  time,  actionData) {
     return time + " - " + LogTypeMap[LogType].type;
