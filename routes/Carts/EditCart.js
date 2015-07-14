@@ -40,7 +40,7 @@ router.route("/:CartID/:CartName/:Reporter/:Assignee/:DateToDelete").get(functio
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(){
-            console.log("Success");
+            console.log("Successfully edited cart " + CartID);
             res.send("Success");
         })
         .catch(function(err){
@@ -53,12 +53,16 @@ router.route("/:CartID/:CartName/:Reporter/:Assignee/:DateToDelete").get(functio
 
         })
         .then(function() {
-            require('../imp_services/implogging')(req.cookies.IMPId, function(logService){
+            require('../../imp_services/implogging')(req.cookies.IMPId, function(logService){
                 logService.action.cartId = CartID;
-                logService.action.cartName = CartName;
+                logService.action.cartName = CartName.replace(/^"(.+(?="$))"$/, '$1');   // regex taken from SO
                 logService.setType(1300);
                 logService.store(function(err, results){
-                    if (err) res.status(500).send(err);
+                    if (err) {
+                        res.status(500).send(err);
+                    } else {
+                        console.log("Successfully logged edit of cart " + CartID);
+                    }
                 });
             });
 
