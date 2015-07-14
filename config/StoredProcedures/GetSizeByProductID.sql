@@ -1,5 +1,4 @@
 
-use imp_db_dev;
 DROP PROCEDURE IF EXISTS GetSizeByProductID;
 
 DELIMITER $$
