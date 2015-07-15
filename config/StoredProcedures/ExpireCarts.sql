@@ -7,7 +7,7 @@ CREATE PROCEDURE ExpireCarts()
 BEGIN
 
 DECLARE n INT DEFAULT 0;
-DECLARE tempCIid INT;
+DECLARE tempCIid int unsigned;
 
 SELECT @n:=COUNT(*) FROM Cart where DateToDelete <= NOW();
 
