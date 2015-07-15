@@ -47,6 +47,21 @@ router.route("/:CartID/:CartItemID/:SizeMapID/:Quantity/:RunID").get(function(re
             console.error(err.stack);
             res.status(503).send("ERROR: " + err.code);
         })
+        .then(function() {
+            require('../../imp_services/implogging')(req.cookies.IMPId, function(logService){
+                logService.action.cartId = CartID;
+                logService.action.cartItemId = CartItemID;
+                logService.setType(1400);
+                logService.store(function(err, results){
+                    if (err) {
+                        res.status(500).send(err);
+                    } else {
+                        console.log("Successfully logged edit of cart item " + CartItemID + " in cart " + CartID);
+                    }
+                });
+            });
+
+        })
         .done();
 });
 

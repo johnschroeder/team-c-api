@@ -1,7 +1,3 @@
-/**
- * Created by johnschroeder on 7/7/15.
- */
-
 var express = require("express");
 var Q = require('q');
 var router = express.Router();
@@ -35,6 +31,15 @@ router.route("/:customerName").get(function(req, res) {
             console.log("Error: " + err);
             //console.error(err.stack);
             res.status(503).send("ERROR: " + err);
+        })
+        .then(function() {
+            require('../imp_services/implogging')(req.cookies.IMPId, function(logService){
+                logService.action.customerName = req.params.customerName;
+                logService.setType(1100);
+                logService.store(function(err, results){
+                    if (err) res.status(500).send(err);
+                });
+            });
         })
         .done();
 });
