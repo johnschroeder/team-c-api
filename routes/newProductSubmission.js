@@ -65,6 +65,16 @@
             console.error(err.stack);
             res.status(503).send("ERROR: " + err.code);
         })
+        .then(function() {
+            require('../imp_services/implogging')(req.cookies.IMPId, function(logService){
+                logService.action.productName = req.params.productName;
+                logService.action.date = req.params.date;
+                logService.setType(400);
+                logService.store(function(err, results){
+                    if (err) res.status(500).send(err);
+                });
+            });
+        })
         .done();
 });
 
