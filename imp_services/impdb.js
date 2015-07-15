@@ -16,6 +16,36 @@ exports.connect = function() {
 };
 
 /**
+ * SO code.  handles timeouts
+ */
+function handleDisconnect(poolElement) {
+
+    poolElement.connection.on('error', function(err) {
+        if (!err.fatal) {
+            return;
+        }
+
+        if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
+            throw err;
+        }
+
+
+        if(debug) {
+            console.log("****DB****");
+            console.log(Date.now() + " --- Connection " + poolElement.ID + " was disconnected.  Reconnecting.");
+        }
+        poolElement.connection = mySQL.createConnection(poolElement.connection.config);
+        handleDisconnect(poolElement);
+        poolElement.connection.connect();
+        if(debug) {
+            console.log(Date.now() + " --- Connection " + poolElement.ID + " reconnected.")
+            console.log("****/DB****");
+        }
+    });
+}
+
+
+/**
  * Creates the connection pool
  */
 var createPool = function() {
@@ -37,6 +67,7 @@ var createPool = function() {
             console.log(Date.now() + " --- Connection " + poolElement.ID + " added to pool.");
             console.log("****/DB****");
         }
+        handleDisconnect(poolElement); // ensures connection has not timed out
         pool.push(poolElement);
     }
     return createAPIObject(pool);
@@ -98,7 +129,6 @@ var createAPIObject = function(pool) {
                 console.log(Date.now() + " --- Transaction begun with connection " + poolElement.ID);
                 console.log("****/DB****");
             }
-            handleDisconnect(poolElement); // ensures connection has not timed out
             return Q.nfbind(poolElement.connection.beginTransaction.bind(poolElement.connection));
         }
     };
@@ -107,9 +137,9 @@ var createAPIObject = function(pool) {
         if(debug) {
             console.log("****DB****");
             console.log(Date.now() + " --- Query beginning with connection " + poolElement.ID);
+            console.log(queryInput);
             console.log("****/DB****");
         }
-        handleDisconnect(poolElement); // ensures connection has not timed out
         return Q.nfbind(poolElement.connection.query.bind(poolElement.connection, queryInput));
     };
 
@@ -123,52 +153,36 @@ var createAPIObject = function(pool) {
     };
 
     toReturn.endTransaction = function() {
-        toReturn.commit();
-        if(debug) {
+        if(poolElement != null) {
+            if (debug) {
+                console.log("****DB****");
+                console.log(Date.now() + " --- Returning connection " + poolElement.ID + " to the pool");
+                console.log("****/DB****");
+            }
+            pool.push(poolElement); // enqueue connection (return to pool)
+            poolElement = null; // set local connection reference to null
+        } else {
             console.log("****DB****");
-            console.log(Date.now() + " --- Returning connection " + poolElement.ID + " to the pool");
+            console.log(Date.now() + " --- endTransaction called while no transaction was open.")
             console.log("****/DB****");
         }
-        pool.push(poolElement); // enqueue connection (return to pool)
-        poolElement = null; // set local connection reference to null
     };
 
     toReturn.rollback = function() {
-        if(debug) {
-            console.log("****DB****");
-            console.log(Date.now() + " --- Rolling back transaction with connection " + poolElement.ID);
-            console.log("****/DB****");
-        }
-        return Q.nfbind(poolElement.connection.rollback.bind(poolElement.connection));
-    };
-
-    /**
-     * SO code.  handles timeouts
-     */
-    function handleDisconnect(poolElement) {
-        poolElement.connection.on('error', function(err) {
-            if (!err.fatal) {
-                return;
-            }
-
-            if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
-                throw err;
-            }
-
-
-            if(debug) {
+        if(poolElement != null) {
+            if (debug) {
                 console.log("****DB****");
-                console.log(Date.now() + " --- Connection " + poolElement.ID + " was disconnected.  Reconnecting.");
-            }
-            poolElement.connection = mySQL.createConnection(poolElement.connection.config);
-            handleDisconnect(poolElement);
-            poolElement.connection.connect();
-            if(debug) {
-                console.log(Date.now() + " --- Connection " + poolElement.ID + " reconnected.")
+                console.log(Date.now() + " --- Rolling back transaction with connection " + poolElement.ID);
                 console.log("****/DB****");
             }
-        });
-    }
+            return Q.nfbind(poolElement.connection.rollback.bind(poolElement.connection));
+        } else {
+            console.log("****DB****");
+            console.log(Date.now() + " --- rollback called while no transaction was open.")
+            console.log("****/DB****");
+        }
+
+    };
 
     return toReturn;
 };

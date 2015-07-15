@@ -37,8 +37,9 @@ router.route("/:CartID/:CartItemID/:SizeMapID/:Quantity/:RunID").get(function(re
             console.log(JSON.stringify(rows[0][0]));
             var invUnit = JSON.stringify(rows[0][0]);
             res.send(invUnit);
-            db.endTransaction();
         })
+        .then(db.commit())
+        .then(db.endTransaction())
         .catch(function(err){
             Q.fcall(db.rollback())
                 .then(db.endTransaction());

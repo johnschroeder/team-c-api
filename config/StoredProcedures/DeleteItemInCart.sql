@@ -5,6 +5,7 @@ set @m='';
 call DeleteItemInCart(1,@m);
 select @m;
 */
+
 DROP PROCEDURE IF EXISTS DeleteItemInCart;
 
 DELIMITER $$

@@ -8,8 +8,9 @@ BEGIN
 
 DECLARE pmid int unsigned;
 
-SELECT @pmid:=PermsID, MIN(Perms)
-FROM Permissions;
+SELECT @pmid:=PermsID
+FROM Permissions
+WHERE Perms = (SELECT MIN(Perms) FROM Permissions);
 
 INSERT INTO Users
 VALUES (_Username, _FirstName, _LastName, _Email, @pmid, _HP, _US, _DateCreated, default);

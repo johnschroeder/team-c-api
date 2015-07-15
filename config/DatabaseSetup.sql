@@ -1,9 +1,9 @@
 ##### Create database and tables #####
-DROP DATABASE IF EXISTS imp_db_dev;
+DROP DATABASE IF EXISTS #DB_name;
 
-CREATE DATABASE imp_db_dev;
+CREATE DATABASE #DB_name;
 
-USE imp_db_dev;
+USE #DB_name;
 
 CREATE TABLE Permissions (
 PermsID int unsigned AUTO_INCREMENT,
@@ -108,7 +108,8 @@ CREATE TABLE LogViewMap (
 Username varchar(25),
 LogID int unsigned,
 FOREIGN KEY (LogID) REFERENCES Logs(LogID) ON DELETE CASCADE,
-FOREIGN KEY (Username) REFERENCES Users(Username) ON DELETE CASCADE
+FOREIGN KEY (Username) REFERENCES Users(Username) ON DELETE CASCADE,
+UNIQUE (Username, LogID)
 );
 
 CREATE TABLE Cart (
