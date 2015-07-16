@@ -28,6 +28,16 @@ router.route("/:ProductID/:productName/:description").get(function(req, res) {
             console.error(err.stack);
             res.status(503).send("ERROR: " + err.code);
         })
+        .then(function() {
+            require('../imp_services/implogging')(req.cookies.IMPId, function(logService){
+                logService.action.productId = req.params.ProductID;
+                logService.action.productName = req.params.productName;
+                logService.setType(600);
+                logService.store(function(err, results){
+                    if (err) res.status(500).send(err);
+                });
+            });
+        })
         .done();
 });
 

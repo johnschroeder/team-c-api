@@ -3,7 +3,7 @@ var impredis = require("./impredis.js");
 var Q = require('q');
 
 module.exports = function(cookie, callback) {
-    impredis.get(cookie, function (result, error) {
+    impredis.get(cookie, function (error, result) {
         if (error) {
             throw error;
         }
@@ -21,14 +21,14 @@ module.exports = function(cookie, callback) {
                     }
                 },
                 store: function (callback) {
-                    console.log(this);
+                    //console.log(this);
                     var db = require("./impdb.js").connect();
                     Q.fcall(db.beginTransaction())
                         .then(db.query("USE " + db.databaseName))
                         .then(db.query("CALL LogAction ('" + this._type + "', '" + this.username + "', '" + JSON.stringify(this.action) + "')"))
                         .then(function(rows){
-                            console.log("Just logged: ");
-                            console.log(JSON.parse(rows[0][0][0].ActionData));
+                            //console.log("Just logged: ");
+                            //console.log(JSON.parse(rows[0][0][0].ActionData));
                         })
                         .then(db.commit())
                         .then(db.endTransaction())
