@@ -64,13 +64,16 @@ app.use(function(req,res,next) {
     if (p.indexOf("/Carts/") != -1) {
         var temp = p.replace("/Carts/", "");
         var nRoute = temp.split("/")[0];
+        nRoute = "/Carts/" + nRoute;
     }
     else if (p.indexOf("/Logging/") != -1) {
         var temp = p.replace("/Logging/", "");
         var nRoute = temp.split("/")[0];
+        nRoute = "/Logging/" + nRoute;
     }
     else {
         var nRoute = p.split("/") [1];
+        nRoute = "/" + nRoute;
     }
     var routeToHit = nRoute;
     console.log("routeToHit: " + routeToHit);
@@ -121,7 +124,7 @@ var path = process.cwd()+'/routes';
 glob.sync('**/*.js',{'cwd':path}).forEach(
     function(file){
         var ns = '/'+file.replace(/\.js$/,'');
-       // console.log("INSERT INTO RoutePermissions VALUES(\""+ ns+ "\", 3),(\""+ ns+"\", 2),(\""+ ns +"\", 1);");
+       //console.log("INSERT INTO RoutePermissions VALUES(\""+ ns+ "\", 3),(\""+ ns+"\", 2),(\""+ ns +"\", 1);");
         if(ns != "/login" && ns != "/Login/confirmUser" && ns != "/Login/createUser" && ns != "/Login/testLookup") {
             app.use(ns, require(path + ns));
         }
