@@ -54,7 +54,7 @@ app.use(function(req,res,next)
         else{
             //TODO Have the navigation object on the login page with a window alert if this happens
             console.log("Oops, something went wrong with authentication!");
-            res.status(404).send("User not Found");
+            res.status(510).send("User not Found");
         }
     });
 });
@@ -76,14 +76,14 @@ app.use(function(req,res,next) {
         nRoute = "/" + nRoute;
     }
     var routeToHit = nRoute;
-    console.log("routeToHit: " + routeToHit);
+   // console.log("routeToHit: " + routeToHit);
 // TODO figure out how to more securely get Permission
     var impredis = require("./imp_services/impredis.js");
     impredis.get(req.cookies.IMPId, function (error, autho) {
         var UserPerm = autho.IMPperm;
 
 
-        console.log("Query: CALL CheckPermissions" + "('" + routeToHit + "'," + UserPerm + " );");
+     //   console.log("Query: CALL CheckPermissions" + "('" + routeToHit + "'," + UserPerm + " );");
 
 //run check for if they have permission to access the route
         var db = require("./imp_services/impdb.js").connect();
@@ -93,7 +93,6 @@ app.use(function(req,res,next) {
             .then(function (rows, columns) {
                 console.log("Success");
                 result = rows[0][0][0];
-                console.log("response:" + result.PermCheck);
                 if (result.PermCheck == 1) {
                     console.log("Access to route " + routeToHit + " granted!");
                     next();
