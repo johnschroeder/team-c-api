@@ -26,29 +26,28 @@ router.route('/').post( function(req,res){
                 var hash = crypto.createHash('sha256').update(password + salt).digest('hex');
 
                 if (hash == oldhash) {
-                    var cookie = {cookie: uuid.v4(), cookie2: uuid.v4()};
+                    var cookie = uuid.v4();
                     console.log("Hash match!");
-                    res.cookie('IMPId', cookie.cookie, {secure: false, maxAge: 24* 60 * 60 * 1000, httpOnly: false});
-                    res.cookie('IMPperm',cookie.cookie2);
+                    res.cookie('IMPId', cookie, {secure: false, maxAge: 24* 60 * 60 * 1000, httpOnly: false});
                     res.send(cookie);
-                    impredis.set(cookie.cookie, "username", username, function(error, result){
+                    impredis.set(cookie, "username", username, function(error, result){
                         if(error){
                             res.status(500).send("ERROR: "+error);
                         }
                         else {
-                            impredis.set(cookie.cookie2, "IMPperm", row[0][0][0].PermsID, function(error, result)
+                            impredis.set(cookie, "IMPperm", row[0][0][0].PermsID, function(error, result)
                             {
                                 if(error) {
                                     res.status(500).send("ERROR: " + error);
                                 }
                                 else{
-                                    res.end(cookie.cookie);
+                                    res.end(cookie);
                                 }
                             });
                         }
 
                     });
-                    impredis.setExpiration(cookie.cookie, 24);
+                    impredis.setExpiration(cookie, 24);
                 }
                 else {
                     console.log("Hash does not match!");
