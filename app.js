@@ -86,18 +86,20 @@ app.use(function(req,res,next) {
         var db = require("./imp_services/impdb.js").connect();
         Q.fcall(db.beginTransaction())
             .then(db.query("USE " + db.databaseName))
-            .then(db.query("CALL CheckPermissions" + "('" + routeToHit + "'," + UserPerm + " );"))
+            .then(db.query("CALL CheckPermissions" + "('" + routeToHit + "'," + UserPerm + ");"))
             .then(function (rows, columns) {
                 console.log("Success");
                 result = rows[0][0][0];
                 console.log("response:" + result.PermCheck);
-                if (result.PermCheck >= 1) {
+                if (result.PermCheck == 1) {
                     console.log("Access to route " + routeToHit + " granted!");
                     next();
                 }
                 else {
+
                     //TODO redirect to home page
-                    console.log("Sorry, you don't have a security level high enough to go to this page.");
+
+                    console.log("Sorry, your permission level doesn't allow you to access this page.");
                     res.status(511).send("Access Denied!");
                 }
             })
@@ -119,11 +121,13 @@ var path = process.cwd()+'/routes';
 glob.sync('**/*.js',{'cwd':path}).forEach(
     function(file){
         var ns = '/'+file.replace(/\.js$/,'');
+       // console.log("INSERT INTO RoutePermissions VALUES(\""+ ns+ "\", 3),(\""+ ns+"\", 2),(\""+ ns +"\", 1);");
         if(ns != "/login" && ns != "/Login/confirmUser" && ns != "/Login/createUser" && ns != "/Login/testLookup") {
             app.use(ns, require(path + ns));
         }
     }
 );
+
 app.use('*', function(req, res){
     console.log("Error trying to display route: "+req.path);
     res.status(404).send("Nothing Found");
