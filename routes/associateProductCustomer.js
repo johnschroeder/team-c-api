@@ -34,6 +34,16 @@ router.route("/:productID/:customerID").get(function(req, res) {
             console.log("Error: " + err);
             res.status(503).send("ERROR: " + err);
         })
+        .then(function() {
+            require('../imp_services/implogging')(req.cookies.IMPId, function(logService){
+                logService.action.productId = req.params.productID;
+                logService.action.customerId = req.params.customerID;
+                logService.setType(500);
+                logService.store(function(err, results){
+                    if (err) res.status(500).send(err);
+                });
+            });
+        })
         .done();
 });
 

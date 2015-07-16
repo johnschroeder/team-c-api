@@ -1,7 +1,3 @@
-/**
- * Created by Kun on 6/15/2015.
- */
-
 var mySQL = require("mysql");
 var express = require("express");
 var router = express.Router();
@@ -44,7 +40,7 @@ router.route("/:CartName/:Reporter/:Assignee/:DaysToDelete").get(function(req, r
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(){
-            console.log("Success");
+            console.log("Successfully created new cart " + CartName);
             res.send("Success");
         })
         .catch(function(err){
@@ -55,6 +51,22 @@ router.route("/:CartName/:Reporter/:Assignee/:DaysToDelete").get(function(req, r
             console.error(err.stack);
             res.status(503).send("ERROR: " + err.code);
 
+        })
+        .then(function() {
+            require('../../imp_services/implogging')(req.cookies.IMPId, function(logService){
+                logService.action.cartName = CartName;
+                logService.action.reporter = Reporter;
+                logService.action.assignee = Assignee;
+                logService.action.daysToDelete = DaysToDelete;
+                logService.setType(700);
+                logService.store(function(err, results){
+                    if(err){
+                        res.status(500).send(err);
+                    } else {
+                        console.log("Successfully logged new cart created.")
+                    }
+                });
+            });
         })
         .done();
 });

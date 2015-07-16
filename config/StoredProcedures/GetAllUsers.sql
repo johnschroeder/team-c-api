@@ -1,0 +1,9 @@
+DROP PROCEDURE IF EXISTS GetAllUsers;
+
+DELIMITER $$
+CREATE PROCEDURE GetAllUsers ()
+BEGIN
+
+select * from Users;
+END $$
+DELIMITER ;
