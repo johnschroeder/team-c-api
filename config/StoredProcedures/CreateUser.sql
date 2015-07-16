@@ -1,3 +1,4 @@
+
 DROP PROCEDURE IF EXISTS CreateUser;
 
 DELIMITER $$

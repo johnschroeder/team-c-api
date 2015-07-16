@@ -21,7 +21,7 @@ router.route("/:productId/:pileId/:runDate/:quantAvail").get(function(req, res) 
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(){
-            console.log("Success");
+            console.log("Successfully added new run");
             res.send("Success");
         })
 
