@@ -34,9 +34,18 @@ router.route('/').post( function(req,res){
                         if(error){
                             res.status(500).send("ERROR: "+error);
                         }
-                        else{
-                            res.end(cookie);
+                        else {
+                            impredis.set(cookie, "IMPperm", row[0][0][0].PermsID, function(error, result)
+                            {
+                                if(error) {
+                                    res.status(500).send("ERROR: " + error);
+                                }
+                                else{
+                                    res.end(cookie);
+                                }
+                            });
                         }
+
                     });
                     impredis.setExpiration(cookie, 24);
                 }
