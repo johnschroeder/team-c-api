@@ -12,6 +12,11 @@ PRIMARY KEY (PermsID)
 );
 ALTER TABLE Permissions AUTO_INCREMENT = 601;
 
+CREATE TABLE RoutePermissions (
+RouteName varchar(75),
+PermsRequired int unsigned
+);
+
 CREATE TABLE Users (
 Username varchar(25),
 FirstName varchar(100),
