@@ -46,7 +46,8 @@ router.route("/:cartID").get(function(req, res) {
     var getModel = {
 
         model:{
-            products:[]
+            products:[],
+            cartID:req.params.cartID
         },
         runIDList:[],
 
@@ -193,6 +194,16 @@ router.route("/:cartID").get(function(req, res) {
                     product.totalAvailable += quantity;
                 });
             });
+            products.forEach(function(product){
+                var items = product.items;
+                var locationArray = product.availableByLocations.locations;
+                var availableArray = product.availableByLocations.available;
+                items.forEach(function(item) {
+                    var index = locationArray.indexOf(item.location);
+                    item.availableAtLocation = availableArray[index];
+                });
+            });
+
             getModel.finalCalculations(callback);
 
 
