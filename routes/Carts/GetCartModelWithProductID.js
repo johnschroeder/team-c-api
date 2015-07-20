@@ -5,34 +5,119 @@
 var express = require("express");
 var router = express.Router();
 var Q = require('q');
+
 /*
  Usage:
+ TODO: write this.
  */
+
 router.route("/:cartID").get(function(req, res) {
 
     //Q.longStackSupport = true;
 
     var db = require("../../imp_services/impdb.js").connect();
+
+    Array.prototype.uniqueProductIDs = function() {
+        var unique = [];
+        for (var i = 0; i < this.length; ++i) {
+            var alreadyExists = false;
+            for(var j = 0; j < unique.length; ++j) {
+                if(unique[j].productID === this[i].productID) {
+                    alreadyExists = true;
+                }
+            }
+            if(!alreadyExists) {
+                unique.push(this[i]);
+            }
+        }
+        return unique;
+    };
+
+    Array.prototype.clean = function(deleteValue) {
+        for (var i = 0; i < this.length; i++) {
+            if (this[i] == deleteValue) {
+                this.splice(i, 1);
+                i--;
+            }
+        }
+        return this;
+    };
+
     var getModel = {
 
         model:{
             products:[]
         },
+        runIDList:[],
 
-        getProductInfo:function(productID) {
+        getCartItems:function(callback) {
+            var cartID = req.params.cartID;
+            Q.fcall(db.beginTransaction())
+                .then(db.query("USE " + db.databaseName))
+                .then(db.query("CALL " + "GetCartItemsByCartID(" + cartID + ");"))
+                .then(function(rows){
+                    var items = rows[0][0];
+                    var products = getModel.model.products;
+                    var uniqueItems = items.uniqueProductIDs();
+                    var waitingOn = uniqueItems.length;
+                    uniqueItems.forEach(function(item) {
+                        if (products[item.productID] === undefined) {
+                            products[item.productID] = {
+                                productID: item.productID,
+                                items: [],
+                                colorsInUse: {
+                                    blue:false, red:false, green:false, yellow:false,
+                                    purple:false, orange:false, cyan:false, pink:false
+                                },
+                                totalAvailable: 0,
+                                availableByLocations: {locations:[], available:[], runIDsAlreadyAdded:[]}
+                            };
+                        }
+                    });
+                    items.forEach(function(item){
+                        item.dirty = false;
+                        if(!products[item.productID].colorsInUse[item.color.toLowerCase()]) {
+                            products[item.productID].colorsInUse[item.color.toLowerCase()] = true;
+                        }
+                        products[item.productID].items.push(item);
+                        getModel.runIDList.push(item.runID);
+                    });
+                    uniqueItems.forEach(function(item){
+                        getModel.getProductInfo(item.productID,function(){
+                            --waitingOn;
+                            if(waitingOn === 0) {
+                                getModel.getAmountAvailable(callback);
+                            }
+                        });
+                    });
+                })
+                .then(db.commit())
+                .then(db.endTransaction())
+                .catch(function(err){
+                    Q.fcall(db.rollback())
+                        .then(db.endTransaction())
+                        .done();
+                    console.log("Error:");
+                    console.error(err.stack);
+                    res.status(503).send("ERROR: " + err.code);
+                })
+                .done();
+        },
+
+        getProductInfo:function(productID, callback) {
             Q.fcall(db.beginTransaction())
                 .then(db.query("USE " + db.databaseName))
                 .then(db.query("CALL " + "GetProductByID(" + productID + ");"))
                 .then(function(rows){
                     var products = getModel.model.products;
-                    products[productID] = {};
                     var product = products[productID];
                     var productInfo = rows[0][0][0];
                     product.productID = productID;
                     product.name = productInfo.Name;
                     product.description = productInfo.Description;
-                    //res.send(getModel.model);
-                    getModel.getSizesByProductID(productID);
+                    getModel.getSizesByProductID(productID, function(){
+                        callback();
+                    });
                 })
                 .then(db.commit())
                 .then(db.endTransaction())
@@ -48,7 +133,7 @@ router.route("/:cartID").get(function(req, res) {
                 .done();
         },
 
-        getSizesByProductID:function(productID) {
+        getSizesByProductID:function(productID, callback) {
             Q.fcall(db.beginTransaction())
                 .then(db.query("USE " + db.databaseName))
                 .then(db.query("CALL " + "GetAllSizesByProductID(" + productID + ");"))
@@ -56,9 +141,7 @@ router.route("/:cartID").get(function(req, res) {
                     var products = getModel.model.products;
                     var product = products[productID];
                     product.sizes = rows[0][0];
-                    res.send(getModel.model);
-                    //getModel.getCartItems(productID);
-
+                    callback();
                 })
                 .then(db.commit())
                 .then(db.endTransaction())
@@ -74,13 +157,58 @@ router.route("/:cartID").get(function(req, res) {
                 .done();
         },
 
-        getCartItems:function(productID) {
+        getAmountAvailable: function(callback) {
+            var products = getModel.model.products;
+            products.forEach(function(product){
+                var items = product.items;
+                items.forEach(function(item) {
+                    var addToTotal = true;
+                    var newLocation = true;
+
+                    product.availableByLocations.locations.forEach(function(location) {
+                        if(item.location === location) {
+                            newLocation = false;
+                        }
+                    });
+
+                    product.availableByLocations.runIDsAlreadyAdded.forEach(function(runID) {
+                        if(item.runID === runID) {
+                            addToTotal = false;
+                        }
+                    });
+
+                    if(addToTotal && newLocation) {
+                        product.availableByLocations.locations.push(item.location);
+                        product.availableByLocations.available.push(item.availableQuantityInRun);
+                        product.availableByLocations.runIDsAlreadyAdded.push(item.runID);
+                    } else if(addToTotal) {
+                        var index = product.availableByLocations.locations.indexOf(item.location);
+                        product.availableByLocations.available[index] += item.availableQuantityInRun;
+                        product.availableByLocations.runIDsAlreadyAdded.push(item.runID);
+                    }
+                });
+            });
+            products.forEach(function(product){
+                product.availableByLocations.available.forEach(function(quantity){
+                    product.totalAvailable += quantity;
+                });
+            });
+            getModel.finalCalculations(callback);
 
 
+        },
+        finalCalculations: function(callback) {
+            getModel.model.products.sort(function(a, b){
+                return a.productID - b.productID;
+            });
+            getModel.model.products.clean(null);
+            callback();
         }
 
     };
-    getModel.getProductInfo(101);
+    getModel.getCartItems(function(){
+        res.send(getModel.model);
+    });
 
 });
 module.exports = router;
