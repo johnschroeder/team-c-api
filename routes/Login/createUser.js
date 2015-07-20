@@ -29,7 +29,7 @@ router.route("/").post(function(req, res) {
     var email = req.body.email;
     var firstName = req.body.firstName;
     var lastName = req.body.lastName;
-    var permID = reg.body.permID;
+    var permID = req.body.permID;
 
     var salt = crypto.randomBytes(32).toString('base64');
     var hashedPassword = crypto.createHash('sha256').update(password + salt).digest('hex').toString('base64');
@@ -38,7 +38,7 @@ router.route("/").post(function(req, res) {
     var date = dateOutput.getMonth()+"-"+dateOutput.getDay()+"-"+dateOutput.getFullYear();
 
     console.log("Creating user with:\nUsername: " + username + "\nEmail: " + email + "\nName: " + firstName + " " + lastName);
-    if(typeof reg.body.permID == 'undefined') {
+    if(typeof req.body.permID == 'undefined') {
         Q.fcall(db.beginTransaction())
             .then(db.query("USE " + db.databaseName))
             .then(db.query("CALL CreateUser ('" + username + "', '" + hashedPassword + "', '" + email + "', '" + salt + "', '" + firstName + "', '" + lastName + "', '" + date + "')"))
