@@ -58,6 +58,9 @@ router.route("/:cartID").get(function(req, res) {
                 .then(db.query("CALL " + "GetCartItemsByCartID(" + cartID + ");"))
                 .then(function(rows){
                     var items = rows[0][0];
+                    if(items.length == 0) {
+                        callback("empty");
+                    }
                     var products = getModel.model.products;
                     var uniqueItems = items.uniqueProductIDs();
                     var waitingOn = uniqueItems.length;
@@ -77,7 +80,8 @@ router.route("/:cartID").get(function(req, res) {
                     });
                     items.forEach(function(item){
                         item.dirty = false;
-                        if(!products[item.productID].colorsInUse[item.color.toLowerCase()]) {
+                        if(item.color != null
+                            && !products[item.productID].colorsInUse[item.color.toLowerCase()]) {
                             products[item.productID].colorsInUse[item.color.toLowerCase()] = true;
                         }
                         products[item.productID].items.push(item);
@@ -217,8 +221,12 @@ router.route("/:cartID").get(function(req, res) {
         }
 
     };
-    getModel.getCartItems(function(){
-        res.send(getModel.model);
+    getModel.getCartItems(function(err){
+        if(err) {
+            res.send(err);
+        } else {
+            res.send(getModel.model);
+        }
     });
 
 });
