@@ -45,6 +45,7 @@ app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
 var result;
 app.use(function(req,res,next)
 {
+    console.log(req.cookies.IMPId);
     var impredis = require("./imp_services/impredis.js");
     impredis.exists(req.cookies.IMPId, function(err, reply) {
         if(reply == 1) {
@@ -54,7 +55,8 @@ app.use(function(req,res,next)
         else{
             //TODO Have the navigation object on the login page with a window alert if this happens
             console.log("Oops, something went wrong with authentication!");
-            res.status(510).send("User not Found");
+            //res.status(510).send("User not Found");
+            next();
         }
     });
 });
