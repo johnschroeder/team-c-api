@@ -45,7 +45,6 @@ app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
 var result;
 app.use(function(req,res,next)
 {
-    console.log(req.cookies.IMPId);
     var impredis = require("./imp_services/impredis.js");
     impredis.exists(req.cookies.IMPId, function(err, reply) {
         if(reply == 1) {
