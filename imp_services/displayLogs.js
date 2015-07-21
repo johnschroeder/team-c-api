@@ -1,6 +1,6 @@
 var Q = require("q");
 
-global.LogTypeMap = {};
+var LogTypeMap = {};
 LogTypeMap[100] = {
     type: "Added Inventory",
     callFunction: function (LogType, logUsername,  time,  actionData) {
