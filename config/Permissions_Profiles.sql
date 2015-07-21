@@ -71,3 +71,4 @@ INSERT INTO RoutePermissions VALUES("DisplayInventory.html", 3),("DisplayInvento
 INSERT INTO RoutePermissions VALUES("CreateUser.html", 3);
 INSERT INTO RoutePermissions VALUES("confirmUser.html", 3),("confirmUser.html", 2),("confirmUser.html", 1),("confirmUser.html", 0);
 INSERT INTO RoutePermissions VALUES("AddInventory.html", 3),("AddInventory.html", 1);
+INSERT INTO RoutePermissions VALUES("ShowQRCode.html", 3),("ShowQRCode.html", 1);
