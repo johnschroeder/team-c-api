@@ -1,6 +1,6 @@
 var Q = require("q");
 
-var LogTypeMap = {};
+global.LogTypeMap = {};
 LogTypeMap[100] = {
     type: "Added Inventory",
     callFunction: function (LogType, logUsername,  time,  actionData) {
@@ -91,7 +91,8 @@ LogTypeMap[1500] = {
         return time + " - " + logUsername + ": " + "Deleted cart item " + actionData.cartItemId;
     }
 };
-function toStringDefault (LogType, logUsername,  time,  actionData) {
+
+    function toStringDefault (LogType, logUsername,  time,  actionData) {
     return time + " - " + LogTypeMap[LogType].type;
 }
 
@@ -105,19 +106,21 @@ module.exports =
         return LogTypeMap[key] == undefined ? false : true;
     },
 
-    displayLogs: function (cookie, callback) {
+    displayLogs: function (adminView, cookie, callback) {
         var stringLogs = [];
         var ids = [];
 
         var db = require("../imp_services/impdb.js").connect();
 
-        require("../imp_services/impredis.js").get(cookie, function usernameReturn(error, val)
-        {
+        require("../imp_services/impredis.js").get(cookie, function usernameReturn(error, val) {
             var username = val.username;
-
+            var call = "CALL GetLogsUserView(\'" + username + "\');";
+            if (adminView) {
+                call = "CALL GetAllLogs();";
+            }
             return Q.fcall(db.beginTransaction())
                 .then(db.query("USE " + db.databaseName))
-                .then(db.query("CALL GetLogsUserView(\'" + username+ "\');"))
+                .then(db.query(call))
                 .then(function (rows) {
 
                     if (rows[0][0].length == 0) { // No user by that username
