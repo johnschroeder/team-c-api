@@ -55,8 +55,7 @@ app.use(function(req,res,next)
         else{
             //TODO Have the navigation object on the login page with a window alert if this happens
             console.log("Oops, something went wrong with authentication!");
-            //res.status(510).send("User not Found");
-            next();
+            res.status(510).send("User not Found");
         }
     });
 });
@@ -79,7 +78,6 @@ app.use(function(req,res,next) {
     }
     var routeToHit = nRoute;
    // console.log("routeToHit: " + routeToHit);
-// TODO figure out how to more securely get Permission
     var impredis = require("./imp_services/impredis.js");
     impredis.get(req.cookies.IMPId, function (error, autho) {
         var UserPerm = autho.IMPperm;
