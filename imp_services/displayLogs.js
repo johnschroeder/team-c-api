@@ -107,6 +107,7 @@ module.exports =
 
     displayLogs: function (cookie, callback) {
         var stringLogs = [];
+        var ids = [];
 
         var db = require("../imp_services/impdb.js").connect();
 
@@ -136,10 +137,11 @@ module.exports =
                         } else {
                             stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
                         }
+                        ids.push(logID);
                         console.log(stringLogs[i]);
                     }
 
-                    var jsonObject = {logs:stringLogs};
+                    var jsonObject = {logs:stringLogs, id:ids};
 
                     callback(JSON.stringify(jsonObject));
 
