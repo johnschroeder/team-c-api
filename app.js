@@ -77,7 +77,6 @@ app.use(function(req,res,next) {
     }
     var routeToHit = nRoute;
    // console.log("routeToHit: " + routeToHit);
-// TODO figure out how to more securely get Permission
     var impredis = require("./imp_services/impredis.js");
     impredis.get(req.cookies.IMPId, function (error, autho) {
         var UserPerm = autho.IMPperm;
