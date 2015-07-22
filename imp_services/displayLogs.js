@@ -55,6 +55,12 @@ LogTypeMap[900] = {
         return time + " - " + logUsername + ": " + actionData.user + " logged in";
     }
 };
+LogTypeMap[901] = {
+    type: "Logged Out User",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + actionData.user + " logged out";
+    }
+};
 LogTypeMap[1000] = {
     type: "Disassociated Product With All Customers",
     callFunction: function (LogType, logUsername,  time,  actionData) {

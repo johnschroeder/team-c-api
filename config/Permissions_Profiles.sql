@@ -53,7 +53,7 @@ INSERT INTO RoutePermissions VALUES("/redis/GetState", 3),("/redis/GetState", 2)
 INSERT INTO RoutePermissions VALUES("/redis/SetState", 3),("/redis/SetState", 2),("/redis/SetState", 1);
 INSERT INTO RoutePermissions VALUES("/searchCustomer", 3),("/searchCustomer", 2),("/searchCustomer", 1);
 INSERT INTO RoutePermissions VALUES("/searchItem", 3),("/searchItem", 2),("/searchItem", 1);
-
+INSERT INTO RoutePermissions VALUES("/Login/LogOut", 3),("/Login/LogOut", 2),("/Login/LogOut", 1);
 #html Files
 INSERT INTO RoutePermissions VALUES("Home.html", 3),("Home.html", 2),("Home.html", 1);
 INSERT INTO RoutePermissions VALUES("ViewCarts.html", 3),("ViewCarts.html", 2),("ViewCarts.html", 1);
