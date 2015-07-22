@@ -10,6 +10,7 @@ express(cookieParser());
 router.route('/:userName').get( function(req,res){
     var user = req.params.userName;
     impredis.delete(req.cookies.IMPId);
+    impredis.delete(req.params.userName);
     require('../../imp_services/implogging')(req.cookies.IMPId, function(logService) {
         logService.action.user = user;
         logService.setType(901);
