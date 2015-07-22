@@ -54,13 +54,15 @@ INSERT INTO RoutePermissions VALUES("/redis/SetState", 3),("/redis/SetState", 2)
 INSERT INTO RoutePermissions VALUES("/searchCustomer", 3),("/searchCustomer", 2),("/searchCustomer", 1);
 INSERT INTO RoutePermissions VALUES("/searchItem", 3),("/searchItem", 2),("/searchItem", 1);
 INSERT INTO RoutePermissions VALUES("/Login/LogOut", 3),("/Login/LogOut", 2),("/Login/LogOut", 1);
+INSERT INTO RoutePermissions VALUES("/getAllLogs", 3);
+
 #html Files
 INSERT INTO RoutePermissions VALUES("Home.html", 3),("Home.html", 2),("Home.html", 1);
 INSERT INTO RoutePermissions VALUES("ViewCarts.html", 3),("ViewCarts.html", 2),("ViewCarts.html", 1);
 INSERT INTO RoutePermissions VALUES("PullInventory.html", 3),("PullInventory.html", 1);
 INSERT INTO RoutePermissions VALUES("NewProduct.html", 3),("NewProduct.html", 1);
 INSERT INTO RoutePermissions VALUES("ManageUsers.html", 3);
-INSERT INTO RoutePermissions VALUES("Logs.html", 3);
+INSERT INTO RoutePermissions VALUES("Logs.html", 3),("Logs.html", 2),("Logs.html", 1);
 INSERT INTO RoutePermissions VALUES("loginForm.html", 3),("loginForm.html", 2),("loginForm.html", 1);
 INSERT INTO RoutePermissions VALUES("itemDetailView.html", 3),("itemDetailView.html", 2),("itemDetailView.html", 1);
 INSERT INTO RoutePermissions VALUES("indexBody.html", 3),("indexBody.html", 2),("indexBody.html", 1);
@@ -72,3 +74,4 @@ INSERT INTO RoutePermissions VALUES("CreateUser.html", 3);
 INSERT INTO RoutePermissions VALUES("confirmUser.html", 3),("confirmUser.html", 2),("confirmUser.html", 1),("confirmUser.html", 0);
 INSERT INTO RoutePermissions VALUES("AddInventory.html", 3),("AddInventory.html", 1);
 INSERT INTO RoutePermissions VALUES("ShowQRCode.html", 3),("ShowQRCode.html", 1);
+INSERT INTO RoutePermissions VALUES("AdminLogs.html", 3);

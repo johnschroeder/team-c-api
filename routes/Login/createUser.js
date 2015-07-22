@@ -120,7 +120,7 @@ router.route("/").post(function(req, res) {
 
 //TODO, make this a promise chain
 var SendConfirmation = function(email, callback){
-    var lookup = uuid.v4();
+    var lookup = "confirm-"+uuid.v4();
     impredis.set(lookup,"type","create", function(error, result){
         if (error !== null) {
             console.log("error: " + error);
