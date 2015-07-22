@@ -21,7 +21,8 @@ router.route('/').get(function(req, res) {
                         FirstName: response.FirstName,
                         LastName: response.LastName,
                         Email: response.Email,
-                        PermsID: response.PermsID
+                        PermsID: response.PermsID,
+                        Username: response.Username
                     })
                 })
                 .then(db.commit())

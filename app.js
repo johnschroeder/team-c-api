@@ -66,6 +66,11 @@ app.use(function(req,res,next) {
         var nRoute = temp.split("/")[0];
         nRoute = "/Carts/" + nRoute;
     }
+    else if(p.indexOf("/Login/") != -1){
+        var temp = p.replace("/Login/", "");
+        var nRoute = temp.split("/")[0];
+        nRoute = "/Login/" + nRoute;
+    }
     else if (p.indexOf("/Logging/") != -1) {
         var temp = p.replace("/Logging/", "");
         var nRoute = temp.split("/")[0];
