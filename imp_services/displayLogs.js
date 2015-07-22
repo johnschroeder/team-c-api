@@ -141,7 +141,7 @@ module.exports =
                             stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
                         }
                         ids.push(logID);
-                        console.log(stringLogs[i]);
+                        //console.log(stringLogs[i]);
                     }
 
                     var jsonObject = {logs:stringLogs, id:ids};
