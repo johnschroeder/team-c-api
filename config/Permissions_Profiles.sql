@@ -61,7 +61,7 @@ INSERT INTO RoutePermissions VALUES("ViewCarts.html", 3),("ViewCarts.html", 2),(
 INSERT INTO RoutePermissions VALUES("PullInventory.html", 3),("PullInventory.html", 1);
 INSERT INTO RoutePermissions VALUES("NewProduct.html", 3),("NewProduct.html", 1);
 INSERT INTO RoutePermissions VALUES("ManageUsers.html", 3);
-INSERT INTO RoutePermissions VALUES("Logs.html", 3);
+INSERT INTO RoutePermissions VALUES("Logs.html", 3),("Logs.html", 2),("Logs.html", 1);
 INSERT INTO RoutePermissions VALUES("loginForm.html", 3),("loginForm.html", 2),("loginForm.html", 1);
 INSERT INTO RoutePermissions VALUES("itemDetailView.html", 3),("itemDetailView.html", 2),("itemDetailView.html", 1);
 INSERT INTO RoutePermissions VALUES("indexBody.html", 3),("indexBody.html", 2),("indexBody.html", 1);
