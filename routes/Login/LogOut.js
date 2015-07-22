@@ -20,6 +20,7 @@ router.route('/:userName').get( function(req,res){
     impredis.exists(req.cookies.IMPId, function(err, reply) {
         if(reply == 1) {
             console.log("Failure");
+            res.status(500).send("There was an error logging out.")
         }
         else{
             res.send("Success!");
