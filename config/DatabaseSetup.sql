@@ -96,7 +96,9 @@ ProductID int unsigned,
 Name varchar(50),
 Size int unsigned,
 PRIMARY KEY (SizeMapID),
-FOREIGN KEY (ProductID) REFERENCES Products(ProductID)ON DELETE CASCADE
+FOREIGN KEY (ProductID) REFERENCES Products(ProductID)ON DELETE CASCADE,
+UNIQUE (ProductID, Size),
+UNIQUE (ProductID, Name)
 );
 
 CREATE TABLE Logs (
@@ -139,6 +141,3 @@ FOREIGN KEY (CartID) REFERENCES Cart(CartID) ON DELETE CASCADE,
 FOREIGN KEY (SizeMapID) REFERENCES SizeMap(SizeMapID) ON DELETE SET NULL,
 FOREIGN KEY (RunID) REFERENCES Runs(RunID) ON DELETE SET NULL
 );
-
-
-ALTER TABLE SizeMap  ADD CONSTRAINT uq_SizeMap UNIQUE(ProductID, Size);
