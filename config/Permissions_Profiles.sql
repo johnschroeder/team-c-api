@@ -37,7 +37,7 @@ INSERT INTO RoutePermissions VALUES("/GetSizeByProductID", 3),("/GetSizeByProduc
 INSERT INTO RoutePermissions VALUES("/GetSizeMapID", 3),("/GetSizeMapID", 2),("/GetSizeMapID", 1);
 INSERT INTO RoutePermissions VALUES("/Logging/AddLogViewMapEntry", 3),("/Logging/AddLogViewMapEntry", 2),("/Logging/AddLogViewMapEntry", 1);
 INSERT INTO RoutePermissions VALUES("/Login/confirmUser", 3),("/Login/confirmUser", 2),("/Login/confirmUser", 1);
-INSERT INTO RoutePermissions VALUES("/Login/login", 3),("/Login/login", 2),("/Login/login", 1);
+INSERT INTO RoutePermissions VALUES("/Login/login", 3),("/Login/login", 2),("/Login/login", 1),("/Login/login", 0);
 INSERT INTO RoutePermissions VALUES("/Login/testLookup", 3),("/Login/testLookup", 2),("/Login/testLookup", 1);
 INSERT INTO RoutePermissions VALUES("/associateProductCustomer", 3),("/associateProductCustomer", 2),("/associateProductCustomer", 1);
 INSERT INTO RoutePermissions VALUES("/cookieValidator", 3),("/cookieValidator", 2),("/cookieValidator", 1);
@@ -63,7 +63,7 @@ INSERT INTO RoutePermissions VALUES("PullInventory.html", 3),("PullInventory.htm
 INSERT INTO RoutePermissions VALUES("NewProduct.html", 3),("NewProduct.html", 1);
 INSERT INTO RoutePermissions VALUES("ManageUsers.html", 3);
 INSERT INTO RoutePermissions VALUES("Logs.html", 3),("Logs.html", 2),("Logs.html", 1);
-INSERT INTO RoutePermissions VALUES("loginForm.html", 3),("loginForm.html", 2),("loginForm.html", 1);
+INSERT INTO RoutePermissions VALUES("loginForm.html", 3),("loginForm.html", 2),("loginForm.html", 1),("loginForm.html", 0);
 INSERT INTO RoutePermissions VALUES("itemDetailView.html", 3),("itemDetailView.html", 2),("itemDetailView.html", 1);
 INSERT INTO RoutePermissions VALUES("indexBody.html", 3),("indexBody.html", 2),("indexBody.html", 1);
 INSERT INTO RoutePermissions VALUES("EditProduct.html", 3),("EditProduct.html", 1);
@@ -75,3 +75,4 @@ INSERT INTO RoutePermissions VALUES("confirmUser.html", 3),("confirmUser.html", 
 INSERT INTO RoutePermissions VALUES("AddInventory.html", 3),("AddInventory.html", 1);
 INSERT INTO RoutePermissions VALUES("ShowQRCode.html", 3),("ShowQRCode.html", 1);
 INSERT INTO RoutePermissions VALUES("AdminLogs.html", 3);
+INSERT INTO RoutePermissions VALUES("EditUser.html", 3);
