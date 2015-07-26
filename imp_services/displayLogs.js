@@ -14,9 +14,9 @@ LogTypeMap[200] = {
     }
 };
 LogTypeMap[300] = {
-    type: "Added Item to Cart",
+    type: "Added Item to Job",
     callFunction: function (LogType, logUsername,  time,  actionData) {
-        return time + " - " + logUsername + ": " + "Added " + actionData.amount + " units of product " + actionData.productId + " to cart " + actionData.cartName;
+        return time + " - " + logUsername + ": " + "Added " + actionData.amount + " units of product " + actionData.productId + " to job " + actionData.cartName;
     }
 };
 LogTypeMap[400] = {
@@ -38,9 +38,9 @@ LogTypeMap[600] = {
     }
 };
 LogTypeMap[700] = {
-    type: "Created Cart",
+    type: "Created Job",
     callFunction: function (LogType, logUsername, time, actionData) {
-        return time + " - " + logUsername + ": " + "Created new cart '" + actionData.cartName + "' assigned to " + actionData.assignee + ", will expire in " + actionData.daysToDelete + " days";
+        return time + " - " + logUsername + ": " + "Created new job '" + actionData.cartName + "' assigned to " + actionData.assignee + ", will expire in " + actionData.daysToDelete + " days";
     }
 };
 LogTypeMap[800] = {
@@ -80,21 +80,21 @@ LogTypeMap[1200] = {
     }
 };
 LogTypeMap[1300] = {
-    type: "Edited Cart",
+    type: "Edited Job",
     callFunction: function (LogType, logUsername,  time,  actionData) {
-        return time + " - " + logUsername + ": " + "Updated cart " + actionData.cartId + " -> " + actionData.cartName;
+        return time + " - " + logUsername + ": " + "Updated job " + actionData.cartId + " -> " + actionData.cartName;
     }
 };
 LogTypeMap[1400] = {
-    type: "Edited Cart Item",
+    type: "Edited Job Item",
     callFunction: function (LogType, logUsername,  time,  actionData) {
-        return time + " - " + logUsername + ": " + "Updated cart item " + actionData.cartItemId + " in cart " + actionData.cartId;
+        return time + " - " + logUsername + ": " + "Updated job item " + actionData.cartItemId + " in job " + actionData.cartId;
     }
 };
 LogTypeMap[1500] = {
-    type: "Deleted Cart Item",
+    type: "Deleted Job Item",
     callFunction: function (LogType, logUsername,  time,  actionData) {
-        return time + " - " + logUsername + ": " + "Deleted cart item " + actionData.cartItemId;
+        return time + " - " + logUsername + ": " + "Deleted job item " + actionData.cartItemId;
     }
 };
 
