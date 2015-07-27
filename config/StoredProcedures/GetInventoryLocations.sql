@@ -1,0 +1,12 @@
+DROP PROCEDURE IF EXISTS GetInventoryLocations;
+
+DELIMITER $$
+CREATE PROCEDURE GetInventoryLocations
+()
+BEGIN
+
+SELECT *
+FROM Location;
+
+END $$
+DELIMITER ;
