@@ -22,7 +22,8 @@ router.route('/').get(function(req, res) {
                         LastName: response.LastName,
                         Email: response.Email,
                         PermsID: response.PermsID,
-                        Username: response.Username
+                        Username: response.Username,
+                        isConfirmed: response.isConfirmed[0]
                     })
                 })
                 .then(db.commit())
