@@ -53,7 +53,7 @@ router.route('/').post( function(req,res){
                                                     console.log("User cookie successfully stored, returning cookie to user");
                                                     impredis.setExpiration(username, 24);
                                                     impredis.setExpiration(cookie, 24);
-                                                    res.end(cookie);
+                                                    res.end("You have successfully logged in.");
                                                 }
                                             });
                                         }
@@ -63,7 +63,8 @@ router.route('/').post( function(req,res){
                         }
                         else{
                             console.log("User session found for "+username+", giving them the previously used cookie");
-                            res.end(value.cookie);
+                            res.cookie('IMPId', value.cookie, {secure: false, maxAge: 24* 60 * 60 * 1000, httpOnly: false});
+                            res.end("You have successfully logged in.");
                         }
                     });
                 }
