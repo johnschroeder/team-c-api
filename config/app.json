@@ -7,7 +7,8 @@
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
             "password":"IMPdev321",
-            "databaseName":"imp_db_dev"
+            "databaseName":"imp_db_dev",
+            "debug":"false"
         },
         "redis":{
             "host":"127.0.0.1",
@@ -21,7 +22,8 @@
         "mysql":{
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
-            "password":"IMPdev321"
+            "password":"IMPdev321",
+            "debug":"true"
         },
         "redis":{
             "host":"impredis.ov3fom.ng.0001.usw2.cache.amazonaws.com",
@@ -33,6 +35,7 @@
     "prod":{
         "frontend": "http://www.thisisimp.com",
         "mysql":{
+            "maxConnections":"10",
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
             "password":"IMPdev321",
@@ -50,14 +53,11 @@
             "user":"dev",
             "password":"IMPdev321",
             "databaseName":"imp_db_dev"
-        }
+        },
+        "frontend": "http://localhost:50000"
     },
     "hinyun":{
-        "mysql":{
-            "host":"localhost",
-            "user":"username",
-            "password":"password"
-        }
+
     },
     "claudiu":{
 
@@ -75,7 +75,8 @@
             "host":"dev.crnidwuuk0de.us-west-2.rds.amazonaws.com",
             "user":"dev",
             "password":"IMPdev321",
-            "databaseName":"imp_db_dev"
+            "databaseName":"imp_db_dev",
+            "debug":"true"
         }
     },
     "mike":{

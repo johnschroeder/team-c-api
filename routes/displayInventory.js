@@ -14,8 +14,9 @@ router.route("/").get(function(req,res){
             var invUnit = JSON.stringify(rows[0][0]);
             console.log("invUnit: " + invUnit);
             res.send(invUnit);
-            db.endTransaction();
         })
+        .then(db.commit())
+        .then(db.endTransaction())
         .catch(function(err){
             Q.fcall(db.rollback())
                 .then(db.endTransaction());

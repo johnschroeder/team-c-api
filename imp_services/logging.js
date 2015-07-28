@@ -1,11 +1,11 @@
 exports.LOGTYPES = {
-    ADDPILE               : {value: 100, name: "AddPile"},
-    ADDRUN                : {value: 200, name: "AddRun"},
-    REMOVEPILE            : {value: 300, name: "RemovePile"},
-    REMOVERUN             : {value: 400, name: "RemoveRun"},
-    AUDIT                 : {value: 500, name: "Audit"},
-    NOTE                  : {value: 600, name: "Note"},
-    NEWPRODUCTCREATED     : {value: 700, name: "New Product Created"}
+    ADDPILE               : {value: 100, name: "Added Pile"},
+    ADDRUN                : {value: 200, name: "Added Run"},
+    REMOVEPILE            : {value: 300, name: "Removed Pile"},
+    REMOVERUN             : {value: 400, name: "Removed Run"},
+    AUDIT                 : {value: 500, name: "Audited"},
+    NOTE                  : {value: 600, name: "Noted"},
+    NEWPRODUCTCREATED     : {value: 700, name: "Created New Product"}
 };
 
 /* Use of Logs.GenericVar in DB:
@@ -26,28 +26,7 @@ exports.LOGTYPES = {
  general - extra variable depending on transaction type (see use of Logs.GenericVar above)
  */
 exports.updateLog = function(database, logType, productId, username, general) {
-    // TODO: Look into using Q.defer() here
-    if (database == null) {
-        console.log("database arg in updateLog() is null");
-        // TODO: handle this error
-    }
-    if (logType == null) {
-        console.log("logType arg in updateLog() is null");
-        // TODO: handle this error
-    }
-    if (productId == null) {
-        // TODO: go retrieve from DB, remove line below
-        // null if new product being created
-        productId = 101;
-    }
-    if (username == null) {
-        // TODO: handle this error, remove line below
-        username = "'hansolo'";
-    }
-    if (general == null) {
-        // not used in all cases, valid for it to be null
-        general = "NULL";
-    }
+
     var time = formattedDateTime();  // get current time as formatted string
     return database.query("INSERT INTO " + database.logTable + " VALUES (NULL, " + logType + ", " + productId + ", " + username + ", " + time + ", " + general + ")");
 };

@@ -1,7 +1,3 @@
-/**
- * Created by Trevor on 6/26/2015.
- */
-
 var express = require("express");
 var router = express.Router();
 var Q = require('q');
@@ -34,14 +30,24 @@ router.route('/').post( function(req,res){
                     console.log("Hash match!");
                     res.cookie('IMPId', cookie, {secure: false, maxAge: 24* 60 * 60 * 1000, httpOnly: false});
                     res.send(cookie);
-                    impredis.set(cookie, username, {}, function(result, error){
+                    impredis.set(cookie, "username", username, function(error, result){
                         if(error){
                             res.status(500).send("ERROR: "+error);
                         }
-                        else{
-                            res.end(cookie);
+                        else {
+                            impredis.set(cookie, "IMPperm", row[0][0][0].PermsID, function(error, result)
+                            {
+                                if(error) {
+                                    res.status(500).send("ERROR: " + error);
+                                }
+                                else{
+                                    res.end(cookie);
+                                }
+                            });
                         }
+
                     });
+                    impredis.setExpiration(cookie, 24);
                 }
                 else {
                     console.log("Hash does not match!");
@@ -49,6 +55,8 @@ router.route('/').post( function(req,res){
                 }
             }
         })
+        .then(db.commit())
+        .then(db.endTransaction())
         .catch(function(err){
             Q.fcall(db.rollback())
                 .then(db.endTransaction())
@@ -56,6 +64,16 @@ router.route('/').post( function(req,res){
                 .done();
             console.log("Error: " + err);
             res.status(503).send("ERROR: " + err);
+        })
+        .then(function() {
+            require('../../imp_services/implogging')(req.cookies.IMPId, function(logService){
+                logService.action.user = req.body.user;
+                logService.setType(900);
+                logService.store(function(err, results){
+                    if (err) res.status(500).send(err);
+                });
+            });
+
         })
         .done();
 

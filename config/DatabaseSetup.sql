@@ -1,9 +1,9 @@
 ##### Create database and tables #####
-DROP DATABASE IF EXISTS imp_db_dev;
+DROP DATABASE IF EXISTS #DB_name;
 
-CREATE DATABASE imp_db_dev;
+CREATE DATABASE #DB_name;
 
-USE imp_db_dev;
+USE #DB_name;
 
 CREATE TABLE Permissions (
 PermsID int unsigned AUTO_INCREMENT,
@@ -11,6 +11,11 @@ Perms int unsigned,
 PRIMARY KEY (PermsID)
 );
 ALTER TABLE Permissions AUTO_INCREMENT = 601;
+
+CREATE TABLE RoutePermissions (
+RouteName varchar(75),
+PermsRequired int unsigned
+);
 
 CREATE TABLE Users (
 Username varchar(25),
@@ -91,7 +96,9 @@ ProductID int unsigned,
 Name varchar(50),
 Size int unsigned,
 PRIMARY KEY (SizeMapID),
-FOREIGN KEY (ProductID) REFERENCES Products(ProductID)ON DELETE CASCADE
+FOREIGN KEY (ProductID) REFERENCES Products(ProductID)ON DELETE CASCADE,
+UNIQUE (ProductID, Size),
+UNIQUE (ProductID, Name)
 );
 
 CREATE TABLE Logs (
@@ -108,7 +115,8 @@ CREATE TABLE LogViewMap (
 Username varchar(25),
 LogID int unsigned,
 FOREIGN KEY (LogID) REFERENCES Logs(LogID) ON DELETE CASCADE,
-FOREIGN KEY (Username) REFERENCES Users(Username) ON DELETE CASCADE
+FOREIGN KEY (Username) REFERENCES Users(Username) ON DELETE CASCADE,
+UNIQUE (Username, LogID)
 );
 
 CREATE TABLE Cart (
@@ -133,6 +141,3 @@ FOREIGN KEY (CartID) REFERENCES Cart(CartID) ON DELETE CASCADE,
 FOREIGN KEY (SizeMapID) REFERENCES SizeMap(SizeMapID) ON DELETE SET NULL,
 FOREIGN KEY (RunID) REFERENCES Runs(RunID) ON DELETE SET NULL
 );
-
-
-ALTER TABLE SizeMap  ADD CONSTRAINT uq_SizeMap UNIQUE(ProductID, Size);

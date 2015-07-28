@@ -1,8 +1,3 @@
-/**
- * Created by Kun on 6/16/2015.
- */
-
-
 var mySQL = require("mysql");
 var express = require("express");
 var router = express.Router();
@@ -33,22 +28,6 @@ router.route("/:CartID/:CartName/:Reporter/:Assignee/:DateToDelete").get(functio
     var Assignee = req.params.Assignee;
     var DateToDelete = req.params.DateToDelete;
 
-    /**
-     * The initial use of Q.fcall() is required to kickstart the chain.
-     * Once that's done, the resulting object is a promise.
-     * The promise contains a .then() method, which takes as its first (and usually only)
-     * argument a function.
-     * If the promise is fulfilled:
-     *      There were no errors during the execution of the wrapped method
-     *      The then() method's argument is called
-     *          Arguments to the function inside then() are results of the previous promise!
-     *          (see rows, columns from below)
-     * If the promise was not fulfilled:
-     *      There was an error during the execution of the wrapped method
-     *      The error is passed on (or then's second argument is called)
-     *      The error is used as an argument to .catch()'s function.
-     * The .done() ends the chain.
-     */
     console.log(CartID);
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
@@ -58,23 +37,10 @@ router.route("/:CartID/:CartName/:Reporter/:Assignee/:DateToDelete").get(functio
             " Assignee = " + Assignee + "," +
             " DateToDelete = " + DateToDelete +
             "WHERE CartID = " + CartID))
-    /**
-     * The args here are results of the previous promise's wrapped function.
-     * Note that I had to make the function in the then a promise by using the
-     * defer() method to allow for further chaining.  This part is only necessary
-     * if you need results from one of the wrapped method beyond success/failure.
-     * Uncomment the console log to see that it's accessing values from the table
-     */
-        .then(function(rows, columns){
-            var deferred = Q.defer();
-            //console.log(rows);
-            deferred.resolve();
-            return deferred.promise;
-        })
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(){
-            console.log("Success");
+            console.log("Successfully edited cart " + CartID);
             res.send("Success");
         })
         .catch(function(err){
@@ -84,6 +50,21 @@ router.route("/:CartID/:CartName/:Reporter/:Assignee/:DateToDelete").get(functio
             console.log("Error:");
             console.error(err.stack);
             res.status(503).send("ERROR: " + err.code);
+
+        })
+        .then(function() {
+            require('../../imp_services/implogging')(req.cookies.IMPId, function(logService){
+                logService.action.cartId = CartID;
+                logService.action.cartName = CartName.replace(/^"(.+(?="$))"$/, '$1');   // regex taken from SO
+                logService.setType(1300);
+                logService.store(function(err, results){
+                    if (err) {
+                        res.status(500).send(err);
+                    } else {
+                        console.log("Successfully logged edit of cart " + CartID);
+                    }
+                });
+            });
 
         })
         .done();

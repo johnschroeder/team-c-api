@@ -17,7 +17,6 @@ DebugID int,
 Message varchar(255)
 );
 
-USE imp_db_dev;
 DROP PROCEDURE IF EXISTS AddItemToCartGeneral;
 
 DELIMITER $$

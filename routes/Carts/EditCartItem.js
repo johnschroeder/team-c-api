@@ -37,14 +37,30 @@ router.route("/:CartID/:CartItemID/:SizeMapID/:Quantity/:RunID").get(function(re
             console.log(JSON.stringify(rows[0][0]));
             var invUnit = JSON.stringify(rows[0][0]);
             res.send(invUnit);
-            db.endTransaction();
         })
+        .then(db.commit())
+        .then(db.endTransaction())
         .catch(function(err){
             Q.fcall(db.rollback())
                 .then(db.endTransaction());
             console.log("Error:");
             console.error(err.stack);
             res.status(503).send("ERROR: " + err.code);
+        })
+        .then(function() {
+            require('../../imp_services/implogging')(req.cookies.IMPId, function(logService){
+                logService.action.cartId = CartID;
+                logService.action.cartItemId = CartItemID;
+                logService.setType(1400);
+                logService.store(function(err, results){
+                    if (err) {
+                        res.status(500).send(err);
+                    } else {
+                        console.log("Successfully logged edit of cart item " + CartItemID + " in cart " + CartID);
+                    }
+                });
+            });
+
         })
         .done();
 });

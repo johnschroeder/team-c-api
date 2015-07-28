@@ -1,7 +1,7 @@
 var express = require("express");
 var Q = require('q');
 var router = express.Router();
-
+var impredis = require("../../imp_services/impredis.js");
 
 
 /*
@@ -10,12 +10,12 @@ var router = express.Router();
  */
 
 router.route("/:lookup").get(function(req, res) {
-    var result = require("../../imp_services/redislookup.js")(req.params.lookup, function(result){
-        if(result){
-            res.send(result);
+    impredis.get(req.params.lookup, function(error, result){
+        if (error !== null) {
+            res.status(500).send({type:"none"});
         }
-        else{
-            res.status(500).send("Lookup not found");
+        else {
+            res.send(result);
         }
     });
 });

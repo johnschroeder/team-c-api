@@ -1,0 +1,12 @@
+
+DROP PROCEDURE IF EXISTS GetCustomers;
+
+DELIMITER $$
+CREATE PROCEDURE GetCustomers()
+BEGIN
+
+SELECT CustomerID, Name FROM Customers;
+
+END $$
+
+DELIMITER ;

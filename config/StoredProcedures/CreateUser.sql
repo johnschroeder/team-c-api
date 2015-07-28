@@ -1,5 +1,4 @@
 
-use imp_db_dev;
 DROP PROCEDURE IF EXISTS CreateUser;
 
 DELIMITER $$
@@ -10,8 +9,18 @@ BEGIN
 
 DECLARE pmid INT;
 select @pmid:=min(PermsID) from Permissions;
+select @unique:= count(name) from
+(select Username as name from Users
+union
+select GroupName as name from UserGroups) as s1 where s1.name=_Username;
 
-INSERT INTO Users VALUES(_Username,_FirstName,_LastName,_Email,@pmid,_HP,_US,_DateCreated);
+IF @unique<=0 THEN
+	INSERT INTO Users (Username, FirstName, LastName, Email, PermsID, HP, US, DateCreated)  VALUES(_Username,_FirstName,_LastName,_Email,@pmid,_HP,_US,_DateCreated);
+ELSE
+	SIGNAL SQLSTATE '45000'
+	SET MESSAGE_TEXT = 'User already exists in Users or UserGroups';
+
+END IF;
 
 
 END $$
