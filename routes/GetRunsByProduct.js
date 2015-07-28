@@ -21,8 +21,9 @@ router.route("/:ProductID").get(function(req, res) {
         .then(db.query("CALL GetRunsByProduct" + "(" + ProductID + ");"))
         .then(function(rows){
             console.log("Successfully got run data for product " + ProductID);
-            var invUnit = JSON.stringify(rows[0][0]);
-            res.send(invUnit);
+            var queryResult = JSON.stringify(rows[0][0]);
+            //console.log(queryResult);
+            res.send(queryResult);
         })
         .then(db.commit())
         .then(db.endTransaction())
