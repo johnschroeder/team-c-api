@@ -3,7 +3,7 @@ DROP PROCEDURE IF EXISTS AddInventory;
 
 DELIMITER $$
 CREATE PROCEDURE AddInventory
-(IN _ProductID int unsigned, IN _Quantity int unsigned, IN _Location varchar(50))
+(IN _ProductID int unsigned, IN _Quantity int unsigned, IN _Location varchar(50), IN _AltID int unsigned)
 BEGIN
 
 DECLARE existingPileID int unsigned;
@@ -25,7 +25,7 @@ END IF;
 
 # create new run using either the existing pileId or a newly created pileId
 INSERT INTO Runs
-VALUES (null, existingPileID, CURDATE(), _Quantity, _Quantity, 0);
+VALUES (null, existingPileID, CURDATE(), _Quantity, _Quantity, 0, _AltID);
 
 END $$
 DELIMITER ;
