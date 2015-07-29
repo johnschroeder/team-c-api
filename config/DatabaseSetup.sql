@@ -79,6 +79,7 @@ DateCreated date,
 InitialQuantity int unsigned,
 QuantityAvailable int unsigned,
 QuantityReserved int unsigned,
+AltID int unsigned,
 PRIMARY KEY (RunID),
 FOREIGN KEY (PileID) REFERENCES Piles(PileID)
 );
