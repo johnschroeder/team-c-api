@@ -13,10 +13,12 @@ router.route("/:productId/:quantity/:location").get(function(req, res) {
 
     //Q.longStackSupport = true;   // for error checking
 
+    // TODO: pass altID as route param, add place for user to specify this, then remove var tempAltID below and update call to AddInventory (line 21)
+    var tempAltID = null;
+
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CALL AddInventory (" + req.params.productId + ", " + req.params.quantity + ", '" + req.params.location + "')"))
-        // TODO: log this entry?
+        .then(db.query("CALL AddInventory2 (" + req.params.productId + ", " + req.params.quantity + ", '" + req.params.location + "', " + tempAltID + ")"))
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(){

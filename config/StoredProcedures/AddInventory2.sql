@@ -1,8 +1,7 @@
-
-DROP PROCEDURE IF EXISTS AddInventory;
+DROP PROCEDURE IF EXISTS AddInventory2;
 
 DELIMITER $$
-CREATE PROCEDURE AddInventory
+CREATE PROCEDURE AddInventory2
 (IN _ProductID int unsigned, IN _Quantity int unsigned, IN _Location varchar(50), IN _AltID int unsigned)
 BEGIN
 
@@ -19,7 +18,7 @@ IF (existingPileID IS NULL) THEN
 	# no pile exists, create new one
 	INSERT INTO Piles
   	VALUES (null, _ProductID, _Location);
-  
+
  	SET existingPileID = last_insert_id(); # get new pileId
 END IF;
 

@@ -46,13 +46,12 @@ var result;
 app.use(function(req,res,next)
 {
     var impredis = require("./imp_services/impredis.js");
-    impredis.exists(req.cookies.IMPId, function(err, reply) {
-        if(reply == 1) {
+    impredis.exists(req.cookies.IMPId, function (err, reply) {
+        if (reply == 1) {
             console.log("Successfully Authenticated!");
             next();
         }
-        else{
-            //TODO Have the navigation object on the login page with a window alert if this happens
+        else {
             console.log("Oops, something went wrong with authentication!");
             res.status(510).send("User not Found");
         }
@@ -81,7 +80,6 @@ app.use(function(req,res,next) {
         nRoute = "/" + nRoute;
     }
     var routeToHit = nRoute;
-   // console.log("routeToHit: " + routeToHit);
     var impredis = require("./imp_services/impredis.js");
     impredis.get(req.cookies.IMPId, function (error, autho) {
         var UserPerm = autho.IMPperm;
@@ -102,9 +100,7 @@ app.use(function(req,res,next) {
                     next();
                 }
                 else {
-
                     //TODO redirect to home page
-
                     console.log("Sorry, your permission level doesn't allow you to access this page.");
                     res.status(511).send("Access Denied!");
                 }
