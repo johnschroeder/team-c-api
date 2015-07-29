@@ -11,39 +11,59 @@ var aws = require('aws-sdk');
  Usage:
  www.thisisimp.com/login/startpasswordreset/
  Body contains:
- email: String
+ username: String
  */
 
-//TODO make this a promise chain
 router.route('/').post(function(req, res) {
     var impredis = require("../../imp_services/impredis.js");
     var username = req.body.username;
     var lookup = uuid.v4();
-    impredis.set(lookup,"type","reset", function(error, result){
-        if (error !== null) {
-            console.log("error: " + error);
-            res.status(500).send("error: " + error);
-        }
-        else{
-            impredis.set(lookup, "email" ,email,function (error, result) {
+
+    // Get username's email
+    var db = require("../../imp_services/impdb.js").connect();
+    Q.fcall(db.beginTransaction())
+        .then(db.query("USE " + db.databaseName))
+        .then(db.query("CALL GetUserByUsername('"+username+"');"
+        ))
+        .then(function(rows, columns){
+            var deferred = Q.defer();
+            impredis.set(lookup,"type","reset", function(error, result){
                 if (error !== null) {
-                    console.log("error: " + error);
-                    res.status(500).send("error: " + error);
+                    deferred.reject(error);
                 }
-                else {
-                    console.log("Success");
-                    sendEmail(email, lookup, function(err, result){
-                        if(err){
-                            res.status(500).send(err);
+                else{
+                    impredis.set(lookup, "username" , username, function (error, result) {
+                        if (error !== null) {
+                            deferred.reject(error);
                         }
-                        else{
-                            res.end();
+                        else {
+                            console.log("Success");
+                            sendEmail(rows[0][0].email, lookup, function(err, result){
+                                if(err){
+                                    deferred.reject(err);
+                                }
+                                else{
+                                    res.end();
+                                    deferred.resolve();
+                                }
+                            });
                         }
                     });
                 }
             });
-        }
-    });
+            return deferred.promise;
+        })
+        .then(db.commit())
+        .then(db.endTransaction())
+        .catch(function(err){
+            Q.fcall(db.rollback())
+                .then(db.endTransaction())
+                .done();
+            console.log("Error:");
+            console.error(err.stack);
+            res.status(503).send("ERROR: " + err.code);
+
+        });
 });
 
 var sendEmail = function(email, lookup, callback){
