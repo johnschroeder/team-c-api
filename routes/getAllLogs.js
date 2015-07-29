@@ -6,7 +6,6 @@ router.route('/:filterParameters').get(function(req,res) {
     var logsService = require('../imp_services/displayLogs');
 
     var filters = req.params.filterParameters;
-
     logsService.displayLogs(true, filters, req.cookies.IMPId, function (logs) {
         res.end(logs);
     });

@@ -161,18 +161,18 @@ module.exports =
                         if (LogTypeMap[LogType] == null) {
                             stringLogs.push(typeNotAddedYet(LogType, logUsername, time, JSON.parse(actionData)));
                         } else {
-                            for (var j = 0; j < filters.length; j++) {
-                                if (filters[j] == LogType) {
-                                    stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
+                                for (var j = 0; j < filters.length; j++) {
+                                    if (filters[j] == LogType) {
+                                        stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
+                                    }
                                 }
-                            }
+
                         }
                         ids.push(logID);
                         //console.log(stringLogs[i]);
                     }
 
-                    var jsonObject = {logs:stringLogs, id:ids};
-
+                    var jsonObject = {"logs":stringLogs, "id":ids};
                     callback(JSON.stringify(jsonObject));
 
                 })
