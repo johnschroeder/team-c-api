@@ -49,6 +49,7 @@ INSERT INTO RoutePermissions VALUES("/getLogs", 3),("/getLogs", 2),("/getLogs", 
 INSERT INTO RoutePermissions VALUES("/getUserInfo", 3),("/getUserInfo", 2),("/getUserInfo", 1);
 INSERT INTO RoutePermissions VALUES("/itemAutoComplete", 3),("/itemAutoComplete", 2),("/itemAutoComplete", 1);
 INSERT INTO RoutePermissions VALUES("/itemDetail", 3),("/itemDetail", 2),("/itemDetail", 1);
+INSERT INTO RoutePermissions VALUES("/GetRunsByProduct", 3),("/GetRunsByProduct", 2),("/GetRunsByProduct", 1);
 INSERT INTO RoutePermissions VALUES("/redis/GetState", 3),("/redis/GetState", 2),("/redis/GetState", 1);
 INSERT INTO RoutePermissions VALUES("/redis/SetState", 3),("/redis/SetState", 2),("/redis/SetState", 1);
 INSERT INTO RoutePermissions VALUES("/searchCustomer", 3),("/searchCustomer", 2),("/searchCustomer", 1);
