@@ -17,7 +17,7 @@ var aws = require('aws-sdk');
 //TODO make this a promise chain
 router.route('/').post(function(req, res) {
     var impredis = require("../../imp_services/impredis.js");
-    var email = req.body.email;
+    var username = req.body.username;
     var lookup = uuid.v4();
     impredis.set(lookup,"type","reset", function(error, result){
         if (error !== null) {
