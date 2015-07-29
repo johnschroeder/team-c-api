@@ -32,6 +32,9 @@ router.route("/:cartID").get(function(req, res) {
         }
         return unique;
     };
+    function line(number) {
+        console.log("=================" + number + "=================");
+    }
 
     Array.prototype.clean = function(deleteValue) {
         for (var i = 0; i < this.length; i++) {
@@ -74,7 +77,7 @@ router.route("/:cartID").get(function(req, res) {
                                     purple:false, orange:false, cyan:false, pink:false
                                 },
                                 totalAvailable: 0,
-                                availableByLocations: {locations:[], available:[], runIDsAlreadyAdded:[]}
+                                availableByLocations: {locations:[], available:[]}
                             };
                         }
                     });
@@ -91,7 +94,9 @@ router.route("/:cartID").get(function(req, res) {
                         getModel.getProductInfo(item.productID,function(){
                             --waitingOn;
                             if(waitingOn === 0) {
-                                getModel.getAmountAvailable(callback);
+                                //getModel.getAmountAvailable(callback);
+                                line("here");
+                                getModel.getAllLocations(callback);
                             }
                         });
                     });
@@ -162,7 +167,35 @@ router.route("/:cartID").get(function(req, res) {
                 .done();
         },
 
-        getAmountAvailable: function(callback) {
+        getAllLocations: function(callback) {
+            Q.fcall(db.beginTransaction())
+                .then(db.query("USE " + db.databaseName))
+                .then(db.query("CALL " + "GetAllProductIDsLocationsAndQuantities()"))
+                .then(function(rows) {
+                    console.log(rows[0][0]);
+                    var results = rows[0][0];
+                    var products = getModel.model.products;
+                    results.forEach(function(result){
+                        if(products[result.ProductID] !== undefined) {
+                            products[result.ProductID].availableByLocations.locations.push(result.Location);
+                            products[result.ProductID].availableByLocations.available.push(result.TotalQuantityAvailable);
+                        }
+                    });
+                    getModel.finalCalculations(callback);
+                })
+                .then(db.commit())
+                .then(db.endTransaction())
+                .catch(function(err) {
+                    Q.fcall(db.rollback())
+                        .then(db.endTransaction())
+                        .done();
+                    console.log("Error:");
+                    console.error(err.stack);
+                    res.status(503).send("ERROR: " + err.code);
+                })
+        },
+
+        /*getAmountAvailable: function(callback) {
             var products = getModel.model.products;
             products.forEach(function(product){
                 var items = product.items;
@@ -211,7 +244,8 @@ router.route("/:cartID").get(function(req, res) {
             getModel.finalCalculations(callback);
 
 
-        },
+        },*/
+
         finalCalculations: function(callback) {
             getModel.model.products.sort(function(a, b){
                 return a.productID - b.productID;

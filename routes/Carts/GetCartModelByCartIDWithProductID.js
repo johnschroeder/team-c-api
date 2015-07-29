@@ -89,7 +89,7 @@ router.route("/:cartID/:productID").get(function(req, res) {
                                     purple:false, orange:false, cyan:false, pink:false
                                 },
                                 totalAvailable: 0,
-                                availableByLocations: {locations:[], available:[], runIDsAlreadyAdded:[]}
+                                availableByLocations: {locations:[], available:[]}
                             };
                             if(products[0] != null
                                     && products[0].productID === products[item.productID].productID
@@ -114,7 +114,7 @@ router.route("/:cartID/:productID").get(function(req, res) {
                         getModel.getProductInfo(item.productID,function(){
                             --waitingOn;
                             if(waitingOn === 0) {
-                                getModel.getAmountAvailable(callback);
+                                getModel.getAllLocations(callback);
                             }
                         });
                     });
@@ -186,18 +186,40 @@ router.route("/:cartID/:productID").get(function(req, res) {
                 .done();
         },
 
-        //TODO: Fix this method by actually hitting db here
-        /*
-        This erroneously makes the assumption that at least one item from each run is present.
-        It pulls amount available from the cart items and calculates how much is available in each
-        location using those values.
-        The way it should work is:
-        -go down the list of product ids and hit the db for each one
-        -build array of locations
-        -find amount of the product that's available at each location
-        -add that into the array that parallels location
-         */
-        getAmountAvailable: function(callback) {
+        getAllLocations: function(callback) {
+            Q.fcall(db.beginTransaction())
+                .then(db.query("USE " + db.databaseName))
+                .then(db.query("CALL " + "GetAllProductIDsLocationsAndQuantities()"))
+                .then(function(rows) {
+                    console.log(rows[0][0]);
+                    var results = rows[0][0];
+                    var products = getModel.model.products;
+                    results.forEach(function(result){
+                        if(products[result.ProductID] !== undefined) {
+                            products[result.ProductID].availableByLocations.locations.push(result.Location);
+                            products[result.ProductID].availableByLocations.available.push(result.TotalQuantityAvailable);
+                        }
+                        else if(products[0].productID === result.ProductID) {
+                            products[0].availableByLocations.locations.push(result.Location);
+                            products[0].availableByLocations.available.push(result.TotalQuantityAvailable);
+                        }
+                    });
+                    getModel.finalCalculations(callback);
+                })
+                .then(db.commit())
+                .then(db.endTransaction())
+                .catch(function(err) {
+                    Q.fcall(db.rollback())
+                        .then(db.endTransaction())
+                        .done();
+                    console.log("Error:");
+                    console.error(err.stack);
+                    res.status(503).send("ERROR: " + err.code);
+                })
+        },
+
+        /*getAmountAvailable: function(callback) {
+
             var products = getModel.model.products;
             products.forEach(function(product){
                 var items = product.items;
@@ -247,7 +269,8 @@ router.route("/:cartID/:productID").get(function(req, res) {
             getModel.finalCalculations(callback);
 
 
-        },
+        },*/
+
         finalCalculations: function(callback) {
             getModel.model.products.sort(function(a, b){
                 return a.productID - b.productID;
