@@ -247,13 +247,19 @@ router.route("/:cartID").get(function(req, res) {
         },*/
 
         finalCalculations: function(callback) {
-            getModel.model.products.sort(function(a, b){
+            var products = getModel.model.products;
+            products.forEach(function (product) {
+                product.availableByLocations.available.forEach(function (quantity) {
+                    console.log(quantity);
+                    product.totalAvailable += quantity;
+                });
+            });
+            products.sort(function (a, b) {
                 return a.productID - b.productID;
             });
-            getModel.model.products.clean(null);
+            products.clean(null);
             callback();
         }
-
     };
     getModel.getCartItems(function(err){
         if(err) {
