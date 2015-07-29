@@ -99,7 +99,7 @@ router.route("/").post(function(req, res) {
                             res.status(500).send(err);
                         }
                         else{
-                            SendConfirmation(email, function (err) {
+                            SendConfirmation(email, username, function (err) {
                                 if (err) {
                                     res.status(503).send("ERROR: " + err);
                                 }
@@ -133,11 +133,19 @@ var SendConfirmation = function(email, callback){
                     callback(error);
                 }
                 else {
-                    console.log("Success");
-                    impredis.setExpiration(lookup, 24);
-                    sendEmail(email, lookup, function (err, data) {
-                        callback(err, data);
-                    })
+                    impredis.set(lookup, "username", username, function (error, result) {
+                        if (error !== null) {
+                            console.log("error: " + error);
+                            callback(error);
+                        }
+                        else {
+                            console.log("Success");
+                            impredis.setExpiration(lookup, 24);
+                            sendEmail(email, lookup, function (err, data) {
+                                callback(err, data);
+                            })
+                        }
+                    });
                 }
             });
         }

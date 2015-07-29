@@ -16,24 +16,24 @@ router.route('/:lookup').get(function(req, res) {
         }
         else {
             console.log(val);
-            confirmUser(val.email, function(err){
+            confirmUser(val.email, val.username, function(err){
                 if(err){
                     res.status(503).send("ERROR: " + err);
                 }
                 else{
+                    res.json({username: val.username});
                     impredis.delete(req.params.lookup);
-                    res.send("success!");
                 }
             })
         }
     });
 });
 
-var confirmUser = function(email, callback){
+var confirmUser = function(email, username, callback){
     var db = require("../../imp_services/impdb.js").connect();
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("UPDATE Users SET isConfirmed=1 WHERE email LIKE '"+email+"'"))
+        .then(db.query("UPDATE Users SET isConfirmed=1 WHERE username LIKE '"+username+"'"))
         .then(db.commit())
         .then(db.endTransaction())
         .then(function(){
@@ -55,7 +55,7 @@ var confirmUser = function(email, callback){
             callback(err);
         })
         .done();
-}
+};
 
 var sendThankYouEmail = function(email, callback){
     var ses = new aws.SES({apiVersion: '2010-12-01', region:'us-west-2'});
