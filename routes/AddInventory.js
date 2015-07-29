@@ -18,6 +18,7 @@ router.route("/:productId/:quantity/:location").get(function(req, res) {
 
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
+        // TODO: remove AddInventory from DB and replace with AddInventory2 variant
         .then(db.query("CALL AddInventory (" + req.params.productId + ", " + req.params.quantity + ", '" + req.params.location + "', " + tempAltID + ")"))
         .then(db.commit())
         .then(db.endTransaction())
@@ -27,8 +28,7 @@ router.route("/:productId/:quantity/:location").get(function(req, res) {
         })
         .catch(function(err){
             Q.fcall(db.rollback())
-                .then(db.endTransaction())
-                .done();
+                .then(db.endTransaction());
             console.log("Error: " + err);
             //console.error(err.stack);
             res.status(503).send("ERROR: " + err);
