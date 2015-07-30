@@ -98,7 +98,7 @@ LogTypeMap[1500] = {
     }
 };
 
-    function toStringDefault (LogType, logUsername,  time,  actionData) {
+function toStringDefault (LogType, logUsername,  time,  actionData) {
     return time + " - " + LogTypeMap[LogType].type;
 }
 
@@ -112,27 +112,10 @@ module.exports =
         return LogTypeMap[key] == undefined ? false : true;
     },
 
-    getJsonFormLogMap : function(callback)
-    {
-        var keyArray = [];
-        var typeArray = [];
-        for (var key in LogTypeMap) {
-            if (key === 'length' || !LogTypeMap.hasOwnProperty(key)) continue;
-
-            var value = LogTypeMap[key];
-            keyArray.push(key);
-            typeArray.push(value.type);
-        }
-
-        var returnable = {"keys":keyArray, "types":typeArray};
-        callback(JSON.stringify(returnable));
-    },
-
-    displayLogs: function (adminView, filterOutput, cookie, callback) {
+    displayLogs: function (adminView, cookie, callback) {
         var stringLogs = [];
         var ids = [];
 
-        var filters = JSON.parse(filterOutput).filter;
         var db = require("../imp_services/impdb.js").connect();
 
         require("../imp_services/impredis.js").get(cookie, function usernameReturn(error, val) {
@@ -161,18 +144,14 @@ module.exports =
                         if (LogTypeMap[LogType] == null) {
                             stringLogs.push(typeNotAddedYet(LogType, logUsername, time, JSON.parse(actionData)));
                         } else {
-                                for (var j = 0; j < filters.length; j++) {
-                                    if (filters[j] == LogType) {
-                                        stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
-                                    }
-                                }
-
+                            stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
                         }
                         ids.push(logID);
                         //console.log(stringLogs[i]);
                     }
 
-                    var jsonObject = {"logs":stringLogs, "id":ids};
+                    var jsonObject = {logs:stringLogs, id:ids};
+
                     callback(JSON.stringify(jsonObject));
 
                 })
