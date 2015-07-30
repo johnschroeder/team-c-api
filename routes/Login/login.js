@@ -63,7 +63,7 @@ router.route('/').post( function(req,res){
                         }
                         else{
                             console.log("User session found for "+username+", giving them the previously used cookie");
-                            res.cookie('IMPId', value.cookie, {secure: false, maxAge: 24* 60 * 60 * 1000, httpOnly: false});
+                            res.cookie('IMPId', cookie, {secure: false, maxAge: 24* 60 * 60 * 1000, httpOnly: false});
                             res.end("You have successfully logged in.");
                         }
                     });
