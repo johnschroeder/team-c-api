@@ -6,7 +6,7 @@ var uuid = require('node-uuid');
 
 router.route('/').get(function(req,res){
 
-    console.log("Started looking up location.");
+    console.log("Started looking up locations.");
     var db = require("../imp_services/impdb.js").connect();
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
@@ -21,12 +21,10 @@ router.route('/').get(function(req,res){
                 var locations = [];
                 for (var i = 0; i < row[0][0].length; i++)
                 {
-                    console.log(row[0][0][i].location);
                     locations.push(row[0][0][i].location);
                 }
 
                 var sendLocations = {"locationList" : locations};
-                console.log ("Ok now we have this too " + sendLocations.locationList[0]);
                     res.send(JSON.stringify(sendLocations));
                 res.end(JSON.stringify(sendLocations));
                 }
