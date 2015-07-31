@@ -1,5 +1,34 @@
 var Q = require("q");
 
+
+function _formatTime(time)
+{
+    var hours = time.getHours();
+    var ampm = "am";
+
+    if (time.getHours() == 0)
+    {
+        hours = "12";
+    }
+    var minutes = time.getMinutes();
+    if (time.getMinutes() == 0)
+    {
+        minutes = "00";
+    }
+    else if (time.getMinutes() < 10)
+    {
+        minutes = "0" + time.getMinutes();
+    }
+
+    if (hours > 12)
+    {
+        hours = hours - 12;
+        ampm = "pm";
+    }
+
+    return time.getMonth() + "/" + time.getDay() + "/" + time.getFullYear() + " " + hours + ":" + minutes + " " + ampm;
+}
+
 var LogTypeMap = {};
 LogTypeMap[100] = {
     type: "Added Inventory",
@@ -138,7 +167,7 @@ module.exports =
                         var logID = row.LogID;
                         var LogType = row.LogType;
                         var logUsername = row.Username;
-                        var time = row.Time;
+                        var time = _formatTime(row.Time);
                         var actionData = row.ActionData;
 
                         if (LogTypeMap[LogType] == null) {
