@@ -3,12 +3,24 @@ var router = express.Router();
 var Q = require('q');
 
 
-router.route("/").get(function(req,res){
-    Q.longStackSupport = true;
+router.route("/:filterType").get(function(req,res){
+    //Q.longStackSupport = true;
+    var filter;
+    switch (req.params.filterType) {
+        case 'First Name':
+            filter = 'FilterFirstName';
+            break;
+        case 'Last Name':
+            filter = 'FilterLastName';
+            break;
+        default:
+            filter = "";
+            break;
+    }
     var db = require("../imp_services/impdb.js").connect();
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CALL GetAllUsers"))
+        .then(db.query("CALL GetAllUsers" + filter))
         .then(function(rows, columns){
             //console.log("Success");
             var invUnit = JSON.stringify(rows[0][0]);
