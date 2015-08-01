@@ -1,8 +1,3 @@
-/**
- * Created by Kun on 7/14/2015.
- */
-
-
 var express = require("express");
 var router = express.Router();
 var Q = require('q');
@@ -15,7 +10,7 @@ router.route("/").get(function(req,res){
         .then(db.query("USE " + db.databaseName))
         .then(db.query("CALL GetAllUsers"))
         .then(function(rows, columns){
-            console.log("Success");
+            //console.log("Success");
             var invUnit = JSON.stringify(rows[0][0]);
             console.log("invUnit: " + invUnit);
             res.send(invUnit);
