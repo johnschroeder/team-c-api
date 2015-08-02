@@ -4,6 +4,9 @@ DELIMITER $$
 CREATE PROCEDURE GetAllUsers ()
 BEGIN
 
-select * from Users WHERE Username NOT IN ("System shows");
+SELECT Username, FirstName, LastName, Email, Perms
+FROM Users JOIN Permissions ON Users.PermsID = Permissions.PermsID WHERE Users.Username NOT IN ("System shows");
+ORDER BY Username ASC;
+
 END $$
 DELIMITER ;
