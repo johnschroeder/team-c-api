@@ -4,6 +4,6 @@ DELIMITER $$
 CREATE PROCEDURE GetAllUsers ()
 BEGIN
 
-select * from Users;
+select * from Users WHERE Username NOT IN ("System shows");
 END $$
 DELIMITER ;
