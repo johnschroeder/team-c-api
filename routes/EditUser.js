@@ -17,13 +17,15 @@ router.route('/:username/:firstName/:lastName/:perms/:requestDelete').get(functi
         "" + firstName+ "," +
         "" + lastName+ "," +
          + parseInt(perms) + "," +
-         + parseInt(isConfirmed);
+         + parseInt(requestDelete);
 
+    console.log(args);
     Q.fcall(db.beginTransaction())
 
         .then(db.query("USE " + db.databaseName))
          .then(db.query("CALL EditUserByUsername(" + args + ");"))
         .then(function (rows) {
+            console.log(rows[0]);
             if (rows[0].affectedRows != 1) {
                 res.end("Update Failed!");
             }
