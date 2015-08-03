@@ -10,6 +10,8 @@ router.route('/').post( function(req,res){
     var username=req.body.user;
     var password=req.body.password;
 
+    var successLog = false;
+
     var db = require("../../imp_services/impdb.js").connect();
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
@@ -41,6 +43,7 @@ router.route('/').post( function(req,res){
                                     res.status(500).send("ERROR: " + error);
                                 }
                                 else{
+                                    successLog = true;
                                     res.end(cookie);
                                 }
                             });
@@ -66,13 +69,15 @@ router.route('/').post( function(req,res){
             res.status(503).send("ERROR: " + err);
         })
         .then(function() {
-            require('../../imp_services/implogging')(req.cookies.IMPId, function(logService){
-                logService.action.user = req.body.user;
-                logService.setType(900);
-                logService.store(function(err, results){
-                    if (err) res.status(500).send(err);
+            if (successLog) {
+                require('../../imp_services/implogging')(req.cookies.IMPId, function (logService) {
+                    logService.action.user = req.body.user;
+                    logService.setType(900);
+                    logService.store(function (err, results) {
+                        if (err) res.status(500).send(err);
+                    });
                 });
-            });
+            }
 
         })
         .done();

@@ -3,6 +3,7 @@ var impredis = require("./impredis.js");
 var Q = require('q');
 
 module.exports = function(cookie, callback) {
+
     impredis.get(cookie, function (error, result) {
         if (error) {
             throw error;
@@ -11,7 +12,7 @@ module.exports = function(cookie, callback) {
             callback({
                 action: {},
                 _type: null,
-                username: (result && result.username) ? result.username : "foobarme",
+                username: (result && result.username) ? result.username : "System shows",
                 setType: function (id) {
                     if (displayLogs._verifyKey(id)) {
                         this._type = id;
