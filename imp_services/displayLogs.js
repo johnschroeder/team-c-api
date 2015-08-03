@@ -1,5 +1,34 @@
 var Q = require("q");
 
+
+function _formatTime(time)
+{
+    var hours = time.getHours();
+    var ampm = "am";
+
+    if (time.getHours() == 0)
+    {
+        hours = "12";
+    }
+    var minutes = time.getMinutes();
+    if (time.getMinutes() == 0)
+    {
+        minutes = "00";
+    }
+    else if (time.getMinutes() < 10)
+    {
+        minutes = "0" + time.getMinutes();
+    }
+
+    if (hours > 12)
+    {
+        hours = hours - 12;
+        ampm = "pm";
+    }
+
+    return time.getMonth() + "/" + time.getDay() + "/" + time.getFullYear() + " " + hours + ":" + minutes + " " + ampm;
+}
+
 var LogTypeMap = {};
 LogTypeMap[100] = {
     type: "Added Inventory",
@@ -14,9 +43,9 @@ LogTypeMap[200] = {
     }
 };
 LogTypeMap[300] = {
-    type: "Added Item to Cart",
+    type: "Added Item to Job",
     callFunction: function (LogType, logUsername,  time,  actionData) {
-        return time + " - " + logUsername + ": " + "Added " + actionData.amount + " units of product " + actionData.productId + " to cart " + actionData.cartName;
+        return time + " - " + logUsername + ": " + "Added " + actionData.amount + " units of product " + actionData.productId + " to job " + actionData.cartName;
     }
 };
 LogTypeMap[400] = {
@@ -38,9 +67,9 @@ LogTypeMap[600] = {
     }
 };
 LogTypeMap[700] = {
-    type: "Created Cart",
+    type: "Created Job",
     callFunction: function (LogType, logUsername, time, actionData) {
-        return time + " - " + logUsername + ": " + "Created new cart '" + actionData.cartName + "' assigned to " + actionData.assignee + ", will expire in " + actionData.daysToDelete + " days";
+        return time + " - " + logUsername + ": " + "Created new job '" + actionData.cartName + "' assigned to " + actionData.assignee + ", will expire in " + actionData.daysToDelete + " days";
     }
 };
 LogTypeMap[800] = {
@@ -53,6 +82,12 @@ LogTypeMap[900] = {
     type: "Logged In User",
     callFunction: function (LogType, logUsername,  time,  actionData) {
         return time + " - " + logUsername + ": " + actionData.user + " logged in";
+    }
+};
+LogTypeMap[901] = {
+    type: "Logged Out User",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + actionData.user + " logged out";
     }
 };
 LogTypeMap[1000] = {
@@ -74,24 +109,25 @@ LogTypeMap[1200] = {
     }
 };
 LogTypeMap[1300] = {
-    type: "Edited Cart",
+    type: "Edited Job",
     callFunction: function (LogType, logUsername,  time,  actionData) {
-        return time + " - " + logUsername + ": " + "Updated cart " + actionData.cartId + " -> " + actionData.cartName;
+        return time + " - " + logUsername + ": " + "Updated job " + actionData.cartId + " -> " + actionData.cartName;
     }
 };
 LogTypeMap[1400] = {
-    type: "Edited Cart Item",
+    type: "Edited Job Item",
     callFunction: function (LogType, logUsername,  time,  actionData) {
-        return time + " - " + logUsername + ": " + "Updated cart item " + actionData.cartItemId + " in cart " + actionData.cartId;
+        return time + " - " + logUsername + ": " + "Updated job item " + actionData.cartItemId + " in job " + actionData.cartId;
     }
 };
 LogTypeMap[1500] = {
-    type: "Deleted Cart Item",
+    type: "Deleted Job Item",
     callFunction: function (LogType, logUsername,  time,  actionData) {
-        return time + " - " + logUsername + ": " + "Deleted cart item " + actionData.cartItemId;
+        return time + " - " + logUsername + ": " + "Deleted job item " + actionData.cartItemId;
     }
 };
-function toStringDefault (LogType, logUsername,  time,  actionData) {
+
+    function toStringDefault (LogType, logUsername,  time,  actionData) {
     return time + " - " + LogTypeMap[LogType].type;
 }
 
@@ -105,18 +141,38 @@ module.exports =
         return LogTypeMap[key] == undefined ? false : true;
     },
 
-    displayLogs: function (cookie, callback) {
-        var stringLogs = [];
+    getJsonFormLogMap : function(callback)
+    {
+        var keyArray = [];
+        var typeArray = [];
+        for (var key in LogTypeMap) {
+            if (key === 'length' || !LogTypeMap.hasOwnProperty(key)) continue;
 
+            var value = LogTypeMap[key];
+            keyArray.push(key);
+            typeArray.push(value.type);
+        }
+
+        var returnable = {"keys":keyArray, "types":typeArray};
+        callback(JSON.stringify(returnable));
+    },
+
+    displayLogs: function (adminView, filterOutput, cookie, callback) {
+        var stringLogs = [];
+        var ids = [];
+
+        var filters = JSON.parse(filterOutput).filter;
         var db = require("../imp_services/impdb.js").connect();
 
-        require("../imp_services/impredis.js").get(cookie, function usernameReturn(error, val)
-        {
+        require("../imp_services/impredis.js").get(cookie, function usernameReturn(error, val) {
             var username = val.username;
-
+            var call = "CALL GetLogsUserView(\'" + username + "\');";
+            if (adminView) {
+                call = "CALL GetAllLogs();";
+            }
             return Q.fcall(db.beginTransaction())
                 .then(db.query("USE " + db.databaseName))
-                .then(db.query("CALL GetLogsUserView(\'" + username+ "\');"))
+                .then(db.query(call))
                 .then(function (rows) {
 
                     if (rows[0][0].length == 0) { // No user by that username
@@ -128,19 +184,24 @@ module.exports =
                         var logID = row.LogID;
                         var LogType = row.LogType;
                         var logUsername = row.Username;
-                        var time = row.Time;
+                        var time = _formatTime(row.Time);
                         var actionData = row.ActionData;
 
                         if (LogTypeMap[LogType] == null) {
                             stringLogs.push(typeNotAddedYet(LogType, logUsername, time, JSON.parse(actionData)));
                         } else {
-                            stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
+                                for (var j = 0; j < filters.length; j++) {
+                                    if (filters[j] == LogType) {
+                                        stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
+                                    }
+                                }
+
                         }
-                        console.log(stringLogs[i]);
+                        ids.push(logID);
+                        //console.log(stringLogs[i]);
                     }
 
-                    var jsonObject = {logs:stringLogs};
-
+                    var jsonObject = {"logs":stringLogs, "id":ids};
                     callback(JSON.stringify(jsonObject));
 
                 })
