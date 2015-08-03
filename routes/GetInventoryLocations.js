@@ -15,8 +15,8 @@ router.route('/:productID').get(function(req,res){
         .then(function(row) {
 
             // We got data about the user
-            if (row[0][0].length == 0) { // No user by that username
-                res.end("Invalid Credentials!");
+            if (row[0][0].length == 0) { // No current locations for that product.
+                res.end(JSON.stringify({"locationList" : ["Product has no current locations"]}));
             }
             else {
                 var locations = [];
