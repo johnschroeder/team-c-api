@@ -23,13 +23,16 @@ var impredis = require("../../imp_services/impredis.js");
  */
 
 
-router.route("/").post(function(req, res) {
-    var username = req.body.username;
-    var password = req.body.password;
-    var email = req.body.email;
-    var firstName = req.body.firstName;
-    var lastName = req.body.lastName;
-    var permID = req.body.permID;
+router.route("/:userdetails").post(function(req, res) {
+
+    var userDetails = JSON.parse(req.params.userdetails);
+
+    var username = userDetails.username;
+    var password = userDetails.password;
+    var email = userDetails.email;
+    var firstName = userDetails.firstName;
+    var lastName = userDetails.lastName;
+    var permID = userDetails.permID;
 
     var salt = crypto.randomBytes(32).toString('base64');
     var hashedPassword = crypto.createHash('sha256').update(password + salt).digest('hex').toString('base64');
