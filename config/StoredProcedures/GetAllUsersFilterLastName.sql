@@ -1,12 +1,12 @@
-DROP PROCEDURE IF EXISTS GetAllUsers;
+DROP PROCEDURE IF EXISTS GetAllUsersFilterLastName;
 
 DELIMITER $$
-CREATE PROCEDURE GetAllUsers ()
+CREATE PROCEDURE GetAllUsersFilterLastName ()
 BEGIN
 
 SELECT Username, FirstName, LastName, Email, Perms
 FROM Users JOIN Permissions ON Users.PermsID = Permissions.PermsID
-ORDER BY Username ASC;
+ORDER BY LastName ASC;
 
 END $$
 DELIMITER ;
