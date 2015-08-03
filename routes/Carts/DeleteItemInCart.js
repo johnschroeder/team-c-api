@@ -21,22 +21,18 @@ router.route("/:CartItemID").get(function(req, res) {
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
         .then(db.query("set @m='';"))
-        .then(db.query("CALL " + db.spDeleteItemInCart + "( "+ CartItemID +","+"@m" +")"))
+        .then(db.query("CALL DeleteCartItem" + "( "+ CartItemID +")"))
+        .then(function(rows){
+            //console.log(rows[0][0][0].Result);
+            if (rows[0][0][0].Result == 'Success') {
+                console.log("Successfully deleted cart item " + CartItemID);
+            } else {
+                console.log("Unsuccessful in attempt to delete cartItem: " + CartItemID + ". " + rows[0][0][0].Result);
+            }
+            res.send(rows[0][0][0].Result);
+        })
         .then(db.commit())
         .then(db.endTransaction())
-        .then(function(){
-            console.log("Successfully deleted cart item " + CartItemID);
-            res.send("Success");
-        })
-        .catch(function(err){
-            Q.fcall(db.rollback())
-                .then(db.endTransaction())
-                .done();
-            console.log("Error:");
-            console.error(err.stack);
-            res.status(503).send("ERROR: " + err.code);
-
-        })
         .then(function() {
             require('../../imp_services/implogging')(req.cookies.IMPId, function(logService){
                 logService.action.cartItemId = CartItemID;
@@ -49,6 +45,15 @@ router.route("/:CartItemID").get(function(req, res) {
                     }
                 });
             });
+        })
+        .catch(function(err){
+            Q.fcall(db.rollback())
+                .then(db.endTransaction())
+                .done();
+            console.log("Error:");
+            console.error(err.stack);
+            res.status(503).send("ERROR: " + err.code);
+
         })
         .done();
 });
