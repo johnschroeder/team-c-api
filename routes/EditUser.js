@@ -16,14 +16,22 @@ router.route('/:username/:firstName/:lastName/:perms/:requestDelete').get(functi
     var args = username + "," +
         "" + firstName+ "," +
         "" + lastName+ "," +
-         + parseInt(perms) + "," +
-         + parseInt(requestDelete);
+         + parseInt(perms);
 
-    console.log(args);
+    var mysqlQuery;
+
+    if (requestDelete == 0)
+    {
+        mysqlQuery = "CALL EditUserByUsername(" + args + ");";
+    }
+    else {
+        mysqlQuery = "CALL DeactivateUser(" + username + ");";
+    }
+
+    console.log(mysqlQuery);
     Q.fcall(db.beginTransaction())
-
         .then(db.query("USE " + db.databaseName))
-         .then(db.query("CALL EditUserByUsername(" + args + ");"))
+         .then(db.query(mysqlQuery))
         .then(function (rows) {
             console.log(rows[0]);
             if (rows[0].affectedRows != 1) {
