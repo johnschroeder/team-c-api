@@ -2,6 +2,52 @@
  * Created by johnschroeder on 7/29/15.
  */
 
+var express = require("express");
+var router = express.Router();
+var dirtyRow = false;
+
+router.route("/:dirtyRow").get(function(req, res) {
+    dirtyRow = JSON.parse(req.params.dirtyRow);
+    var db = require("../imp_services/impdb.js").connect();
+
+    Q.fcall(db.beginTransaction())
+        .then(db.query("USE " + db.databaseName))
+        .then(db.query("CALL DeleteCartItem(" + dirtyRow.cartItemID + ")"))
+        .then(db.query("CALL ReserveCartItemByPackageSize("
+                        + dirtyRow.cartID + ", "
+                        + dirtyRow.productID + ", "
+                        + dirtyRow.location + ", "
+                        + dirtyRow.packageCount + ", "
+                        + dirtyRow.packageSize + ", "
+                        + dirtyRow.sizeMapID + ", "
+                        + dirtyRow.packageCount * dirtyRow.packageSize
+        ))
+        .then(function(rows) {
+            console.log("Put cart item rows[0][0] (should just have remainingQuantityToReserve):");
+            console.log(rows[0][0]);
+            return db.query("CALL ReserveCartItemBySingles("
+                + dirtyRow.cartID + ", "
+                + dirtyRow.productID + ", "
+                + dirtyRow.location + ", "
+                + JSON.parse(rows[0][0]).remainingQuantityToReserve);
+        })
+        .then(function(rows, columns){
+            res.send("Success");
+        })
+        .then(db.commit())
+        .then(db.endTransaction())
+        .catch(function(err){
+            Q.fcall(db.rollback())
+                .then(db.endTransaction());
+            console.log("Error:");
+            console.error(err.stack);
+            res.status(503).send("ERROR: " + err.code);
+        })
+        .done();
+});
+module.exports = router;
+
+
 /*TODO:
     id the dirty item
     delete cartItem
