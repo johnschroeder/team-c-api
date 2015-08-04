@@ -20,7 +20,6 @@ router.route("/:CartItemID").get(function(req, res) {
 
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("set @m='';"))
         .then(db.query("CALL DeleteCartItem" + "( "+ CartItemID +")"))
         .then(function(rows){
             //console.log(rows[0][0][0].Result);
