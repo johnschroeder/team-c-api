@@ -18,7 +18,7 @@ SET flag = true;
 # get sizemap ID for this product's singles mapping
 Select SizeMapID
 FROM SizeMap
-WHERE ProductID = 101 AND Size = 1
+WHERE ProductID = _ProductID AND Size = 1
 INTO productSizeMapID;
 
 # iterate through all runs (oldest first) at location for the product
