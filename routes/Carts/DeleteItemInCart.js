@@ -45,6 +45,7 @@ router.route("/:CartItemID").get(function(req, res) {
                 });
             });
         })
+        // TODO: log this
         .catch(function(err){
             Q.fcall(db.rollback())
                 .then(db.endTransaction())
