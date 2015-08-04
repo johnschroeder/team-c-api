@@ -91,7 +91,6 @@ var createAPIObject = function(pool) {
     toReturn.logTable = "Logs";
     toReturn.cartTable = "Cart";
     toReturn.cartitemTable = "CartItems";
-    toReturn.spDeleteItemInCart = "DeleteItemInCart";
     toReturn.spAddItemToCart = "AddItemToCart";
     toReturn.spAddItemToCartGeneral = "AddItemToCartGeneral";
     toReturn.spDeleteCart = "DeleteCart";
