@@ -2,6 +2,8 @@
 INSERT INTO RoutePermissions VALUES("/EditUser", 3);
 INSERT INTO RoutePermissions VALUES("/Login/createUser", 3);
 INSERT INTO RoutePermissions VALUES("/getAllUsers", 3);
+INSERT INTO RoutePermissions VALUES("/getAllUsersFilterFirstName", 3);
+INSERT INTO RoutePermissions VALUES("/getAllUsersFilterLastName", 3);
 INSERT INTO RoutePermissions VALUES("/getAllPermissions", 3);
 INSERT INTO RoutePermissions VALUES("/getUser", 3);
 #Employee and ADMIN:
