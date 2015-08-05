@@ -125,14 +125,15 @@ LogTypeMap[1500] = {
     callFunction: function (LogType, logUsername,  time,  actionData) {
         return time + " - " + logUsername + ": " + "Deleted job item " + actionData.cartItemId;
     }
-};LogTypeMap[1600] = {
+};
+LogTypeMap[1600] = {
     type: "Deleted Job",
     callFunction: function (LogType, logUsername,  time,  actionData) {
         return time + " - " + logUsername + ": " + "Deleted job " + actionData.cartId;
     }
 };
 
-    function toStringDefault (LogType, logUsername,  time,  actionData) {
+function toStringDefault (LogType, logUsername,  time,  actionData) {
     return time + " - " + LogTypeMap[LogType].type;
 }
 
@@ -192,6 +193,9 @@ module.exports =
                         var time = _formatTime(row.Time);
                         var actionData = row.ActionData;
 
+                        console.log(i);
+                        console.log(actionData);
+
                         if (LogTypeMap[LogType] == null) {
                             stringLogs.push(typeNotAddedYet(LogType, logUsername, time, JSON.parse(actionData)));
                         } else {
@@ -203,7 +207,7 @@ module.exports =
 
                         }
                         ids.push(logID);
-                        //console.log(stringLogs[i]);
+                        console.log(stringLogs[i]);
                     }
 
                     var jsonObject = {"logs":stringLogs, "id":ids};
