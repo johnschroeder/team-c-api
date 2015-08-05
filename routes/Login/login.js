@@ -60,14 +60,6 @@ router.route('/').post( function(req,res){
         })
         .then(db.commit())
         .then(db.endTransaction())
-        .catch(function(err){
-            Q.fcall(db.rollback())
-                .then(db.endTransaction())
-                .then(console.log("We had an error") )
-                .done();
-            console.log("Error: " + err);
-            res.status(503).send("ERROR: " + err);
-        })
         .then(function() {
             if (successLog) {
                 require('../../imp_services/implogging')(req.cookies.IMPId, function (logService) {
@@ -79,6 +71,13 @@ router.route('/').post( function(req,res){
                 });
             }
 
+        }).catch(function(err){
+            Q.fcall(db.rollback())
+                .then(db.endTransaction())
+                .then(console.log("We had an error") )
+                .done();
+            console.log("Error: " + err);
+            res.status(503).send("ERROR: " + err);
         })
         .done();
 
