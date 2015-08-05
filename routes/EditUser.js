@@ -17,8 +17,8 @@ router.route('/:username/:firstName/:lastName/:perms/:requestDelete').get(functi
         "" + firstName+ "," +
         "" + lastName+ "," +
          + parseInt(perms) + "," +
-         + parseInt(isConfirmed);
-
+         + parseInt(requestDelete);
+console.log(args);
     Q.fcall(db.beginTransaction())
 
         .then(db.query("USE " + db.databaseName))
