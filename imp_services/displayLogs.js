@@ -193,9 +193,6 @@ module.exports =
                         var time = _formatTime(row.Time);
                         var actionData = row.ActionData;
 
-                        console.log(i);
-                        console.log(actionData);
-
                         if (LogTypeMap[LogType] == null) {
                             stringLogs.push(typeNotAddedYet(LogType, logUsername, time, JSON.parse(actionData)));
                         } else {
@@ -204,10 +201,9 @@ module.exports =
                                         stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
                                     }
                                 }
-
                         }
                         ids.push(logID);
-                        console.log(stringLogs[i]);
+                        //console.log(stringLogs[i]);
                     }
 
                     var jsonObject = {"logs":stringLogs, "id":ids};
