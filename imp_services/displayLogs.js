@@ -125,6 +125,11 @@ LogTypeMap[1500] = {
     callFunction: function (LogType, logUsername,  time,  actionData) {
         return time + " - " + logUsername + ": " + "Deleted job item " + actionData.cartItemId;
     }
+};LogTypeMap[1600] = {
+    type: "Deleted Job",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + "Deleted job " + actionData.cartId;
+    }
 };
 
     function toStringDefault (LogType, logUsername,  time,  actionData) {
