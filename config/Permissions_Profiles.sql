@@ -8,6 +8,7 @@ INSERT INTO RoutePermissions VALUES("/getAllPermissions", 3);
 INSERT INTO RoutePermissions VALUES("/getUser", 3);
 #Employee and ADMIN:
 INSERT INTO RoutePermissions VALUES("/AddInventory", 3),("/AddInventory", 1);
+INSERT INTO RoutePermissions VALUES("/GetInventoryLocations", 3),("/GetInventoryLocations", 1);
 INSERT INTO RoutePermissions VALUES("/AddProductSize", 3),("/AddProductSize", 1);
 INSERT INTO RoutePermissions VALUES("/Carts/AddItemToCart", 3),("/Carts/AddItemToCart", 1);
 INSERT INTO RoutePermissions VALUES("/Carts/AddItemToCartGeneral", 3),("/Carts/AddItemToCartGeneral", 1);
