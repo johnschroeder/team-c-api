@@ -7,7 +7,7 @@ router.route('/:filterParameters').get(function(req,res) {
 
     var filters = req.params.filterParameters;
 
-    console.log(filters);
+    //console.log(filters);
     logsService.displayLogs(true, filters, req.cookies.IMPId, function (logs) {
         res.end(logs);
     });
