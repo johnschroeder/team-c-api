@@ -1,8 +1,8 @@
-DROP PROCEDURE IF EXISTS imp_db_dev.GetInventoryLocations;
+DROP PROCEDURE IF EXISTS GetInventoryLocations;
 
 DELIMITER $$
 
-CREATE PROCEDURE GetInventoryLocations(_productID)
+CREATE PROCEDURE GetInventoryLocations(IN _productID INT)
 
 BEGIN
 
