@@ -80,7 +80,6 @@ exports.buildCart = function(cartID, productID, send) {
                     var uniqueItems = items.uniqueProductIDs();
                     var waitingOn = uniqueItems.length;
                     uniqueItems.forEach(function(item) {
-                        line(79);
                         if (products[item.productID] === undefined) {
                             products[item.productID] = {
                                 productID: item.productID,
@@ -105,7 +104,6 @@ exports.buildCart = function(cartID, productID, send) {
                         }
                     });
                     items.forEach(function(item){
-                        line(85);
                         item.dirty = false;
                         if(item.color != null
                             && !products[item.productID].colorsInUse[item.color.toLowerCase()]) {
@@ -115,7 +113,6 @@ exports.buildCart = function(cartID, productID, send) {
                         getModel.runIDList.push(item.runID);
                     });
                     uniqueItems.forEach(function(item){
-                        line(95);
                         getModel.getProductInfo(item.productID,function(){
                             --waitingOn;
                             if(waitingOn === 0) {
@@ -138,7 +135,6 @@ exports.buildCart = function(cartID, productID, send) {
         },
 
         getProductInfo:function(productID, callback) {
-            line(118);
             Q.fcall(db.beginTransaction())
                 .then(db.query("USE " + db.databaseName))
                 .then(db.query("CALL " + "GetProductByID(" + productID + ");"))
@@ -196,7 +192,6 @@ exports.buildCart = function(cartID, productID, send) {
                 .then(db.query("USE " + db.databaseName))
                 .then(db.query("CALL " + "GetAllProductIDsLocationsAndQuantities()"))
                 .then(function(rows) {
-                    console.log(rows[0][0]);
                     var results = rows[0][0];
                     var products = getModel.model.products;
                     results.forEach(function(result){
@@ -229,7 +224,6 @@ exports.buildCart = function(cartID, productID, send) {
             var products = getModel.model.products;
             products.forEach(function(product) {
                 product.availableByLocations.available.forEach(function(quantity) {
-                    console.log(quantity);
                     product.totalAvailable += quantity;
                 });
             });

@@ -2,13 +2,15 @@
  * Created by johnschroeder on 7/29/15.
  */
 
+var Q = require("q");
 var express = require("express");
 var router = express.Router();
 var dirtyRow = false;
 
 router.route("/:dirtyRow").get(function(req, res) {
+    console.log(req.params.dirtyRow);
     dirtyRow = JSON.parse(req.params.dirtyRow);
-    var db = require("../imp_services/impdb.js").connect();
+    var db = require("../../imp_services/impdb.js").connect();
 
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
@@ -16,26 +18,36 @@ router.route("/:dirtyRow").get(function(req, res) {
         .then(db.query("CALL ReserveCartItemByPackageSize("
                         + dirtyRow.cartID + ", "
                         + dirtyRow.productID + ", "
-                        + dirtyRow.location + ", "
+                        + "'" + dirtyRow.location + "'" + ", "
                         + dirtyRow.packageCount + ", "
                         + dirtyRow.packageSize + ", "
                         + dirtyRow.sizeMapID + ", "
                         + dirtyRow.packageCount * dirtyRow.packageSize
+                        + ");"
         ))
         .then(function(rows) {
             console.log("Put cart item rows[0][0] (should just have remainingQuantityToReserve):");
             console.log(rows[0][0]);
-            return db.query("CALL ReserveCartItemBySingles("
-                + dirtyRow.cartID + ", "
-                + dirtyRow.productID + ", "
-                + dirtyRow.location + ", "
-                + JSON.parse(rows[0][0]).remainingQuantityToReserve);
+            if(rows[0][0].remainingQuantityToReserve === 0) {
+                Q.fcall(db.query("CALL ReserveCartItemBySingles("
+                        + dirtyRow.cartID + ", "
+                        + dirtyRow.productID + ", "
+                        + "'" + dirtyRow.location + "'" + ", "
+                        + rows[0][0].remainingQuantityToReserve)
+                    + ");")
+                    .then(db.commit())
+                    .then(db.endTransaction());
+            }
+            else {
+                Q.fcall(db.commit())
+                    .then(db.endTransaction());
+            }
+
         })
         .then(function(rows, columns){
+            console.log("success sent");
             res.send("Success");
         })
-        .then(db.commit())
-        .then(db.endTransaction())
         .catch(function(err){
             Q.fcall(db.rollback())
                 .then(db.endTransaction());
