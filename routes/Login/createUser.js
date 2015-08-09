@@ -49,7 +49,7 @@ router.route('/').post(function(req, res) {
     var date = dateOutput.getFullYear() + "-" + dateOutput.getMonth()+"-"+ (dateOutput.getDay() + 1);
 
     console.log("Creating user with:\nUsername: " + username + "\nEmail: " + email + "\nName: " + firstName + " " + lastName);
-    console.log("CALL CreateUser ('" + username + "', '" + hashedPassword + "', '" + email + "', '" + salt + "', '" + firstName + "', '" + lastName + "', '" + date + "')");
+    //console.log("CALL CreateUser ('" + username + "', '" + hashedPassword + "', '" + email + "', '" + salt + "', '" + firstName + "', '" + lastName + "', '" + date + "')");
     if(typeof req.body.permID == 'undefined') {
         Q.fcall(db.beginTransaction())
             .then(db.query("USE " + db.databaseName))
