@@ -36,17 +36,15 @@ router.route("/:dirtyRow").get(function(req, res) {
                         + rows[0][0].remainingQuantityToReserve)
                     + ");")
                     .then(db.commit())
-                    .then(db.endTransaction());
+                    .then(db.endTransaction())
+                    .then(res.send("Success"));
             }
             else {
                 Q.fcall(db.commit())
-                    .then(db.endTransaction());
+                    .then(db.endTransaction())
+                    .then(res.send("Success"));
             }
 
-        })
-        .then(function(rows, columns){
-            console.log("success sent");
-            res.send("Success");
         })
         .catch(function(err){
             Q.fcall(db.rollback())
