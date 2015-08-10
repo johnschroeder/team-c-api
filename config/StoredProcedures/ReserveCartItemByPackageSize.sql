@@ -66,7 +66,7 @@ WHILE RemainingQuantityToReserve > 0 AND flag DO
 		# update run quantities
 		UPDATE Runs
 		SET QuantityAvailable = (QuantityAvailable - (currentRunPackagesReserve * _PackageSize)),
-			QuantityReserved  = (QuantityAvailable + (currentRunPackagesReserve * _PackageSize))
+			QuantityReserved  = (QuantityReserved + (currentRunPackagesReserve * _PackageSize))
 		WHERE RunID = currentRunID;
 	END IF;
 
