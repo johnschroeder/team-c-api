@@ -17,7 +17,7 @@ router.route("/:CartID").get(function(req, res) {
      *  Package up some values from the route
      */
     var CartID = req.params.CartID;
-
+console.log("Attempting to delete cart " + CartID);
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
         .then(db.query("CALL DeleteCart" + "( "+ CartID +")"))

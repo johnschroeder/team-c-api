@@ -2,7 +2,7 @@ DROP PROCEDURE IF EXISTS AddLogViewMapEntry;
 
 DELIMITER $$
 CREATE PROCEDURE AddLogViewMapEntry
-(IN _Username varchar(25), IN _LogID int unsigned)
+(IN _Username varchar(25), IN _LogID INT)
 BEGIN
 
 DECLARE message varchar(100);
