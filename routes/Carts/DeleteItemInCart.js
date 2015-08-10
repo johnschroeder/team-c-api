@@ -40,12 +40,11 @@ router.route("/:CartItemID").get(function(req, res) {
                     if(err){
                         res.status(500).send(err);
                     } else {
-                        console.log("Successfully logged deletion of cart item " + CartItemID);
+                        console.log("Successfully logged deletion of job item " + CartItemID);
                     }
                 });
             });
         })
-        // TODO: log this
         .catch(function(err){
             Q.fcall(db.rollback())
                 .then(db.endTransaction())

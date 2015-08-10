@@ -42,20 +42,19 @@ router.route("/:CartID").get(function(req, res) {
         })
         .then(db.commit())
         .then(db.endTransaction())
-        // TODO: log this
-        //.then(function() {
-        //    require('../../imp_services/implogging')(req.cookies.IMPId, function(logService){
-        //        logService.action.cartItemId = CartItemID;
-        //        logService.setType(1400);
-        //        logService.store(function(err, results){
-        //            if(err){
-        //                res.status(500).send(err);
-        //            } else {
-        //                console.log("Successfully logged deletion of cart item " + CartItemID);
-        //            }
-        //        });
-        //    });
-        //})
+        .then(function() {
+            require('../../imp_services/implogging')(req.cookies.IMPId, function(logService){
+                logService.action.cartId = CartID;
+                logService.setType(1600);
+                logService.store(function(err, results){
+                    if(err){
+                        res.status(500).send(err);
+                    } else {
+                        console.log("Successfully logged deletion of job " + CartItemID);
+                    }
+                });
+            });
+        })
         .catch(function(err){
             Q.fcall(db.rollback())
                 .then(db.endTransaction())
