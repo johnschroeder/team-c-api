@@ -14,37 +14,65 @@ router.route("/:dirtyRow").get(function(req, res) {
 
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CALL DeleteCartItem(" + dirtyRow.cartItemID + ")"))
-        .then(db.query("CALL ReserveCartItemByPackageSize("
-                        + dirtyRow.cartID + ", "
-                        + dirtyRow.productID + ", "
-                        + "'" + dirtyRow.location + "'" + ", "
-                        + dirtyRow.packageCount + ", "
-                        + dirtyRow.packageSize + ", "
-                        + dirtyRow.sizeMapID + ", "
-                        + dirtyRow.packageCount * dirtyRow.packageSize
-                        + ");"
-        ))
+        .then(db.query(dirtyRow.cartItemID === -1
+            ? "DO 0;" // Deliberate noop
+            : "CALL DeleteCartItem(" + dirtyRow.cartItemID + ")"))
         .then(function(rows) {
-            console.log("Put cart item rows[0][0] (should just have remainingQuantityToReserve):");
-            console.log(rows[0][0]);
-            if(rows[0][0].remainingQuantityToReserve === 0) {
-                Q.fcall(db.query("CALL ReserveCartItemBySingles("
-                        + dirtyRow.cartID + ", "
-                        + dirtyRow.productID + ", "
-                        + "'" + dirtyRow.location + "'" + ", "
-                        + rows[0][0].remainingQuantityToReserve)
-                    + ");")
-                    .then(db.commit())
-                    .then(db.endTransaction())
-                    .then(res.send("Success"));
-            }
-            else {
-                Q.fcall(db.commit())
-                    .then(db.endTransaction())
-                    .then(res.send("Success"));
-            }
+            Q.fcall(db.query("CALL ReserveCartItemByPackageSize("
+                + dirtyRow.cartID + ", "
+                + dirtyRow.productID + ", "
+                + "'" + dirtyRow.location + "'" + ", "
+                + dirtyRow.packageCount + ", "
+                + dirtyRow.packageSize + ", "
+                + dirtyRow.sizeMapID + ", "
+                + dirtyRow.packageCount * dirtyRow.packageSize
+                + ");"
+            ))
+                .then(function(rows) {
+                    console.log("Put cart item rows[0][0] (should just have remainingQuantityToReserve):");
+                    console.log(rows[0][0]);
+                    if(rows[0][0].remainingQuantityToReserve === 0) {
+                        Q.fcall(db.query("CALL ReserveCartItemBySingles("
+                                + dirtyRow.cartID + ", "
+                                + dirtyRow.productID + ", "
+                                + "'" + dirtyRow.location + "'" + ", "
+                                + rows[0][0].remainingQuantityToReserve)
+                            + ");")
+                            .then(db.commit())
+                            .then(db.endTransaction())
+                            .then(res.send("Success"))
+                            .catch(function(err){
+                                Q.fcall(db.rollback())
+                                    .then(db.endTransaction());
+                                console.log("Error:");
+                                console.error(err.stack);
+                                res.status(503).send("ERROR: " + err.code);
+                            })
+                            .done();
+                    }
+                    else {
+                        Q.fcall(db.commit())
+                            .then(db.endTransaction())
+                            .then(res.send("Success"))
+                            .catch(function(err){
+                                Q.fcall(db.rollback())
+                                    .then(db.endTransaction());
+                                console.log("Error:");
+                                console.error(err.stack);
+                                res.status(503).send("ERROR: " + err.code);
+                            })
+                            .done();
+                    }
 
+                })
+                .catch(function(err){
+                    Q.fcall(db.rollback())
+                        .then(db.endTransaction());
+                    console.log("Error:");
+                    console.error(err.stack);
+                    res.status(503).send("ERROR: " + err.code);
+                })
+                .done();
         })
         .catch(function(err){
             Q.fcall(db.rollback())
@@ -54,6 +82,7 @@ router.route("/:dirtyRow").get(function(req, res) {
             res.status(503).send("ERROR: " + err.code);
         })
         .done();
+
 });
 module.exports = router;
 

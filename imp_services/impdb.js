@@ -95,7 +95,6 @@ var createAPIObject = function(pool) {
     toReturn.spAddItemToCartGeneral = "AddItemToCartGeneral";
     toReturn.spDeleteCart = "DeleteCart";
     toReturn.spGetCartItems = "GetCartItems";
-    toReturn.spGetCartsByUser = "GetCartsByUser";
     toReturn.spEditCartItem = "EditCartItem";
 
     toReturn.beginTransaction = function(numberOfAttempts) {

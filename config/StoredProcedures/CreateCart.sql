@@ -9,6 +9,8 @@ BEGIN
 insert into Cart values
 (null, _CartName,_Reporter,_Assignee,CURDATE(), DATE_ADD(CURDATE(), INTERVAL _KeepDays DAY));
 
+SELECT LAST_INSERT_ID() as CartID;
+
 END $$
 
 DELIMITER ;
