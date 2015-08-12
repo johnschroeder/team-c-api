@@ -3,6 +3,7 @@ var impredis = require("./impredis.js");
 var Q = require('q');
 
 module.exports = function(cookie, callback) {
+
     impredis.get(cookie, function (error, result) {
         if (error) {
             throw error;

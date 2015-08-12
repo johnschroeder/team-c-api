@@ -22,15 +22,15 @@ router.route('/:productID').get(function(req,res){
                 var locations = [];
                 for (var i = 0; i < row[0][0].length; i++)
                 {
-                   // console.log(row[0][0][i].Location);
+                    // console.log(row[0][0][i].Location);
                     locations.push(row[0][0][i].Location);
                 }
 
                 var sendLocations = {"locationList" : locations};
-                    res.send(JSON.stringify(sendLocations));
+                res.send(JSON.stringify(sendLocations));
                 res.end(JSON.stringify(sendLocations));
-                }
-            })
+            }
+        })
         .then(db.commit())
         .then(db.endTransaction())
         .catch(function(err){

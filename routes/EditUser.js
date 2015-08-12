@@ -16,24 +16,13 @@ router.route('/:username/:firstName/:lastName/:perms/:requestDelete').get(functi
     var args = username + "," +
         "" + firstName+ "," +
         "" + lastName+ "," +
-         + parseInt(perms);
-
-    var mysqlQuery;
-
-    if (requestDelete == 0)
-    {
-        mysqlQuery = "CALL EditUserByUsername(" + args + ");";
-    }
-    else {
-        mysqlQuery = "CALL DeactivateUser(" + username + ");";
-    }
-
-    //console.log(mysqlQuery);
+         + parseInt(perms) + "," +
+         + parseInt(requestDelete);
     Q.fcall(db.beginTransaction())
+
         .then(db.query("USE " + db.databaseName))
-         .then(db.query(mysqlQuery))
+         .then(db.query("CALL EditUserByUsername(" + args + ");"))
         .then(function (rows) {
-           // console.log(rows[0]);
             if (rows[0].affectedRows != 1) {
                 res.end("Update Failed!");
             }
