@@ -8,7 +8,7 @@ router.route("/").get(function(req,res){
     var db = require("../imp_services/impdb.js").connect();
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("CALL GetAllUsers"))
+        .then(db.query("CALL GetAllUsersFilterLastName"))
         .then(function(rows, columns){
             //console.log("Success");
             var invUnit = JSON.stringify(rows[0][0]);

@@ -2,21 +2,22 @@ var express = require("express");
 var router = express.Router();
 var Q = require("q");
 
-router.route('/:username/:firstName/:lastName/:perms/:isConfirmed').get(function(req,res) {
+router.route('/:username/:firstName/:lastName/:perms/:requestDelete').get(function(req,res) {
 
     var username = req.params.username;
     var firstName = req.params.firstName;
     var lastName = req.params.lastName;
     var perms = req.params.perms;
-    var isConfirmed = req.params.isConfirmed;
+    var requestDelete = req.params.requestDelete;
+
+
 
     var db = require("../imp_services/impdb.js").connect();
     var args = username + "," +
         "" + firstName+ "," +
         "" + lastName+ "," +
          + parseInt(perms) + "," +
-         + parseInt(isConfirmed);
-
+         + parseInt(requestDelete);
     Q.fcall(db.beginTransaction())
 
         .then(db.query("USE " + db.databaseName))

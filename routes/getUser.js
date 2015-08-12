@@ -15,7 +15,7 @@ router.route('/:username').get(function(req,res) {
         .then(function (rows) {
 
             var user = rows[0][0][0];
-            var jsonObject = {"firstName":user.FirstName, "lastName":user.LastName};
+            var jsonObject = {"firstName":user.FirstName, "lastName":user.LastName, "permsId":user.PermsID};
             res.end(JSON.stringify(jsonObject));
 
             })
