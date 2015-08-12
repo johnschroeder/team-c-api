@@ -7,27 +7,24 @@ var Q = require('q');
 router.route("/:ProductID/:productName/:description").get(function(req, res) {
     //Q.longStackSupport = true;
     var db = require("../imp_services/impdb.js").connect();
-    var prodID= req.params.ProductID;
-    var productName = req.params.productName;
-    var description = req.params.description;
-    console.log("Call EditProductByID(" +prodID + ", '" + productName + "', '" + description + "');")
+    var prodID = mysql.escape(req.params.ProductID);
+    var productName = mysql.escape(req.params.productName);
+    var description = mysql.escape(req.params.description);
+    //console.log("Call EditProductByID(" + prodID + ", " + productName + ", " + description + ");");
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
-        .then(db.query("Call EditProductByID(" +prodID + ", '" + productName + "', '" + description + "');"))
+        .then(db.query("Call EditProductByID(" + prodID + ", " + productName + ", " + description + ");"))
         .then(function(rows){
-            console.log("Success");
-            var invUnit = JSON.stringify(rows[0]);
-            res.send(invUnit);
+            var affectedRows = rows[0].affectedRows;
+            if (affectedRows == 1) {
+                console.log("Successfully edited product " + req.params.ProductID);
+                res.send("Success");
+            } else {
+                res.send("Error encountered while editing product " + req.params.ProductID);
+            }
         })
         .then(db.commit())
         .then(db.endTransaction())
-        .catch(function(err){
-            Q.fcall(db.rollback())
-                .then(db.endTransaction());
-            console.log("Error:");
-            console.error(err.stack);
-            res.status(503).send("ERROR: " + err.code);
-        })
         .then(function() {
             require('../imp_services/implogging')(req.cookies.IMPId, function(logService){
                 logService.action.productId = req.params.ProductID;
@@ -37,6 +34,11 @@ router.route("/:ProductID/:productName/:description").get(function(req, res) {
                     if (err) res.status(500).send(err);
                 });
             });
+        })
+        .catch(function(err){
+            console.log("Error: hit catch block in reSubmit.js");
+            console.error(err.stack);
+            res.status(503).send("ERROR: " + err.code);
         })
         .done();
 });
