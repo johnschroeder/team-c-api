@@ -8,6 +8,7 @@ INSERT INTO RoutePermissions VALUES("/getAllPermissions", 3);
 INSERT INTO RoutePermissions VALUES("/getUser", 3);
 #Employee and ADMIN:
 INSERT INTO RoutePermissions VALUES("/AddInventory", 3),("/AddInventory", 1);
+INSERT INTO RoutePermissions VALUES("/GetInventoryLocations", 3),("/GetInventoryLocations", 1);
 INSERT INTO RoutePermissions VALUES("/AddProductSize", 3),("/AddProductSize", 1);
 INSERT INTO RoutePermissions VALUES("/Carts/AddItemToCart", 3),("/Carts/AddItemToCart", 1);
 INSERT INTO RoutePermissions VALUES("/Carts/AddItemToCartGeneral", 3),("/Carts/AddItemToCartGeneral", 1);
@@ -49,6 +50,7 @@ INSERT INTO RoutePermissions VALUES("/customerAutoComplete", 3),("/customerAutoC
 INSERT INTO RoutePermissions VALUES("/displayInventory", 3),("/displayInventory", 2),("/displayInventory", 1);
 INSERT INTO RoutePermissions VALUES("/getCustomers", 3),("/getCustomers", 2),("/getCustomers", 1);
 INSERT INTO RoutePermissions VALUES("/getLogs", 3),("/getLogs", 2),("/getLogs", 1);
+INSERT INTO RoutePermissions VALUES("/LogFilterMappings", 3),("/LogFilterMappings", 2),("/LogFilterMappings", 1);
 INSERT INTO RoutePermissions VALUES("/getUserInfo", 3),("/getUserInfo", 2),("/getUserInfo", 1);
 INSERT INTO RoutePermissions VALUES("/itemAutoComplete", 3),("/itemAutoComplete", 2),("/itemAutoComplete", 1);
 INSERT INTO RoutePermissions VALUES("/itemDetail", 3),("/itemDetail", 2),("/itemDetail", 1);
