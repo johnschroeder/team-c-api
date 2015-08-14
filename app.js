@@ -43,7 +43,7 @@ app.use("/Login/createUser", require(process.cwd()+"/routes/Login/createUser"));
 app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
 //Middleware for verifying a user is logged in before hitting a route
 var result;
-/*
+
 app.use(function(req,res,next)
 {
     var impredis = require("./imp_services/impredis.js");
@@ -118,7 +118,7 @@ app.use(function(req,res,next) {
             .done();
     });
 });
-*/
+
 //Adds all the routes by path to the app
 var path = process.cwd()+'/routes';
 glob.sync('**/*.js',{'cwd':path}).forEach(
