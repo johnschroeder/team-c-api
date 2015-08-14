@@ -96,7 +96,7 @@ app.use(function(req,res,next) {
             .then(function (rows, columns) {
                 console.log("Success");
                 result = rows[0][0][0];
-                if (result.PermCheck == 1) {
+                if (result.PermCheck >= 1) {
                     console.log("Access to route " + routeToHit + " granted!");
                     next();
                 }
