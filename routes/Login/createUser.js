@@ -7,7 +7,6 @@ var uuid = require('node-uuid');
 var aws = require('aws-sdk');
 var impredis = require("../../imp_services/impredis.js");
 
-
 /*
  Usage:
  POST Request
@@ -23,7 +22,19 @@ var impredis = require("../../imp_services/impredis.js");
  */
 
 
-router.route("/").post(function(req, res) {
+router.route('/').post(function(req, res) {
+
+    //var userDetails = JSON.parse(req.body.userdetails);
+
+    /*
+    var username = userDetails.username;
+    var password = userDetails.password;
+    var email = userDetails.email;
+    var firstName = userDetails.firstName;
+    var lastName = userDetails.lastName;
+    var permID = userDetails.permID;
+    */
+
     var username = req.body.username;
     var password = req.body.password;
     var email = req.body.email;
@@ -35,13 +46,14 @@ router.route("/").post(function(req, res) {
     var hashedPassword = crypto.createHash('sha256').update(password + salt).digest('hex').toString('base64');
     var db = require("../../imp_services/impdb.js").connect();
     var dateOutput = new Date();
-    var date = dateOutput.getMonth()+"-"+dateOutput.getDay()+"-"+dateOutput.getFullYear();
+    var date = dateOutput.getFullYear() + "-" + dateOutput.getMonth()+"-"+ (dateOutput.getDay() + 1);
 
     console.log("Creating user with:\nUsername: " + username + "\nEmail: " + email + "\nName: " + firstName + " " + lastName);
+    //console.log("CALL CreateUser ('" + username + "', '" + hashedPassword + "', '" + email + "', '" + salt + "', '" + firstName + "', '" + lastName + "', '" + date + "')");
     if(typeof req.body.permID == 'undefined') {
         Q.fcall(db.beginTransaction())
             .then(db.query("USE " + db.databaseName))
-            .then(db.query("CALL CreateUser ('" + username + "', '" + hashedPassword + "', '" + email + "', '" + salt + "', '" + firstName + "', '" + lastName + "', '" + date + "')"))
+            .then(db.query("CALL CreateUserAdmin ('" + username + "', '" + hashedPassword + "', '" + email + "', '" + salt + "', '" + firstName + "', '" + lastName + "', '" + date + "', '" + permID + "')"))
             .then(db.commit())
             .then(db.endTransaction())
             .catch(function (err) {

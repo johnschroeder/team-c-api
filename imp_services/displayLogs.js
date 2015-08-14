@@ -126,8 +126,14 @@ LogTypeMap[1500] = {
         return time + " - " + logUsername + ": " + "Deleted job item " + actionData.cartItemId;
     }
 };
+LogTypeMap[1600] = {
+    type: "Deleted Job",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + "Deleted job " + actionData.cartId;
+    }
+};
 
-    function toStringDefault (LogType, logUsername,  time,  actionData) {
+function toStringDefault (LogType, logUsername,  time,  actionData) {
     return time + " - " + LogTypeMap[LogType].type;
 }
 
@@ -157,11 +163,10 @@ module.exports =
         callback(JSON.stringify(returnable));
     },
 
-    displayLogs: function (adminView, filterOutput, cookie, callback) {
+    displayLogs: function (adminView, filters, cookie, callback) {
         var stringLogs = [];
         var ids = [];
-
-        var filters = JSON.parse(filterOutput).filter;
+        var filter = JSON.parse(filters).filter;
         var db = require("../imp_services/impdb.js").connect();
 
         require("../imp_services/impredis.js").get(cookie, function usernameReturn(error, val) {
@@ -187,21 +192,23 @@ module.exports =
                         var time = _formatTime(row.Time);
                         var actionData = row.ActionData;
 
-                        if (LogTypeMap[LogType] == null) {
-                            stringLogs.push(typeNotAddedYet(LogType, logUsername, time, JSON.parse(actionData)));
-                        } else {
-                                for (var j = 0; j < filters.length; j++) {
-                                    if (filters[j] == LogType) {
-                                        stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
-                                    }
+                        for (var j = 0; j < filter.length; j++)
+                        {
+                            if (LogType == filter[j])
+                            {
+                                if (LogTypeMap[LogType] == null) {
+                                    stringLogs.push(typeNotAddedYet(LogType, logUsername, time, JSON.parse(actionData)));
+                                } else {
+                                    stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
                                 }
-
+                                ids.push(logID);
+                            }
                         }
-                        ids.push(logID);
+
                         //console.log(stringLogs[i]);
                     }
 
-                    var jsonObject = {"logs":stringLogs, "id":ids};
+                    var jsonObject = {logs:stringLogs, id:ids};
                     callback(JSON.stringify(jsonObject));
 
                 })
