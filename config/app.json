@@ -76,7 +76,7 @@
             "user":"dev",
             "password":"IMPdev321",
             "databaseName":"imp_db_dev",
-            "debug":"true"
+            "debug":"false"
         }
     },
     "mike":{

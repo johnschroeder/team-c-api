@@ -126,6 +126,12 @@ LogTypeMap[1500] = {
         return time + " - " + logUsername + ": " + "Deleted job item " + actionData.cartItemId;
     }
 };
+LogTypeMap[1600] = {
+    type: "Deleted Job",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + "Deleted job " + actionData.cartId;
+    }
+};
 
 function toStringDefault (LogType, logUsername,  time,  actionData) {
     return time + " - " + LogTypeMap[LogType].type;
@@ -134,8 +140,6 @@ function toStringDefault (LogType, logUsername,  time,  actionData) {
 function typeNotAddedYet (LogType, logUsername, time, actionData) {
     return time + " - " + logUsername + ": " + "log type '" + LogType + "' not added yet";
 }
-
-
 
 module.exports =
 {
@@ -205,7 +209,6 @@ module.exports =
                     }
 
                     var jsonObject = {logs:stringLogs, id:ids};
-
                     callback(JSON.stringify(jsonObject));
 
                 })
