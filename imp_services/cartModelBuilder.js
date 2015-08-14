@@ -10,8 +10,6 @@ var Q = require('q');
  */
 
 exports.buildCart = function(cartID, productID, send) {
-    console.log(cartID);
-    console.log(productID);
 
     //Q.longStackSupport = true;
 
