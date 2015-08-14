@@ -56,7 +56,7 @@ router.route("/:CartID/:CartItemID/:SizeMapID/:Quantity/:RunID").get(function(re
                     if (err) {
                         res.status(500).send(err);
                     } else {
-                        console.log("Successfully logged edit of job item " + CartItemID + " in job " + CartID);
+                        console.log("Successfully logged edit of cart item " + CartItemID + " in cart " + CartID);
                     }
                 });
             });

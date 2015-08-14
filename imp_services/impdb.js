@@ -91,10 +91,12 @@ var createAPIObject = function(pool) {
     toReturn.logTable = "Logs";
     toReturn.cartTable = "Cart";
     toReturn.cartitemTable = "CartItems";
+    toReturn.spDeleteItemInCart = "DeleteItemInCart";
     toReturn.spAddItemToCart = "AddItemToCart";
     toReturn.spAddItemToCartGeneral = "AddItemToCartGeneral";
     toReturn.spDeleteCart = "DeleteCart";
     toReturn.spGetCartItems = "GetCartItems";
+    toReturn.spGetCartsByUser = "GetCartsByUser";
     toReturn.spEditCartItem = "EditCartItem";
 
     toReturn.beginTransaction = function(numberOfAttempts) {
