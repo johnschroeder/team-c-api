@@ -36,6 +36,9 @@ INSERT INTO RoutePermissions VALUES("/Carts/GetCartsByUser", 3),("/Carts/GetCart
 INSERT INTO RoutePermissions VALUES("/Carts/GetInventoryAvailable", 3),("/Carts/GetInventoryAvailable", 2),("/Carts/GetInventoryAvailable", 1);
 INSERT INTO RoutePermissions VALUES("/Carts/GetPossibleAssignees", 3),("/Carts/GetPossibleAssignees", 2),("/Carts/GetPossibleAssignees", 1);
 INSERT INTO RoutePermissions VALUES("/Carts/InventoryByProductID", 3),("/Carts/InventoryByProductID", 2),("/Carts/InventoryByProductID", 1);
+INSERT INTO RoutePermissions VALUES("/Carts/PutCartModel", 3),("/Carts/PutCartModel", 2),("/Carts/PutCartModel", 1);
+INSERT INTO RoutePermissions VALUES("/Carts/GetCartModel", 3),("/Carts/GetCartModel", 2),("/Carts/GetCartModel", 1);
+INSERT INTO RoutePermissions VALUES("/Carts/GetProductForAddRow", 3),("/Carts/GetProductForAddRow", 2),("/Carts/GetProductForAddRow", 1);
 INSERT INTO RoutePermissions VALUES("/FindAssociatesByProductID", 3),("/FindAssociatesByProductID", 2),("/FindAssociatesByProductID", 1);
 INSERT INTO RoutePermissions VALUES("/GetSizeByProductID", 3),("/GetSizeByProductID", 2),("/GetSizeByProductID", 1);
 INSERT INTO RoutePermissions VALUES("/GetSizeMapID", 3),("/GetSizeMapID", 2),("/GetSizeMapID", 1);
