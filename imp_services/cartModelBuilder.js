@@ -44,6 +44,7 @@ exports.buildCart = function(cartID, productID, send) {
         console.log("=================" + number + "=================");
     }
     var getModel = {
+        //productID:
 
         model:{
             products:[],
@@ -66,7 +67,7 @@ exports.buildCart = function(cartID, productID, send) {
                     if(productID !== null) {
                         products.unshift({
                             productID: parseInt(productID),
-                            items: [],
+                            items: [{productID: productID}],
                             newProduct: true,
                             editing: true,
                             colorsInUse: {
@@ -116,7 +117,11 @@ exports.buildCart = function(cartID, productID, send) {
                         getModel.getProductInfo(item.productID,function(){
                             --waitingOn;
                             if(waitingOn === 0) {
-                                getModel.getAllLocations(callback);
+                                if(productID !== undefined) {
+                                    getModel.getProductInfo(productID, getModel.getAllLocations(callback));
+                                } else {
+                                    getModel.getAllLocations(callback);
+                                }
                             }
                         });
                     });
@@ -133,6 +138,13 @@ exports.buildCart = function(cartID, productID, send) {
                 })
                 .done();
         },
+        //TODO: Need versions of these two methods that affect index 0 in products array
+        //TODO: They need to package these up with exactly the same data but not index into the array
+        //TODO: At productID
+
+        //TODO: The new plan is to just build an item with an associated product with all the data in
+        //TODO: the cartitemid should be -1
+        //
 
         getProductInfo:function(productID, callback) {
             Q.fcall(db.beginTransaction())
