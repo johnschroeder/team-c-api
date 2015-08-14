@@ -10,7 +10,7 @@ var dirtyRow = false;
 router.route("/:dirtyRow").get(function(req, res) {
     dirtyRow = JSON.parse(req.params.dirtyRow);
     var db = require("../../imp_services/impdb.js").connect();
-    Q.longStackSupport = true;
+    //Q.longStackSupport = true;
 
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
