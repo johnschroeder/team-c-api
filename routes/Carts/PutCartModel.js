@@ -8,9 +8,9 @@ var router = express.Router();
 var dirtyRow = false;
 
 router.route("/:dirtyRow").get(function(req, res) {
-    console.log(req.params.dirtyRow);
     dirtyRow = JSON.parse(req.params.dirtyRow);
     var db = require("../../imp_services/impdb.js").connect();
+    //Q.longStackSupport = true;
 
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
@@ -30,18 +30,24 @@ router.route("/:dirtyRow").get(function(req, res) {
             ))
                 .then(function(rows) {
                     console.log("Put cart item rows[0][0] (should just have remainingQuantityToReserve):");
-                    console.log(rows[0][0]);
-                    if(rows[0][0].remainingQuantityToReserve == 0) {
+                    console.log(rows[0][0][0]);
+                    if(rows[0][0][0].remainingQuantityToReserve != 0) {
                         console.log("HERE WE RAN RESERVECARTITEMBYSINGLE");
-                        Q.fcall(db.query("CALL ReserveCartItemBySingles("
-                                + dirtyRow.cartID + ", "
-                                + dirtyRow.productID + ", "
-                                + "'" + dirtyRow.location + "'" + ", "
-                                + rows[0][0].remainingQuantityToReserve)
-                            + ");")
+                        var queryString = "CALL ReserveCartItemBySingles("
+                            + dirtyRow.cartID + ", "
+                            + dirtyRow.productID + ", "
+                            + "'" + dirtyRow.location + "'" + ", "
+                            + rows[0][0][0].remainingQuantityToReserve
+                            + ");";
+                        Q.fcall(db.query(queryString))
+                            /*.then(function() {
+                                Q.fcall(db.commit())
+                                    .then(db.endTransaction);
+                                res.send("Success");
+                            })*/
                             .then(db.commit())
                             .then(db.endTransaction())
-                            .then(res.send("Success"))
+                            .then(function(){res.send("Success")})
                             .catch(function(err){
                                 Q.fcall(db.rollback())
                                     .then(db.endTransaction());

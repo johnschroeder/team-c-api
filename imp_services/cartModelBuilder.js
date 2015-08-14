@@ -58,13 +58,13 @@ exports.buildCart = function(cartID, productID, send) {
                 .then(db.query("CALL " + "GetCartItemsByCartID(" + cartID + ");"))
                 .then(function(rows){
                     var items = rows[0][0];
-                    if(productID === null) {
+                    if(productID == null) {
                         if (items.length == 0) {
                             callback("empty");
                         }
                     }
                     var products = getModel.model.products;
-                    if(productID !== null) {
+                    if(productID != null) {
                         products.unshift({
                             productID: parseInt(productID),
                             items: [{productID: productID}],
@@ -94,9 +94,9 @@ exports.buildCart = function(cartID, productID, send) {
                                 totalAvailable: 0,
                                 availableByLocations: {locations:[], available:[]}
                             };
-                            if(productID !== null) {
+                            if(productID != null) {
                                 if (products[0] != null
-                                    && products[0].productID === products[item.productID].productID
+                                    && products[0].productID == products[item.productID].productID
                                     && products[0].newProduct) {
                                     delete products[0];
                                     products[item.productID].editing = true;
@@ -116,8 +116,8 @@ exports.buildCart = function(cartID, productID, send) {
                     uniqueItems.forEach(function(item){
                         getModel.getProductInfo(item.productID,function(){
                             --waitingOn;
-                            if(waitingOn === 0) {
-                                if(productID !== undefined) {
+                            if(waitingOn == 0) {
+                                if(productID != null) {
                                     getModel.getProductInfo(productID, getModel.getAllLocations(callback));
                                 } else {
                                     getModel.getAllLocations(callback);
@@ -249,7 +249,7 @@ exports.buildCart = function(cartID, productID, send) {
     };
     getModel.getCartItems(function(err){
         if(err) {
-            send(err);
+            //send(err);
         } else {
             send(getModel.model);
         }
