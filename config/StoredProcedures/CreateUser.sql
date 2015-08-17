@@ -1,4 +1,3 @@
-
 DROP PROCEDURE IF EXISTS CreateUser;
 
 DELIMITER $$
@@ -15,13 +14,12 @@ union
 select GroupName as name from UserGroups) as s1 where s1.name=_Username;
 
 IF @unique<=0 THEN
-	INSERT INTO Users VALUES(_Username,_FirstName,_LastName,_Email,@pmid,_HP,_US,_DateCreated, (0));
+	INSERT INTO Users VALUES(_Username,_FirstName,_LastName,_Email,@pmid,_HP,_US, curdate(), default);
 ELSE
 	SIGNAL SQLSTATE '45000'
 	SET MESSAGE_TEXT = 'User already exists in Users or UserGroups';
 
 END IF;
-
 
 END $$
 DELIMITER ;
