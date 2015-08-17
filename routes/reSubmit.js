@@ -4,7 +4,7 @@ var router = express.Router();
 var Q = require('q');
 
 
-router.route("/:ProductID/:productName/:description").get(function(req, res) {
+router.route("/:ProductID/:productName/:description?").get(function(req, res) {
     //Q.longStackSupport = true;
     var db = require("../imp_services/impdb.js").connect();
     var prodID = mysql.escape(req.params.ProductID);
