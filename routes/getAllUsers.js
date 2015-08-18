@@ -20,7 +20,7 @@ router.route("/").get(function(req,res){
         .then(function(rows, columns){
             //console.log("Success");
             var invUnit = JSON.stringify(rows[0][0]);
-            console.log(invUnit);
+           // console.log(invUnit);
             //console.log("invUnit: " + invUnit);
             res.send(invUnit);
         }).catch(function(err) {console.log(err) })
