@@ -15,5 +15,5 @@ ELSE
     SELECT CONCAT("The username ", _Username, " does not exist.");
 END IF;
 
-END $$;
+END $$
 DELIMITER ;
