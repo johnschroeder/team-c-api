@@ -117,7 +117,7 @@ router.route('/').post(function(req, res) {
                         logService.setType(800);
                         logService.store(function (err, results) {
                             if (err) {
-                                res.status(500).send(err);
+                                res.status(500).send(err).end();
                             }
                             else {
                                 SendConfirmation(email, password, function (err) {
