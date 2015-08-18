@@ -31,18 +31,12 @@ router.route("/:CartName/:Reporter/:Assignee/:DaysToDelete").get(function(req, r
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
         .then(db.query("CALL CreateCart('"+CartName+"','"+Reporter+"','"+Assignee+"',"+DaysToDelete+");"))
-        .then(function(rows, columns){
-            var deferred = Q.defer();
-            //console.log(rows);
-            deferred.resolve();
-            return deferred.promise;
+        .then(function(rows){
+            console.log("Successfully created new cart " + CartName);
+            res.send(rows[0][0][0].CartID.toString());
         })
         .then(db.commit())
         .then(db.endTransaction())
-        .then(function(){
-            console.log("Successfully created new cart " + CartName);
-            res.send("Success");
-        })
         .catch(function(err){
             Q.fcall(db.rollback())
                 .then(db.endTransaction())

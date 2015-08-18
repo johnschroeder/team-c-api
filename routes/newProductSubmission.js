@@ -2,7 +2,7 @@
  var express = require("express");
  var router = express.Router();
  var Q = require('q');
- var L = require('../imp_services/logging.js');
+
  /*
  Usage:
  localhost:50001/newProductSubmission/ProductName/Description/DateCreated

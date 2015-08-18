@@ -1,23 +1,15 @@
-
-# Result set columns
-#CartItemID, ProductID, ProductName, PileID, Location, SizeMapID, SizeName, CountPerBatch, BatchCount, Total, RunID, RunMarker
-
 DROP PROCEDURE IF EXISTS GetCartItems;
 
 DELIMITER $$
-CREATE PROCEDURE GetCartItems(IN _CartID int)
+CREATE PROCEDURE GetCartItems(IN _CartID int unsigned)
 BEGIN
 
-SELECT ci.CartItemID, sm.ProductID, p.Name as ProductName, 
-		pl.PileID, pl.Location, sm.SizeMapID, sm.Name as SizeName, sm.Size as CountPerBatch, ci.Quantity as BatchCount,
-        sm.Size * ci.Quantity as Total, r.RunID, rm.Marker
-FROM CartItems ci
-NATURAL JOIN Runs r
-Natural join RunMarkers rm 
-NATURAL JOIN Piles pl
-NATURAL JOIN SizeMap sm
-JOIN Products p on sm.ProductID = p.ProductID;
+SELECT CI.CartItemID, Pr.ProductID, Pr.Name AS ProductName, Pr.Description AS ProductDescription, Pi.PileID, Pi.Location, CI.RunID, IFNULL(R.AltID, 'n/a') AS AltID,
+	   IFNULL(RM.Marker, 'n/a') AS Color, CI.SizeMapID, SM.Name AS PackageName, SM.Size AS PackageSize, CI.Quantity AS PackageCount, CI.Quantity * SM.Size AS TotalAmount
+FROM CartItems CI JOIN Runs R ON CI.RunID = R.RunID LEFT JOIN RunMarkers RM ON R.RunID = RM.RunID
+				  JOIN Piles Pi ON Pi.PileID = R.PileID JOIN Products Pr ON Pi.ProductID = Pr.ProductID
+				  JOIN SizeMap SM ON CI.SizeMapID = SM.SizeMapID
+WHERE CI.CartID = _CartID;
 
 END $$
-
 DELIMITER ;

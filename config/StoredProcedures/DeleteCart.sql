@@ -1,48 +1,36 @@
-
-/*
-#test script below
-set @m='';
-call DeleteCart(1,@m);
-select @m;
-*/
-
 DROP PROCEDURE IF EXISTS DeleteCart;
 
 DELIMITER $$
 CREATE PROCEDURE DeleteCart
-(IN _CartID int, OUT _Msg varchar(512))
+(IN _CartID int)
 BEGIN
 
-mylabel: BEGIN
+DECLARE currentCartItemId int unsigned;
+DECLARE flag boolean;
 
-DECLARE n INT DEFAULT 0;
-DECLARE tempCIid INT;
+SET flag = true;
 
-
-
-SELECT @n:=COUNT(*) FROM CartItems where CartID = _CartID;
-
-SELECT @i:=0;
-
-WHILE @i<@n DO
-  SELECT @tempCIid:=CartItemID from CartItems order by CartItemID limit 1;
-  SET @m='';
-  CALL DeleteItemInCart(@tempCIid,@m);
-  select @m;
-    select 'Success';
-  IF(@m ='Success') THEN
-	SET _Msg = 'Success';
-  ELSE
-	SET _Msg = @m;
-	LEAVE mylabel;
-  END IF;
-  SELECT @i := @i + 1;
-  DELETE FROM CartItems WHERE CartItemID = @tempCIid;
+# get next cartItemID from cart
+WHILE flag DO
+	SELECT CartItemID
+    FROM CartItems
+    WHERE CartID = _CartID
+    LIMIT 1
+    INTO currentCartItemId;
+    
+    # if next cartItemID is not null, delete
+    IF currentCartItemId IS NOT NULL THEN
+		CALL DeleteCartItem(currentCartItemId);
+	ELSE
+		SET flag = false;
+	END IF;
+    
+    SET currentCartItemId = null;
 END WHILE;
 
-DELETE FROM Cart WHERE Cart.CartID=_CartID;
-SET _Msg = 'Success';
-END;
-END $$
+# delete cart after all cart items deleted
+DELETE FROM Cart
+WHERE CartID = _CartID;
 
+END $$
 DELIMITER ;

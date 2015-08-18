@@ -2,10 +2,13 @@
 INSERT INTO RoutePermissions VALUES("/EditUser", 3);
 INSERT INTO RoutePermissions VALUES("/Login/createUser", 3);
 INSERT INTO RoutePermissions VALUES("/getAllUsers", 3);
+INSERT INTO RoutePermissions VALUES("/getAllUsersFilterFirstName", 3);
+INSERT INTO RoutePermissions VALUES("/getAllUsersFilterLastName", 3);
 INSERT INTO RoutePermissions VALUES("/getAllPermissions", 3);
 INSERT INTO RoutePermissions VALUES("/getUser", 3);
 #Employee and ADMIN:
 INSERT INTO RoutePermissions VALUES("/AddInventory", 3),("/AddInventory", 1);
+INSERT INTO RoutePermissions VALUES("/GetInventoryLocations", 3),("/GetInventoryLocations", 1);
 INSERT INTO RoutePermissions VALUES("/AddProductSize", 3),("/AddProductSize", 1);
 INSERT INTO RoutePermissions VALUES("/Carts/AddItemToCart", 3),("/Carts/AddItemToCart", 1);
 INSERT INTO RoutePermissions VALUES("/Carts/AddItemToCartGeneral", 3),("/Carts/AddItemToCartGeneral", 1);
@@ -24,6 +27,7 @@ INSERT INTO RoutePermissions VALUES("/addCustomer", 3),("/addCustomer", 1);
 INSERT INTO RoutePermissions VALUES("/removePile", 3),("/removePile", 1);
 INSERT INTO RoutePermissions VALUES("/removeRun", 3),("/removeRun", 1);
 INSERT INTO RoutePermissions VALUES("/removeCustomersByProductID", 3),("/removeCustomersByProductID", 1);
+INSERT INTO RoutePermissions VALUES("/uploadImage", 3),("/uploadImage", 1);
 #ADMIN, Acount Manager, Employee
 INSERT INTO RoutePermissions VALUES("/checkPermissions", 3),("/checkPermissions", 2),("/checkPermissions", 1);
 INSERT INTO RoutePermissions VALUES("/Carts/GetAllCarts", 3),("/Carts/GetAllCarts", 2),("/Carts/GetAllCarts", 1);
@@ -32,6 +36,9 @@ INSERT INTO RoutePermissions VALUES("/Carts/GetCartsByUser", 3),("/Carts/GetCart
 INSERT INTO RoutePermissions VALUES("/Carts/GetInventoryAvailable", 3),("/Carts/GetInventoryAvailable", 2),("/Carts/GetInventoryAvailable", 1);
 INSERT INTO RoutePermissions VALUES("/Carts/GetPossibleAssignees", 3),("/Carts/GetPossibleAssignees", 2),("/Carts/GetPossibleAssignees", 1);
 INSERT INTO RoutePermissions VALUES("/Carts/InventoryByProductID", 3),("/Carts/InventoryByProductID", 2),("/Carts/InventoryByProductID", 1);
+INSERT INTO RoutePermissions VALUES("/Carts/PutCartModel", 3),("/Carts/PutCartModel", 2),("/Carts/PutCartModel", 1);
+INSERT INTO RoutePermissions VALUES("/Carts/GetCartModel", 3),("/Carts/GetCartModel", 2),("/Carts/GetCartModel", 1);
+INSERT INTO RoutePermissions VALUES("/Carts/getproductforaddrow", 3),("/Carts/getproductforaddrow", 2),("/Carts/getproductforaddrow", 1);
 INSERT INTO RoutePermissions VALUES("/FindAssociatesByProductID", 3),("/FindAssociatesByProductID", 2),("/FindAssociatesByProductID", 1);
 INSERT INTO RoutePermissions VALUES("/GetSizeByProductID", 3),("/GetSizeByProductID", 2),("/GetSizeByProductID", 1);
 INSERT INTO RoutePermissions VALUES("/GetSizeMapID", 3),("/GetSizeMapID", 2),("/GetSizeMapID", 1);
@@ -46,6 +53,7 @@ INSERT INTO RoutePermissions VALUES("/customerAutoComplete", 3),("/customerAutoC
 INSERT INTO RoutePermissions VALUES("/displayInventory", 3),("/displayInventory", 2),("/displayInventory", 1);
 INSERT INTO RoutePermissions VALUES("/getCustomers", 3),("/getCustomers", 2),("/getCustomers", 1);
 INSERT INTO RoutePermissions VALUES("/getLogs", 3),("/getLogs", 2),("/getLogs", 1);
+INSERT INTO RoutePermissions VALUES("/LogFilterMappings", 3),("/LogFilterMappings", 2),("/LogFilterMappings", 1);
 INSERT INTO RoutePermissions VALUES("/getUserInfo", 3),("/getUserInfo", 2),("/getUserInfo", 1);
 INSERT INTO RoutePermissions VALUES("/itemAutoComplete", 3),("/itemAutoComplete", 2),("/itemAutoComplete", 1);
 INSERT INTO RoutePermissions VALUES("/itemDetail", 3),("/itemDetail", 2),("/itemDetail", 1);

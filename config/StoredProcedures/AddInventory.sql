@@ -1,4 +1,3 @@
-
 DROP PROCEDURE IF EXISTS AddInventory;
 
 DELIMITER $$
