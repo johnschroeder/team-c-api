@@ -31,15 +31,16 @@ router.route("/:ProductID").get(function(req, res) {
             console.error(err.stack);
             res.status(503).send("ERROR: " + err.code);
         })
-        .then(function() {
-            require('../imp_services/implogging')(req.cookies.IMPId, function(logService){
-                logService.action.productId = req.params.ProductID;
-                logService.setType(1000);
-                logService.store(function(err, results){
-                    if (err) res.status(500).send(err);
-                });
-            });
-        })
+        // this log isn't all that helpful as all customers are removed and then re-added when a product is edited
+        //.then(function() {
+        //    require('../imp_services/implogging')(req.cookies.IMPId, function(logService){
+        //        logService.action.productId = req.params.ProductID;
+        //        logService.setType(1000);
+        //        logService.store(function(err, results){
+        //            if (err) res.status(500).send(err);
+        //        });
+        //    });
+        //})
         .done();
 });
 
