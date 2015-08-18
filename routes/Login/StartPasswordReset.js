@@ -38,7 +38,7 @@ router.route('/').post(function(req, res) {
                         }
                         else {
                             console.log("Success");
-                            sendEmail(rows[0][0].email, lookup, function(err, result){
+                            sendEmail(rows[0][0][0].Email, lookup, function(err, result){
                                 if(err){
                                     deferred.reject(err);
                                 }
@@ -78,7 +78,7 @@ var sendEmail = function(email, lookup, callback){
                 },
                 Body: {
                     Text: {
-                        Data: "Please visit "+config.app.frontend+"/lookup/"+lookup+" to reset your password"
+                        Data: "Please visit "+config.app.frontend+"/confirm-"+lookup+" to reset your password"
                     }
                 }
             }
