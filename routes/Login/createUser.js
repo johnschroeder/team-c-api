@@ -104,10 +104,10 @@ router.route('/').post(function(req, res) {
                 Q.fcall(db.rollback()).catch(function(err) { console.log("oughto rollback failed " + err)})
                     .then(function() { db.endTransaction(); console.log("Well we ended the transaction")})
                     .done();
-               res.status(409).send("ERROR: " + err).end();
+              res.status(409).send("ERROR: " + err).end();
             })
-            .then(db.commit()).catch(function(err) { console.log("Boo!") })
-            .then(db.endTransaction()).catch(function(err) { console.log("Boo!")})
+            .then(db.commit())
+            .then(db.endTransaction())
 
             .then(function() {
                 if (success) {
