@@ -41,6 +41,8 @@ app.use("/Login/login", require(process.cwd()+"/routes/Login/login"));
 app.use("/Login/confirmUser", require(process.cwd()+"/routes/Login/confirmUser"));
 app.use("/Login/createUser", require(process.cwd()+"/routes/Login/createUser"));
 app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
+app.use("/Login/StartPasswordReset", require(process.cwd()+"/routes/Login/StartPasswordReset"));
+app.use("/Login/CompletePasswordReset", require(process.cwd()+"/routes/Login/CompletePasswordReset"));
 //Middleware for verifying a user is logged in before hitting a route
 var result;
 
