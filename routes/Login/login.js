@@ -1,4 +1,4 @@
-                                                                                                                                                                              var express = require("express");
+var express = require("express");
 var router = express.Router();
 var Q = require('q');
 var crypto = require('crypto');
@@ -6,7 +6,7 @@ var uuid = require('node-uuid');
 var impredis = require("../../imp_services/impredis.js");
 
 router.route('/').post( function(req,res){
-
+    console.log("Beginning login for "+req.body.user);
     var username=req.body.user;
     var password=req.body.password;
 
@@ -30,27 +30,47 @@ router.route('/').post( function(req,res){
                 if (hash == oldhash) {
                     var cookie = uuid.v4();
                     console.log("Hash match!");
-                    res.cookie('IMPId', cookie, {secure: false, maxAge: 24* 60 * 60 * 1000, httpOnly: false});
-                    res.send(cookie);
-                    impredis.set(cookie, "username", username, function(error, result){
-                        if(error){
-                            res.status(500).send("ERROR: "+error);
-                        }
-                        else {
-                            impredis.set(cookie, "IMPperm", row[0][0][0].PermsID, function(error, result)
-                            {
-                                if(error) {
-                                    res.status(500).send("ERROR: " + error);
+                    impredis.get(username, function(err, value){
+                        console.log("User "+username+" does not have a session, creating one now");
+                        if(err){
+                            res.cookie('IMPId', cookie, {secure: false, maxAge: 24* 60 * 60 * 1000, httpOnly: false});
+                            console.log("User is getting cookie: "+ cookie);
+                            impredis.set(cookie, "username", username, function(error, result){
+                                if(error){
+                                    res.status(500).send("ERROR: "+error);
                                 }
-                                else{
-                                    successLog = true;
-                                    res.end(cookie);
+                                else {
+                                    impredis.set(cookie, "IMPperm", row[0][0][0].PermsID, function(error, result)
+                                    {
+                                        if(error) {
+                                            res.status(500).send("ERROR: " + error);
+                                        }
+                                        else{
+                                            impredis.set(username, "cookie", cookie, function(error, result)
+                                            {
+                                                if(error) {
+                                                    res.status(500).send("ERROR: " + error);
+                                                }
+                                                else{
+                                                    console.log("User cookie successfully stored, returning cookie to user");
+                                                    impredis.setExpiration(username, 24);
+                                                    impredis.setExpiration(cookie, 24);
+                                                    successLog = true;
+                                                    res.end("You have successfully logged in.");
+                                                }
+                                            });
+                                        }
+                                    });
                                 }
                             });
                         }
-
+                        else{
+                            console.log("User session found for "+username+", giving them the previously used cookie");
+                            res.cookie('IMPId', cookie, {secure: false, maxAge: 24* 60 * 60 * 1000, httpOnly: false});
+                            successLog = true;
+                            res.end("You have successfully logged in.");
+                        }
                     });
-                    impredis.setExpiration(cookie, 24);
                 }
                 else {
                     console.log("Hash does not match!");
@@ -74,7 +94,7 @@ router.route('/').post( function(req,res){
         }).catch(function(err){
             Q.fcall(db.rollback())
                 .then(db.endTransaction())
-                .then(console.log("We had an error") )
+                .then(console.log("Login route encountered a transaction error") )
                 .done();
             console.log("Error: " + err);
             res.status(503).send("ERROR: " + err);
