@@ -1,5 +1,34 @@
 var Q = require("q");
 
+
+function _formatTime(time)
+{
+    var hours = time.getHours();
+    var ampm = "am";
+
+    if (time.getHours() == 0)
+    {
+        hours = "12";
+    }
+    var minutes = time.getMinutes();
+    if (time.getMinutes() == 0)
+    {
+        minutes = "00";
+    }
+    else if (time.getMinutes() < 10)
+    {
+        minutes = "0" + time.getMinutes();
+    }
+
+    if (hours > 12)
+    {
+        hours = hours - 12;
+        ampm = "pm";
+    }
+
+    return time.getMonth() + "/" + time.getDay() + "/" + time.getFullYear() + " " + hours + ":" + minutes + " " + ampm;
+}
+
 var LogTypeMap = {};
 LogTypeMap[100] = {
     type: "Added Inventory",
@@ -97,8 +126,14 @@ LogTypeMap[1500] = {
         return time + " - " + logUsername + ": " + "Deleted job item " + actionData.cartItemId;
     }
 };
+LogTypeMap[1600] = {
+    type: "Deleted Job",
+    callFunction: function (LogType, logUsername,  time,  actionData) {
+        return time + " - " + logUsername + ": " + "Deleted job " + actionData.cartId;
+    }
+};
 
-    function toStringDefault (LogType, logUsername,  time,  actionData) {
+function toStringDefault (LogType, logUsername,  time,  actionData) {
     return time + " - " + LogTypeMap[LogType].type;
 }
 
@@ -112,10 +147,26 @@ module.exports =
         return LogTypeMap[key] == undefined ? false : true;
     },
 
-    displayLogs: function (adminView, cookie, callback) {
+    getJsonFormLogMap : function(callback)
+    {
+        var keyArray = [];
+        var typeArray = [];
+        for (var key in LogTypeMap) {
+            if (key === 'length' || !LogTypeMap.hasOwnProperty(key)) continue;
+
+            var value = LogTypeMap[key];
+            keyArray.push(key);
+            typeArray.push(value.type);
+        }
+
+        var returnable = {"keys":keyArray, "types":typeArray};
+        callback(JSON.stringify(returnable));
+    },
+
+    displayLogs: function (adminView, filters, cookie, callback) {
         var stringLogs = [];
         var ids = [];
-
+        var filter = JSON.parse(filters).filter;
         var db = require("../imp_services/impdb.js").connect();
 
         require("../imp_services/impredis.js").get(cookie, function usernameReturn(error, val) {
@@ -138,20 +189,26 @@ module.exports =
                         var logID = row.LogID;
                         var LogType = row.LogType;
                         var logUsername = row.Username;
-                        var time = row.Time;
+                        var time = _formatTime(row.Time);
                         var actionData = row.ActionData;
 
-                        if (LogTypeMap[LogType] == null) {
-                            stringLogs.push(typeNotAddedYet(LogType, logUsername, time, JSON.parse(actionData)));
-                        } else {
-                            stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
+                        for (var j = 0; j < filter.length; j++)
+                        {
+                            if (LogType == filter[j])
+                            {
+                                if (LogTypeMap[LogType] == null) {
+                                    stringLogs.push(typeNotAddedYet(LogType, logUsername, time, JSON.parse(actionData)));
+                                } else {
+                                    stringLogs.push(LogTypeMap[LogType].callFunction(LogType, logUsername, time, JSON.parse(actionData)));
+                                }
+                                ids.push(logID);
+                            }
                         }
-                        ids.push(logID);
+
                         //console.log(stringLogs[i]);
                     }
 
                     var jsonObject = {logs:stringLogs, id:ids};
-
                     callback(JSON.stringify(jsonObject));
 
                 })

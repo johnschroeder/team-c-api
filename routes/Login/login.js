@@ -10,6 +10,8 @@ router.route('/').post( function(req,res){
     var username=req.body.user;
     var password=req.body.password;
 
+    var successLog = false;
+
     var db = require("../../imp_services/impdb.js").connect();
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
@@ -53,6 +55,7 @@ router.route('/').post( function(req,res){
                                                     console.log("User cookie successfully stored, returning cookie to user");
                                                     impredis.setExpiration(username, 24);
                                                     impredis.setExpiration(cookie, 24);
+                                                    successLog = true;
                                                     res.end("You have successfully logged in.");
                                                 }
                                             });
@@ -64,6 +67,7 @@ router.route('/').post( function(req,res){
                         else{
                             console.log("User session found for "+username+", giving them the previously used cookie");
                             res.cookie('IMPId', cookie, {secure: false, maxAge: 24* 60 * 60 * 1000, httpOnly: false});
+                            successLog = true;
                             res.end("You have successfully logged in.");
                         }
                     });
@@ -76,23 +80,24 @@ router.route('/').post( function(req,res){
         })
         .then(db.commit())
         .then(db.endTransaction())
-        .catch(function(err){
+        .then(function() {
+            if (successLog) {
+                require('../../imp_services/implogging')(req.cookies.IMPId, function (logService) {
+                    logService.action.user = req.body.user;
+                    logService.setType(900);
+                    logService.store(function (err, results) {
+                        if (err) res.status(500).send(err);
+                    });
+                });
+            }
+
+        }).catch(function(err){
             Q.fcall(db.rollback())
                 .then(db.endTransaction())
                 .then(console.log("Login route encountered a transaction error") )
                 .done();
             console.log("Error: " + err);
             res.status(503).send("ERROR: " + err);
-        })
-        .then(function() {
-            require('../../imp_services/implogging')(req.cookies.IMPId, function(logService){
-                logService.action.user = req.body.user;
-                logService.setType(900);
-                logService.store(function(err, results){
-                    if (err) res.status(500).send(err);
-                });
-            });
-
         })
         .done();
 

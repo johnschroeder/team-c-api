@@ -41,8 +41,11 @@ app.use("/Login/login", require(process.cwd()+"/routes/Login/login"));
 app.use("/Login/confirmUser", require(process.cwd()+"/routes/Login/confirmUser"));
 app.use("/Login/createUser", require(process.cwd()+"/routes/Login/createUser"));
 app.use("/Login/testLookup", require(process.cwd()+"/routes/Login/testLookup"));
+app.use("/Login/StartPasswordReset", require(process.cwd()+"/routes/Login/StartPasswordReset"));
+app.use("/Login/CompletePasswordReset", require(process.cwd()+"/routes/Login/CompletePasswordReset"));
 //Middleware for verifying a user is logged in before hitting a route
 var result;
+
 app.use(function(req,res,next)
 {
     var impredis = require("./imp_services/impredis.js");
@@ -95,7 +98,7 @@ app.use(function(req,res,next) {
             .then(function (rows, columns) {
                 console.log("Success");
                 result = rows[0][0][0];
-                if (result.PermCheck == 1) {
+                if (result.PermCheck >= 1) {
                     console.log("Access to route " + routeToHit + " granted!");
                     next();
                 }

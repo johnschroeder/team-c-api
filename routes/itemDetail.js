@@ -9,7 +9,7 @@ router.route("/:productID").get(function(req,res){
     Q.fcall(db.beginTransaction())
         .then(db.query("USE " + db.databaseName))
         .then(db.query(
-            "SELECT Pr.ProductID, Pr.Name, SUM(R.QuantityAvailable) AS TotalAvailable, SUM(R.QuantityReserved) AS TotalReserved, MAX(R.DateCreated) AS MostRecent "
+            "SELECT Pr.ProductID, Pr.Name, IFNULL(SUM(R.QuantityAvailable), 0) AS TotalAvailable, IFNULL(SUM(R.QuantityReserved), 0) AS TotalReserved, IFNULL(MAX(R.DateCreated), 'n/a') AS MostRecent "
             + "FROM " + db.productTable + " AS Pr JOIN " + db.pileTable + " AS Pi ON Pr.ProductID = Pi.ProductID JOIN " + db.runTable + " AS R ON R.PileID = Pi.PileID "
             + "WHERE Pr.ProductID = " + req.params.productID))
         .then(function(rows){
